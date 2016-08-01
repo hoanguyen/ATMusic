@@ -14,9 +14,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-		self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		self.window?.rootViewController = BaseTabBarController()
-		self.window?.makeKeyAndVisible()
+		window = UIWindow(frame: UIScreen.mainScreen().bounds)
+		window?.rootViewController = BaseTabBarController()
+		window?.makeKeyAndVisible()
 		return true
 	}
 	

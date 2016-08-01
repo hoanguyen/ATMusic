@@ -5,21 +5,14 @@ disabled_rules:
   - trailing_whitespace
   - colon
   - comma
-  - cyclomatic_complexity
-  - function_parameter_count
-  - conditional_binding_cascade
-  - legacy_cggeometry_functions
 excluded:
   - Carthage
   - Pods
 line_length: 150
-function_body_length: 80
-type_body_length: 
- - 600 #warning
- - 800 #error
+function_body_length: 70
 file_length:
-  warning: 800
-  error: 1200
+  warning: 700
+  error: 900
 variable_name:
   excluded: # excluded via string array
     - id
