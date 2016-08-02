@@ -9,13 +9,33 @@
 import UIKit
 
 class SearchViewController: UIViewController {
+	// MARK: - private outlet
+	@IBOutlet private weak var tableView: UITableView!
+	
+	// MARK: - private property
+	private let searchController = UISearchController(searchResultsController: nil)
+	
+	// MARK: - override func
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		configUI()
+	}
+	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+	}
+	
+	// MARK: - private func
+	private func configUI() {
+		searchController.searchResultsUpdater = self
+		searchController.dimsBackgroundDuringPresentation = false
+		definesPresentationContext = true
+		tableView.tableHeaderView = searchController.searchBar
+	}
+}
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
+extension SearchViewController: UISearchResultsUpdating {
+	func updateSearchResultsForSearchController(searchController: UISearchController) {
+		
+	}
 }
