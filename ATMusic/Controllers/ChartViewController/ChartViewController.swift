@@ -13,18 +13,12 @@ private let kHeightForRow: CGFloat = 60 // height for row
 
 class ChartViewController: UIViewController {
 	// MARK: - Private Outlet
-	@IBOutlet weak var tableView: UITableView!
-	
-	// MARK: - private func
-	private let cellIdentifier = "cell"
-	// fake data
-	private var cells = [NSDictionary]()
+	@IBOutlet private weak var tableView: UITableView!
 	
 	// MARK: - Override func
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		configView()
-		loadData()
+		configUI()
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -32,41 +26,24 @@ class ChartViewController: UIViewController {
 	}
 	
 	// MARK: - private func
-	private func configView() {
+	private func configUI() {
 		tableView.registerNib(CustomTableViewCell)
 		tableView.delegate = self
 		tableView.dataSource = self
-	}
-	
-	private func loadData() {
-		for _ in 0..<10 {
-			let cell = NSMutableDictionary()
-			cell.setValue("The song name", forKey: "nameOfSong")
-			cell.setValue("The singer name", forKey: "nameOfSinger")
-			cell.setValue("", forKey: "image")
-			cell.setValue("4:32", forKey: "durationOfSong")
-			cells.append(cell)
-		}
 	}
 }
 
 //MARK: - extension of UITableViewDelegate and UITableViewDataSource
 extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		return kHeightForRow
+		return tableView.cellHeight()
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return cells.count
+		return 10
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = tableView.dequeue(CustomTableViewCell)
-		let dataCell = cells[indexPath.row]
-		cell.loadData(dataCell.objectForKey("image") as? String,
-			nameOfSong: dataCell.objectForKey("nameOfSong") as? String,
-			nameOfSinger: dataCell.objectForKey("nameOfSinger") as? String,
-			durationOfSong: dataCell.objectForKey("durationOfSong") as? String)
-		return cell
+		return tableView.dequeue(CustomTableViewCell)
 	}
 }

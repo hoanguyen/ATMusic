@@ -23,20 +23,20 @@
                             <constraint firstAttribute="width" secondItem="Slq-E1-nBv" secondAttribute="height" multiplier="1:1" id="LO9-N2-nHn"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fna-Bv-UGh">
-                        <rect key="frame" x="78" y="8" width="178" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The song name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fna-Bv-UGh">
+                        <rect key="frame" x="78" y="11" width="178" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4:32" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="zqc-ab-IgJ">
-                        <rect key="frame" x="293" y="21" width="36" height="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name of singer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cNS-lx-0Yl">
+                        <rect key="frame" x="78" y="30" width="178" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cNS-lx-0Yl">
-                        <rect key="frame" x="78" y="30" width="178" height="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4:32" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="zqc-ab-IgJ">
+                        <rect key="frame" x="293" y="21" width="36" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -55,10 +55,11 @@
                 <constraints>
                     <constraint firstItem="Fna-Bv-UGh" firstAttribute="leading" secondItem="Slq-E1-nBv" secondAttribute="trailing" constant="8" id="1JQ-KG-s12"/>
                     <constraint firstItem="Fna-Bv-UGh" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="178/375" id="35A-Xm-FFv"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="cNS-lx-0Yl" secondAttribute="bottom" constant="4" id="5RG-Bh-Vxf"/>
                     <constraint firstItem="MDV-u2-I1l" firstAttribute="leading" secondItem="zqc-ab-IgJ" secondAttribute="trailing" constant="8" id="6qX-Qg-JxO"/>
                     <constraint firstItem="MDV-u2-I1l" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="30/375" id="Ao4-nS-xMX"/>
                     <constraint firstItem="Slq-E1-nBv" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="8" id="B2w-CV-ETL"/>
-                    <constraint firstItem="Fna-Bv-UGh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="KxQ-yM-Puo"/>
+                    <constraint firstItem="Fna-Bv-UGh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="3" id="KxQ-yM-Puo"/>
                     <constraint firstAttribute="trailingMargin" secondItem="MDV-u2-I1l" secondAttribute="trailing" id="Nfa-mP-X85"/>
                     <constraint firstItem="Slq-E1-nBv" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="R5u-G3-iSX"/>
                     <constraint firstItem="zqc-ab-IgJ" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="36/375" id="f9Q-nY-jFX"/>
@@ -69,6 +70,11 @@
                     <constraint firstItem="cNS-lx-0Yl" firstAttribute="top" secondItem="Fna-Bv-UGh" secondAttribute="bottom" constant="1" id="oyM-ff-REt"/>
                     <constraint firstItem="cNS-lx-0Yl" firstAttribute="width" secondItem="Fna-Bv-UGh" secondAttribute="width" id="yil-Ix-jTB"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="oyM-ff-REt"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="avatar" destination="Slq-E1-nBv" id="94U-Zb-ssQ"/>

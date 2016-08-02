@@ -27,19 +27,19 @@ class BaseTabBarController: UITabBarController {
 		let charVC = ChartViewController.vc()
 		charVC.title = "Trending"
 		let chartNavigation = UINavigationController(rootViewController: charVC)
-		chartNavigation.tabBarItem = UITabBarItem(title: "Chart", image: UIImage(named: "chart"), tag: 1)
+		chartNavigation.tabBarItem = UITabBarItem(title: "Chart", image: UIImage(assetIdentifier: .Chart), tag: 1)
 		
 		// init Search
 		let searchVC = SearchViewController.vc()
 		searchVC.title = "Search"
 		let searchNavigation = UINavigationController(rootViewController: searchVC)
-		searchNavigation.tabBarItem = UITabBarItem(title: "Search", image: UIImage(named: "search"), tag: 2)
+		searchNavigation.tabBarItem = UITabBarItem(title: "Search", image: UIImage(assetIdentifier: .Search), tag: 2)
 		
 		// init Playlist
 		let playlistVC = PlaylistViewController.vc()
 		playlistVC.title = "Playlist"
 		let playlistNavigation = UINavigationController(rootViewController: playlistVC)
-		playlistNavigation.tabBarItem = UITabBarItem(title: "Playlist", image: UIImage(named: "playlist"), tag: 3)
+		playlistNavigation.tabBarItem = UITabBarItem(title: "Playlist", image: UIImage(assetIdentifier: .Playlist), tag: 3)
 		tabBar.tintColor = UIColor.redColor()
 		viewControllers = [chartNavigation, searchNavigation, playlistNavigation]
 	}
