@@ -1,0 +1,18 @@
+# reporter: json
+use_nested_configs: true
+disabled_rules:
+  - todo # 開発中のみignore
+  - trailing_whitespace
+  - colon
+  - comma
+excluded:
+  - Carthage
+  - Pods
+line_length: 150
+function_body_length: 70
+file_length:
+  warning: 700
+  error: 900
+variable_name:
+  excluded: # excluded via string array
+    - id
