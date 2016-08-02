@@ -20,6 +20,7 @@ class BaseTabBarController: UITabBarController {
 		super.didReceiveMemoryWarning()
 	}
 	
+	// Mark: - config Tabbar func
 	private func configTabBar() {
 		// init Chart
 		let charVC = ChartViewController.vc()
