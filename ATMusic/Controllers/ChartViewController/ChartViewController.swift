@@ -39,12 +39,12 @@ class ChartViewController: UIViewController {
 	}
 	
 	private func loadData() {
-		for i in 0..<10 {
+		for _ in 0..<10 {
 			let cell = NSMutableDictionary()
-			cell.setValue("\(i)", forKey: "nameOfSong")
-			cell.setValue("\(i)", forKey: "nameOfSinger")
-			cell.setValue("\(i)", forKey: "image")
-			cell.setValue("\(i)", forKey: "durationOfSong")
+			cell.setValue("The song name", forKey: "nameOfSong")
+			cell.setValue("The singer name", forKey: "nameOfSinger")
+			cell.setValue("", forKey: "image")
+			cell.setValue("4:32", forKey: "durationOfSong")
 			cells.append(cell)
 		}
 	}
