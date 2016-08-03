@@ -9,8 +9,6 @@
 import UIKit
 import SwiftUtils
 
-private let kHeightForRow: CGFloat = 60 // height for row
-
 class ChartViewController: UIViewController {
 	// MARK: - Private Outlet
 	@IBOutlet private weak var tableView: UITableView!
@@ -27,7 +25,7 @@ class ChartViewController: UIViewController {
 	
 	// MARK: - private func
 	private func configUI() {
-		tableView.registerNib(CustomTableViewCell)
+		tableView.registerNib(TrackTableViewCell)
 		tableView.delegate = self
 		tableView.dataSource = self
 	}
@@ -36,7 +34,7 @@ class ChartViewController: UIViewController {
 //MARK: - extension of UITableViewDelegate and UITableViewDataSource
 extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		return tableView.cellHeight()
+		return TrackTableViewCell.cellHeight()
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -44,6 +42,6 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		return tableView.dequeue(CustomTableViewCell)
+		return tableView.dequeue(TrackTableViewCell)
 	}
 }
