@@ -9,7 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="CustomCollectionViewCell" customModule="ATMusic" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PlaylistCell" customModule="ATMusic" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="150" height="200"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -65,8 +65,6 @@
             <size key="customSize" width="150" height="196"/>
             <connections>
                 <outlet property="avatar" destination="Knr-WE-tgR" id="uGL-36-Zvv"/>
-                <outlet property="labelNameOfSinger" destination="ULC-b3-GuO" id="19c-7j-5dI"/>
-                <outlet property="labelNameOfSong" destination="lXX-yo-4Og" id="pk8-mH-V3p"/>
             </connections>
             <point key="canvasLocation" x="147" y="365"/>
         </collectionViewCell>

@@ -9,6 +9,6 @@
 import UIKit
 
 class Color {
-	static let CollectionCellBorderColor = UIColor(red: 127 / 255, green: 127 / 255, blue: 127 / 255, alpha: 0.5).CGColor
+	static let CollectionCellBorderColor = UIColor(red: 127 / 255, green: 127 / 255, blue: 127 / 255, alpha: 0.5)
 	static let TabBarTinColor = UIColor(red: 255 / 255, green: 41 / 255, blue: 56 / 255, alpha: 1)
 }

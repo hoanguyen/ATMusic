@@ -8,11 +8,11 @@
 
 import UIKit
 
-class CustomCollectionViewCell: UICollectionViewCell {
+class PlaylistCell: UICollectionViewCell {
 	// MARK: - private property
 	@IBOutlet private weak var avatar: UIImageView!
-	@IBOutlet private weak var labelNameOfSong: UILabel!
-	@IBOutlet private weak var labelNameOfSinger: UILabel!
+	@IBOutlet private weak var namOfSongLabel: UILabel!
+	@IBOutlet private weak var nameOfSingerLabel: UILabel!
 	
 	// MARK: - override func
 	override func awakeFromNib() {
@@ -22,9 +22,9 @@ class CustomCollectionViewCell: UICollectionViewCell {
 	
 	// MARK: - private func
 	private func configUI() {
-		// set border for each cell
-		self.layer.borderWidth = 1
-		self.layer.borderColor = Color.CollectionCellBorderColor
+		self.border(color: Color.CollectionCellBorderColor, width: 1)
+		layer.masksToBounds = false
+		self.shadow(color: Color.CollectionCellBorderColor, offset: CGSize(width: 1, height: 1), opacity: 1, radius: 1)
 	}
 	
 }

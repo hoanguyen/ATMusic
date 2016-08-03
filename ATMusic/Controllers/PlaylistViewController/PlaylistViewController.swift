@@ -9,7 +9,7 @@
 import UIKit
 import SwiftUtils
 
-class PlaylistViewController: UIViewController {
+class PlaylistViewController: ViewController {
 	// MARK: - private outlet
 	@IBOutlet private weak var collectionView: UICollectionView!
 	
@@ -25,23 +25,15 @@ class PlaylistViewController: UIViewController {
 	
 	// MARK: - private func
 	private func configUI() {
+		// register nib for cell, using library
+		collectionView.registerNib(PlaylistCell)
 		// delegate and datasource for collectionview
 		collectionView.delegate = self
 		collectionView.dataSource = self
-		// register nib for cell, using library
-		collectionView.registerNib(CustomCollectionViewCell)
-		// set corner and shadow
+		// set translucent for tabbar and navigationbar
+		navigationController?.navigationBar.translucent = false
+		tabBarController?.tabBar.translucent = false
 		collectionView.backgroundColor = UIColor.clearColor()
-		collectionView.layer.cornerRadius = 10.0
-		collectionView.layer.shadowColor = UIColor.blackColor().CGColor
-		collectionView.layer.shadowOffset = CGSize(width: 1, height: 1)
-		collectionView.layer.shadowOpacity = 1
-		collectionView.layer.shadowRadius = 1.0
-		collectionView.clipsToBounds = true
-		collectionView.layer.masksToBounds = true
-		// set layout with number item on each row
-		collectionView.setLayout(collectionSize: self.view.bounds.size, numberItemOfRow: 2, scrollDirection: .Vertical, animated: true)
-		collectionView.translatesAutoresizingMaskIntoConstraints = false
 	}
 }
 
@@ -55,7 +47,19 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
 	}
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeue(CustomCollectionViewCell.self, forIndexPath: indexPath)
+		let cell = collectionView.dequeue(PlaylistCell.self, forIndexPath: indexPath)
 		return cell
+	}
+}
+
+extension PlaylistViewController: UICollectionViewDelegateFlowLayout {
+	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+		sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+			return CGSize(width: Ratio.width * 160, height: Ratio.width * 217)
+	}
+	
+	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+		insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+			return UIEdgeInsets(top: 12 * Ratio.width, left: 18 * Ratio.width, bottom: 13 * Ratio.width, right: 18 * Ratio.width)
 	}
 }
