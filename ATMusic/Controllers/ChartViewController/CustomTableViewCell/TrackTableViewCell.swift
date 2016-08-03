@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CustomTableViewCell: UITableViewCell {
+class TrackTableViewCell: UITableViewCell {
 	// MARK: - private Outlets
 	@IBOutlet private weak var avatar: UIImageView!
 	@IBOutlet private weak var labelNameOfSong: UILabel!
@@ -36,4 +36,9 @@ class CustomTableViewCell: UITableViewCell {
 		labelNameOfSinger.text = nameOfSinger ?? "2"
 		labelDurationOfSong.text = durationOfSong ?? "3"
 	}
+	
+	static func cellHeight() -> CGFloat {
+		return 70 * Ratio.width
+	}
+	
 }
