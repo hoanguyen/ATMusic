@@ -9,5 +9,5 @@
 import UIKit
 
 class Color {
-	static let TabBarTinColor = UIColor(red: 255, green: 41, blue: 56, alpha: 1)
+	static let TabBarTinColor = UIColor(red: 255 / 255, green: 41 / 255, blue: 56 / 255, alpha: 1)
 }
