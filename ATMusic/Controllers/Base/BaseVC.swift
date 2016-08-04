@@ -10,12 +10,12 @@ import UIKit
 import SwiftUtils
 
 class BaseVC: ViewController {
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		loadData()
-		configUI()
-	}
-	func loadData() { }
-	func configUI() { }
-	
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadData()
+        configUI()
+    }
+    func loadData() { }
+    func configUI() { }
+
 }

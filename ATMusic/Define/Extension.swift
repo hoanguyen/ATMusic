@@ -10,5 +10,5 @@ import UIKit
 import SwiftUtils
 
 struct Ratio {
-	static let width: CGFloat = kScreenSize.width / DeviceType.Phone6.size.width
+    static let width: CGFloat = kScreenSize.width / DeviceType.Phone6.size.width
 }

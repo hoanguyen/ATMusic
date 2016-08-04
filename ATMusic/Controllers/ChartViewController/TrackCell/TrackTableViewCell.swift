@@ -9,36 +9,36 @@
 import UIKit
 
 class TrackTableViewCell: UITableViewCell {
-	// MARK: - private Outlets
-	@IBOutlet private weak var avatar: UIImageView!
-	@IBOutlet private weak var labelNameOfSong: UILabel!
-	@IBOutlet private weak var labelNameOfSinger: UILabel!
-	@IBOutlet private weak var labelDurationOfSong: UILabel!
-	
-	// MARK: - Override func
-	override func awakeFromNib() {
-		super.awakeFromNib()
-	}
-	
-	override func setSelected(selected: Bool, animated: Bool) {
-		super.setSelected(selected, animated: animated)
-	}
-	
-	// MARK: - Private Action
-	@IBAction private func didTapButtonMore(sender: UIButton) {
-		
-	}
-	
-	// MARK:-public func
-	func loadData(image: String?, nameOfSong: String?, nameOfSinger: String?, durationOfSong: String?) {
-		avatar.image = UIImage(named: image ?? "")
-		labelNameOfSong.text = nameOfSong ?? "1"
-		labelNameOfSinger.text = nameOfSinger ?? "2"
-		labelDurationOfSong.text = durationOfSong ?? "3"
-	}
-	
-	static func cellHeight() -> CGFloat {
-		return 70 * Ratio.width
-	}
-	
+    // MARK: - private Outlets
+    @IBOutlet private weak var avatar: UIImageView!
+    @IBOutlet private weak var labelNameOfSong: UILabel!
+    @IBOutlet private weak var labelNameOfSinger: UILabel!
+    @IBOutlet private weak var labelDurationOfSong: UILabel!
+
+    // MARK: - Override func
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+
+    override func setSelected(selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+
+    // MARK: - Private Action
+    @IBAction private func didTapButtonMore(sender: UIButton) {
+
+    }
+
+    // MARK:-public func
+    func loadData(image: String?, nameOfSong: String?, nameOfSinger: String?, durationOfSong: String?) {
+        avatar.image = UIImage(named: image ?? "")
+        labelNameOfSong.text = nameOfSong ?? "1"
+        labelNameOfSinger.text = nameOfSinger ?? "2"
+        labelDurationOfSong.text = durationOfSong ?? "3"
+    }
+
+    static func cellHeight() -> CGFloat {
+        return 70 * Ratio.width
+    }
+
 }
