@@ -24,7 +24,11 @@ class PlaylistCell: UICollectionViewCell {
 	private func configUI() {
 		self.border(color: Color.CollectionCellBorderColor, width: 1)
 		layer.masksToBounds = false
-		self.shadow(color: Color.CollectionCellBorderColor, offset: CGSize(width: 1, height: 1), opacity: 1, radius: 1)
+		self.shadow(color: Color.CollectionCellBorderColor, offset: CGSize(width: 0, height: 1), opacity: 1, radius: 1)
+	}
+	
+	static func cellSize() -> CGSize {
+		return CGSize(width: Ratio.width * 160, height: Ratio.width * 217)
 	}
 	
 }

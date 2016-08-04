@@ -7,7 +7,8 @@
 //
 
 import UIKit
+import SwiftUtils
 
 struct Ratio {
-	static let width = UIScreen.mainScreen().bounds.width / 375
+	static let width: CGFloat = kScreenSize.width / DeviceType.Phone6.size.width
 }

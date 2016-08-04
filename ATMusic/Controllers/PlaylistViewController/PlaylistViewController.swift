@@ -9,6 +9,22 @@
 import UIKit
 import SwiftUtils
 
+private extension CGFloat {
+	static let collectionViewMarginTop = 12 * Ratio.width
+	static let collectionViewMarginLeft = 18 * Ratio.width
+	static let collectionViewMarginBottom = 13 * Ratio.width
+	static let collectionViewMarginRight = 18 * Ratio.width
+}
+
+private extension UIEdgeInsets {
+	static func insetForCollectionView() -> UIEdgeInsets {
+		return UIEdgeInsets(top: CGFloat.collectionViewMarginTop,
+			left: CGFloat.collectionViewMarginLeft,
+			bottom: CGFloat.collectionViewMarginBottom,
+			right: CGFloat.collectionViewMarginRight)
+	}
+}
+
 class PlaylistViewController: ViewController {
 	// MARK: - private outlet
 	@IBOutlet private weak var collectionView: UICollectionView!
@@ -55,11 +71,11 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
 extension PlaylistViewController: UICollectionViewDelegateFlowLayout {
 	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
 		sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-			return CGSize(width: Ratio.width * 160, height: Ratio.width * 217)
+			return PlaylistCell.cellSize()
 	}
 	
 	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
 		insetForSectionAtIndex section: Int) -> UIEdgeInsets {
-			return UIEdgeInsets(top: 12 * Ratio.width, left: 18 * Ratio.width, bottom: 13 * Ratio.width, right: 18 * Ratio.width)
+			return .insetForCollectionView()
 	}
 }
