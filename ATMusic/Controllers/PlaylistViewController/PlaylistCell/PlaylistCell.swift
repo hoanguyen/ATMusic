@@ -17,18 +17,18 @@ class PlaylistCell: UICollectionViewCell {
 	// MARK: - override func
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		configUI()
-	}
-	
-	// MARK: - private func
-	private func configUI() {
-		self.border(color: Color.CollectionCellBorderColor, width: 1)
 		layer.masksToBounds = false
-		self.shadow(color: Color.CollectionCellBorderColor, offset: CGSize(width: 0, height: 1), opacity: 1, radius: 1)
+		shadow(color: UIColor.blackColor(), offset: CGSize(width: 0, height: 1), opacity: 0.5, radius: 1)
 	}
 	
+	// MARK: - static func
 	static func cellSize() -> CGSize {
 		return CGSize(width: Ratio.width * 160, height: Ratio.width * 217)
+	}
+	
+	func configData(index index: Int) {
+		namOfSongLabel.text = "Sing me to sleep \(index)"
+		
 	}
 	
 }

@@ -65,6 +65,8 @@
             <size key="customSize" width="150" height="196"/>
             <connections>
                 <outlet property="avatar" destination="Knr-WE-tgR" id="uGL-36-Zvv"/>
+                <outlet property="namOfSongLabel" destination="lXX-yo-4Og" id="BoP-tA-lVx"/>
+                <outlet property="nameOfSingerLabel" destination="ULC-b3-GuO" id="JBY-Ww-3Jw"/>
             </connections>
             <point key="canvasLocation" x="147" y="365"/>
         </collectionViewCell>
