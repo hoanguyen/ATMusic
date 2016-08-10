@@ -8,26 +8,64 @@
 
 import UIKit
 import SwiftUtils
+import RealmSwift
+import Alamofire
+import ObjectMapper
+import SVPullToRefresh
 
-class ChartViewController: UIViewController {
+class ChartViewController: BaseVC {
     // MARK: - Private Outlet
     @IBOutlet private weak var tableView: UITableView!
-
+    private var limit = 10
+    private var tracks: [Track]?
+    private var refreshControl = UIRefreshControl()
+    private var indicator = UIActivityIndicatorView()
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
-        configUI()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 
-    // MARK: - private func
-    private func configUI() {
+    override func configUI() {
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.addPullToRefreshWithActionHandler {
+            self.refresh()
+        }
+        tableView.addInfiniteScrollingWithActionHandler {
+            self.loadMore()
+        }
+        navigationController?.navigationBar.translucent = false
+        tabBarController?.tabBar.translucent = false
+    }
+
+    override func loadData() {
+        loadSongWithLimit(limit)
+    }
+
+    // MARK: - private func
+    private func loadSongWithLimit(limit: Int) {
+        APIManager.sharedInstance.getTopSong(limit) { (result) in
+            self.tracks = result
+            self.tableView.reloadData()
+            self.tableView.pullToRefreshView.stopAnimating()
+            self.tableView.infiniteScrollingView.stopAnimating()
+        }
+
+    }
+
+    private func refresh() {
+        limit = 10
+        loadSongWithLimit(limit)
+    }
+
+    private func loadMore() {
+        limit += 10
+        loadSongWithLimit(limit)
     }
 }
 
@@ -38,10 +76,14 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return tracks?.count ?? 0
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeue(TrackTableViewCell)
+        let cell = tableView.dequeue(TrackTableViewCell)
+        if let track = tracks?[indexPath.row] {
+            cell.configCellWithTrack(track)
+        }
+        return cell
     }
 }
