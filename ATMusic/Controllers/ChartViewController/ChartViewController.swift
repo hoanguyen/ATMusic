@@ -16,8 +16,9 @@ import SVPullToRefresh
 class ChartViewController: BaseVC {
     // MARK: - Private Outlet
     @IBOutlet private weak var tableView: UITableView!
-    private var limit = 10
-    private var tracks: [Track]?
+    private let limit = 10
+    private var offset = 0
+    private var songs: [Song]?
     private var refreshControl = UIRefreshControl()
     private var indicator = UIActivityIndicatorView()
     // MARK: - Override func
@@ -44,28 +45,38 @@ class ChartViewController: BaseVC {
     }
 
     override func loadData() {
-        loadSongWithLimit(limit)
+        songs = [Song]()
+        loadSong(whenRefresh: false)
     }
 
     // MARK: - private func
-    private func loadSongWithLimit(limit: Int) {
-        APIManager.sharedInstance.getTopSong(limit) { (result) in
-            self.tracks = result
-            self.tableView.reloadData()
-            self.tableView.pullToRefreshView.stopAnimating()
-            self.tableView.infiniteScrollingView.stopAnimating()
+    private func loadSong(whenRefresh isRefresh: Bool) {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        APIManager.sharedInstance.getTopSong(withlimit: limit, atOffset: offset) { (result, error, message) in
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            if error {
+                print("ERROR: \(message)")
+            } else {
+                if isRefresh {
+                    self.songs?.removeAll()
+                }
+                guard let result = result else { return }
+                self.songs?.appendContentsOf(result)
+                self.tableView.reloadData()
+                self.tableView.pullToRefreshView.stopAnimating()
+                self.tableView.infiniteScrollingView.stopAnimating()
+            }
         }
-
     }
 
     private func refresh() {
-        limit = 10
-        loadSongWithLimit(limit)
+        offset = limit
+        loadSong(whenRefresh: true)
     }
 
     private func loadMore() {
-        limit += 10
-        loadSongWithLimit(limit)
+        offset += limit
+        loadSong(whenRefresh: false)
     }
 }
 
@@ -76,12 +87,12 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tracks?.count ?? 0
+        return songs?.count ?? 0
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        if let track = tracks?[indexPath.row] {
+        if let track = songs?[indexPath.row] {
             cell.configCellWithTrack(track)
         }
         return cell

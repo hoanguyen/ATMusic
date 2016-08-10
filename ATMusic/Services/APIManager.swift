@@ -10,12 +10,22 @@ import UIKit
 import Alamofire
 import ObjectMapper
 
-typealias APIGetTopSongFinished = (result: [Track]) -> Void
+typealias APIGetTopSongFinished = (result: [Song]?, error: Bool, message: String?) -> Void
+
+private enum MusicKind: String {
+    case TOP = "top"
+    case TRENDING = "trending"
+}
+
+private enum MusicGenre: String {
+    case All = "soundcloud:genres:all-music"
+    case Classical = "soundcloud:genres:classical"
+    // maybe put in here more genre
+}
 
 enum Router: URLRequestConvertible {
-    static let baseURLString = "https://itunes.apple.com/us/rss/"
     static var OAuthToken: String?
-    case GetTopSong(limit: Int)
+    case GetTopSong(limit: Int, offset: Int)
 
     var method: Alamofire.Method {
         switch self {
@@ -26,23 +36,33 @@ enum Router: URLRequestConvertible {
 
     var path: String {
         switch self {
-        case .GetTopSong(let limit):
-            return "topsongs/limit=\(limit)/json"
+        case .GetTopSong:
+            return "/charts"
+        }
+    }
+
+    var parameter: [String: AnyObject] {
+        var parameters = [String: AnyObject]()
+        parameters["client_id"] = Strings.ClientID
+        switch self {
+        case .GetTopSong(let limit, let offset):
+            parameters["kind"] = MusicKind.TOP.rawValue
+            parameters["genre"] = MusicGenre.All.rawValue
+            parameters["limit"] = limit
+            parameters["offset"] = offset
+            return parameters
         }
     }
 
     // MARK: URLRequestConvertible
 
     var URLRequest: NSMutableURLRequest {
-        let URL = NSURL(string: Router.baseURLString)!
+        let URL = NSURL(string: Strings.BaseURLString)!
         let mutableURLRequest = NSMutableURLRequest(URL: URL.URLByAppendingPathComponent(path))
         mutableURLRequest.HTTPMethod = method.rawValue
-        if let token = Router.OAuthToken {
-            mutableURLRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
         switch self {
-        case .GetTopSong(_):
-            return Alamofire.ParameterEncoding.JSON.encode(mutableURLRequest, parameters: nil).0
+        case .GetTopSong:
+            return Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: parameter).0
         }
     }
 }
@@ -59,21 +79,19 @@ class APIManager {
         return Static.instance!
     }
 
-    func getTopSong(limit: Int, completionHandler finished: APIGetTopSongFinished) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            Alamofire.request(Router.GetTopSong(limit: limit)).responseJSON { (response) in
-                if let JSON = response.result.value {
-                    if let feed = JSON["feed"] where ((feed as? Dictionary<String, AnyObject>) != nil) {
-                        if let entry = feed?["entry"] {
-                            if let tracks = Mapper<Track>().mapArray(entry) {
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    finished(result: tracks)
-                                }
-                            }
-                        }
-                    }
-                }
+    func getTopSong(withlimit limit: Int, atOffset offset: Int, completionHandler finished: APIGetTopSongFinished) {
+        Alamofire.request(Router.GetTopSong(limit: limit, offset: offset)).responseJSON { (response) in
+            switch response.result {
+            case .Success:
+                guard let JSON = response.result.value else { finished(result: nil,
+                    error: true, message: response.result.debugDescription) ; return }
+                let collection = JSON["collection"]
+                let songs = Mapper<Song>().mapArray(collection)
+                finished(result: songs, error: false, message: nil)
+            case .Failure:
+                print(response.result.error)
             }
+
         }
     }
 }

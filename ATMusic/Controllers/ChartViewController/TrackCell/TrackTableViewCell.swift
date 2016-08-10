@@ -34,20 +34,17 @@ class TrackTableViewCell: UITableViewCell {
     }
 
     // MARK: - public func
-    func configCellWithTrack(track: Track) {
-        if let imageUrlString = track.urlImage, imageUrl = NSURL(string: imageUrlString) {
-            print(imageUrlString)
+    func configCellWithTrack(song: Song) {
+        if let imageUrlString = song.urlImage, imageUrl = NSURL(string: imageUrlString) {
             avatar.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
         }
-        labelNameOfSong.text = track.songName
-        labelNameOfSinger.text = track.singerName
-        if let duration = track.duration {
-            if let durationInMS = Int(duration) { // convert to Int value
-                let durationInS = durationInMS / 10000 // from milisecond to second
-                let seconds = durationInS % 60
-                let hours = (durationInS / 60) % 60
-                labelDurationOfSong.text = "\(hours):\(seconds)"
-            }
+        labelNameOfSong.text = song.songName
+        labelNameOfSinger.text = song.singerName
+        if let duration = song.duration {
+            let durationInS = duration / 1000 // from milisecond to second
+            let seconds = durationInS % 60
+            let minutes = (durationInS / 60) % 60
+            labelDurationOfSong.text = "\(minutes):" + (seconds < 10 ? "0\(seconds)" : "\(seconds)")
         }
 
     }
