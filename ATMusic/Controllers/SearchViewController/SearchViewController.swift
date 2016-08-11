@@ -105,6 +105,10 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
         return cell
     }
+
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        hideKeyBoardAndCancelButton()
+    }
 }
 
 // MARK: - UISearchBarDelegate
