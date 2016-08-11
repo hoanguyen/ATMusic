@@ -10,11 +10,11 @@ import ObjectMapper
 
 class Song: Mappable {
     private enum Key: String {
-        case SongID = "track.id"
-        case Name = "track.title"
-        case Artist = "track.user.username"
-        case Image = "track.artwork_url"
-        case Time = "track.duration"
+        case SongID = "id"
+        case Name = "title"
+        case Artist = "user.username"
+        case Image = "artwork_url"
+        case Time = "duration"
     }
 
     var id: Int?
