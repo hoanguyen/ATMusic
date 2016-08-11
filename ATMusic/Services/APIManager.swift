@@ -91,6 +91,8 @@ class APIManager {
         return Static.instance!
     }
 
+    private var request: Alamofire.Request?
+
     func getTopSong(withlimit limit: Int, atOffset offset: Int, completionHandler finished: APIFinished) {
         Alamofire.request(Router.GetTopSong(limit: limit, offset: offset)).responseJSON { (response) in
             switch response.result {
@@ -114,7 +116,8 @@ class APIManager {
     }
 
     func searchSong(withKey key: String, limit: Int, atOffet offset: Int, completionHandler finished: APIFinished) {
-        Alamofire.request(Router.Search(key: key, limit: limit, offset: offset)).responseJSON { (response) in
+        request?.cancel()
+        request = Alamofire.request(Router.Search(key: key, limit: limit, offset: offset)).responseJSON { (response) in
             switch response.result {
             case .Success:
                 guard let JSON = response.result.value else { finished(result: nil,
@@ -138,7 +141,8 @@ class APIManager {
                 finished(result: songs, error: false, message: nil)
             case .Failure:
                 finished(result: nil, error: true, message: nil)
-        } }
+            }
+        }
     }
 
     func cancel() {

@@ -7,8 +7,10 @@
 //
 
 import ObjectMapper
+import RealmSwift
+import Realm
 
-class Song: Mappable {
+class Song: Object, Mappable {
     private enum Key: String {
         case SongID = "id"
         case Name = "title"
@@ -23,8 +25,8 @@ class Song: Mappable {
     var urlImage: String?
     var duration: Int?
 
-    required init?(_ map: Map) {
-
+    required convenience init?(_ map: Map) {
+        self.init()
     }
 
     func mapping(map: Map) {
