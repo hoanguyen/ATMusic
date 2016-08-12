@@ -8,9 +8,10 @@
 
 import UIKit
 
+let kAppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

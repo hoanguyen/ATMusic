@@ -8,26 +8,71 @@
 
 import UIKit
 import SwiftUtils
+import RealmSwift
+import Alamofire
+import ObjectMapper
+import SVPullToRefresh
 
-class ChartViewController: UIViewController {
+class ChartViewController: BaseVC {
     // MARK: - Private Outlet
     @IBOutlet private weak var tableView: UITableView!
-
+    private let limit = 10
+    private var offset = 0
+    private var songs: [Song]?
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
-        configUI()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 
-    // MARK: - private func
-    private func configUI() {
+    override func configUI() {
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.addPullToRefreshWithActionHandler {
+            self.refresh()
+        }
+        tableView.addInfiniteScrollingWithActionHandler {
+            self.loadMore()
+        }
+    }
+
+    override func loadData() {
+        songs = [Song]()
+        loadSong(whenRefresh: false)
+    }
+
+    // MARK: - private func
+    private func loadSong(whenRefresh isRefresh: Bool) {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        APIManager.sharedInstance.getTopSong(withlimit: limit, atOffset: offset) { (result, error, message) in
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            if error {
+                print("ERROR: \(message)")
+            } else {
+                if isRefresh {
+                    self.songs?.removeAll()
+                }
+                guard let result = result else { return }
+                self.songs?.appendContentsOf(result)
+                self.tableView.reloadData()
+            }
+            self.tableView.pullToRefreshView.stopAnimating()
+            self.tableView.infiniteScrollingView.stopAnimating()
+        }
+    }
+
+    private func refresh() {
+        offset = limit
+        loadSong(whenRefresh: true)
+    }
+
+    private func loadMore() {
+        offset += limit
+        loadSong(whenRefresh: false)
     }
 }
 
@@ -38,10 +83,12 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return songs?.count ?? 0
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeue(TrackTableViewCell)
+        let cell = tableView.dequeue(TrackTableViewCell)
+        cell.configCellWithTrack(tracks[indexPath.row])
+        return cell
     }
 }
