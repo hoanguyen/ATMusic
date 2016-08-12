@@ -14,7 +14,7 @@ class SearchViewController: BaseVC {
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - private property
-    private let searchBar = UISearchBar()
+    private weak var searchBar: UISearchBar? = nil
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
@@ -32,17 +32,15 @@ class SearchViewController: BaseVC {
         hideKeyBoardAndCancelButton()
     }
 
-    // MARK: - private func
     override func configUI() {
-        songs = [Song]()
-        searchBar.placeholder = "Search"
-        searchBar.delegate = self
-        searchBar.returnKeyType = .Done
+        searchBar?.placeholder = "Search"
+        searchBar?.delegate = self
+        searchBar?.returnKeyType = .Done
         navigationItem.titleView = searchBar
 
+        tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.registerNib(TrackTableViewCell)
         tableView.addPullToRefreshWithActionHandler {
             self.refresh()
         }
@@ -50,6 +48,13 @@ class SearchViewController: BaseVC {
             self.loadMore()
         }
     }
+
+    override func loadData() {
+        searchBar = UISearchBar()
+        songs = [Song]()
+    }
+
+    // MARK: - private func
 
     private func loadSong(whenRefresh isRefresh: Bool) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -64,9 +69,9 @@ class SearchViewController: BaseVC {
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
-                self.tableView.pullToRefreshView.stopAnimating()
-                self.tableView.infiniteScrollingView.stopAnimating()
             }
+            self.tableView.pullToRefreshView.stopAnimating()
+            self.tableView.infiniteScrollingView.stopAnimating()
         }
     }
 
@@ -82,8 +87,8 @@ class SearchViewController: BaseVC {
 
     private func hideKeyBoardAndCancelButton() {
         UIView.animateWithDuration(0.7) {
-            self.searchBar.resignFirstResponder()
-            self.searchBar.setShowsCancelButton(false, animated: true)
+            self.searchBar?.resignFirstResponder()
+            self.searchBar?.setShowsCancelButton(false, animated: true)
         }
     }
 }
