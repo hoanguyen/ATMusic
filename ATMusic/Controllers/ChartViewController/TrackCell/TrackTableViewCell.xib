@@ -17,8 +17,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="69"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="Slq-E1-nBv">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Slq-E1-nBv">
                         <rect key="frame" x="15" y="5" width="60" height="60"/>
+                        <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="Slq-E1-nBv" secondAttribute="height" multiplier="1:1" id="LO9-N2-nHn"/>
                         </constraints>
@@ -135,7 +136,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="avatar" width="173" height="173"/>
         <image name="more" width="15" height="15"/>
     </resources>
 </document>

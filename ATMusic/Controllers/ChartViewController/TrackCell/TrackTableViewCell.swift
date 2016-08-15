@@ -13,6 +13,14 @@ protocol TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int)
 }
 
+private extension Int {
+    func convertDuration() -> String {
+        let seconds = self / 1000 % 60
+        let minutes = (self / 1000 / 60) % 60
+        return "\(minutes):" + (seconds < 10 ? "0\(seconds)" : "\(seconds)")
+    }
+}
+
 class TrackTableViewCell: UITableViewCell {
     // MARK: - private Outlets
     @IBOutlet private weak var avatar: UIImageView!
@@ -41,22 +49,19 @@ class TrackTableViewCell: UITableViewCell {
     }
 
     // MARK: - public func
-    func configCellWithTrack(song: Song, index: Int) {
+    func configCellWithTrack(song: Song?, index: Int) {
         cellIndex = index
-        if let imageUrlString = song.urlImage, imageUrl = NSURL(string: imageUrlString) {
+        if let imageUrlString = song?.urlImage, imageUrl = NSURL(string: imageUrlString) {
             avatar.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
         }
-        labelNameOfSong.text = song.songName
-        labelNameOfSinger.text = song.singerName
-//        if let duration = song.duration {
-        let durationInS = song.duration / 1000 // from milisecond to second
-        let seconds = durationInS % 60
-        let minutes = (durationInS / 60) % 60
-        labelDurationOfSong.text = "\(minutes):" + (seconds < 10 ? "0\(seconds)" : "\(seconds)")
-//        }
+        labelNameOfSong.text = song?.songName
+        labelNameOfSinger.text = song?.singerName
+        labelDurationOfSong.text = song?.duration.convertDuration()
     }
-// MARK: - static func
+
+    // MARK: - static func
     static func cellHeight() -> CGFloat {
         return 70 * Ratio.width
     }
+
 }

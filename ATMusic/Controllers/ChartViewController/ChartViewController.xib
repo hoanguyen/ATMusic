@@ -28,6 +28,9 @@
                 <constraint firstAttribute="trailing" secondItem="Z81-vD-SBb" secondAttribute="trailing" id="iuT-lA-eCL"/>
                 <constraint firstAttribute="bottom" secondItem="Z81-vD-SBb" secondAttribute="bottom" id="kpa-lK-pop"/>
             </constraints>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+            <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-12.5" y="416.5"/>
         </view>

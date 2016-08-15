@@ -18,7 +18,8 @@ class BaseVC: ViewController {
         configUI()
     }
     func loadData() { }
-    func configUI() { }
+    func configUI() {
+    }
 
     // Show actionsheet to add song into playlist
     func addSongIntoPlaylist(song: Song?) {

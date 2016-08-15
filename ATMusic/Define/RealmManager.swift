@@ -29,6 +29,7 @@ class RealmManager {
     }
 
     class func getAllPlayList() -> Results<Playlist>? {
+        let realm = try? Realm()
         return realm?.objects(Playlist)
     }
 

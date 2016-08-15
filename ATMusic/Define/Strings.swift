@@ -32,4 +32,6 @@ class Strings {
     static let Failure = "Failure"
     static let AddNew = "New Playlist"
 
+    // default duration
+    static let DefaultDuration = "0"
 }

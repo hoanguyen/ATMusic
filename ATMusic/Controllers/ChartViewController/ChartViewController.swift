@@ -29,57 +29,47 @@ class ChartViewController: BaseVC {
     }
 
     override func configUI() {
+        super.configUI()
+        tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 49, right: 0)
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .None
         tableView.addPullToRefreshWithActionHandler {
-            self.refresh()
+            self.loadSong(isRefresh: true)
         }
         tableView.addInfiniteScrollingWithActionHandler {
-            self.loadMore()
+            self.loadSong(isRefresh: false)
         }
-        navigationController?.navigationBar.translucent = false
-        tabBarController?.tabBar.translucent = false
     }
 
     override func loadData() {
         songs = [Song]()
-        loadSong(whenRefresh: false)
+        loadSong(isRefresh: true)
     }
 
     // MARK: - private func
-    @objc private func addPlaylist(sender: NSNotification) {
-//        Alert.sharedInstance.
-    }
-
-    private func loadSong(whenRefresh isRefresh: Bool) {
+    private func loadSong(isRefresh isRefresh: Bool) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        if isRefresh {
+            offset = 0
+            songs?.removeAll()
+            tableView.reloadData()
+        } else {
+            offset += limit
+        }
         APIManager.sharedInstance.getTopSong(withlimit: limit, atOffset: offset) { (result, error, message) in
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if error {
                 print("ERROR: \(message)")
             } else {
-                if isRefresh {
-                    self.songs?.removeAll()
-                }
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
-                self.tableView.pullToRefreshView.stopAnimating()
-                self.tableView.infiniteScrollingView.stopAnimating()
             }
+            self.tableView.pullToRefreshView.stopAnimating()
+            self.tableView.infiniteScrollingView.stopAnimating()
         }
-    }
-
-    private func refresh() {
-        offset = 0
-        loadSong(whenRefresh: true)
-    }
-
-    private func loadMore() {
-        offset += limit
-        loadSong(whenRefresh: false)
     }
 }
 
@@ -95,10 +85,8 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        if let track = songs?[indexPath.row] {
-            cell.configCellWithTrack(track, index: indexPath.row)
-            cell.delegate = self
-        }
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.delegate = self
         return cell
     }
 

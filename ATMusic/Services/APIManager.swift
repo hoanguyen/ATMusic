@@ -144,10 +144,4 @@ class APIManager {
             }
         }
     }
-
-    func cancel() {
-        Manager.sharedInstance.session.getAllTasksWithCompletionHandler { (tasks) -> Void in
-            tasks.forEach({ $0.cancel() })
-        }
-    }
 }

@@ -85,9 +85,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
 
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeue(PlaylistCell.self, forIndexPath: indexPath)
-        if let playlist = playlists?[indexPath.row] {
-            cell.configCell(playlist: playlist)
-        }
+        cell.configCell(playlist: playlists?[indexPath.row])
         return cell
     }
 }
