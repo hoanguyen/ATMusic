@@ -86,7 +86,7 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs[indexPath.row])
+        cell.configCellWithTrack(songs?[indexPath.row])
         return cell
     }
 }
