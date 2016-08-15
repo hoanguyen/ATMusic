@@ -19,8 +19,6 @@ class ChartViewController: BaseVC {
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
-    private var refreshControl = UIRefreshControl()
-    private var indicator = UIActivityIndicatorView()
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +32,7 @@ class ChartViewController: BaseVC {
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.separatorStyle = .None
         tableView.addPullToRefreshWithActionHandler {
             self.refresh()
         }
@@ -50,6 +49,10 @@ class ChartViewController: BaseVC {
     }
 
     // MARK: - private func
+    @objc private func addPlaylist(sender: NSNotification) {
+//        Alert.sharedInstance.
+    }
+
     private func loadSong(whenRefresh isRefresh: Bool) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         APIManager.sharedInstance.getTopSong(withlimit: limit, atOffset: offset) { (result, error, message) in
@@ -70,7 +73,7 @@ class ChartViewController: BaseVC {
     }
 
     private func refresh() {
-        offset = limit
+        offset = 0
         loadSong(whenRefresh: true)
     }
 
@@ -93,8 +96,20 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
         if let track = songs?[indexPath.row] {
-            cell.configCellWithTrack(track)
+            cell.configCellWithTrack(track, index: indexPath.row)
+            cell.delegate = self
         }
         return cell
+    }
+
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+}
+
+// MARK: - TrackTableViewDelegate
+extension ChartViewController: TrackTableViewCellDelegate {
+    func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
+        addSongIntoPlaylist(songs?[cellIndex])
     }
 }

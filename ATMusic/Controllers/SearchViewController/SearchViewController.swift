@@ -38,6 +38,7 @@ class SearchViewController: BaseVC {
         searchBar.placeholder = "Search"
         searchBar.delegate = self
         searchBar.returnKeyType = .Done
+        tableView.separatorStyle = .None
         navigationItem.titleView = searchBar
 
         tableView.delegate = self
@@ -101,7 +102,8 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
         if let song = songs?[indexPath.row] {
-            cell.configCellWithTrack(song)
+            cell.configCellWithTrack(song, index: indexPath.row)
+            cell.delegate = self
         }
         return cell
     }
@@ -145,5 +147,11 @@ extension SearchViewController: UISearchBarDelegate {
             }
         }
     }
+}
 
+//MARK: - TrackTableViewCellDelegate
+extension SearchViewController: TrackTableViewCellDelegate {
+    func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
+        addSongIntoPlaylist(songs?[cellIndex])
+    }
 }

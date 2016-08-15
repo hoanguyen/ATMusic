@@ -18,4 +18,14 @@ class Playlist: Object {
         self.init()
         self.name = name
     }
+
+    func addSong(song: Song) -> Bool {
+        for item in songs {
+            if item.id == song.id {
+                return false
+            }
+        }
+        RealmManager.addSong(song, intoSongList: songs)
+        return true
+    }
 }
