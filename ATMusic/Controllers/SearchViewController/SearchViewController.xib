@@ -17,7 +17,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="LQZ-rS-UUg">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
             </subviews>
@@ -25,10 +25,11 @@
             <constraints>
                 <constraint firstItem="LQZ-rS-UUg" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="GjW-12-oDF"/>
                 <constraint firstAttribute="bottom" secondItem="LQZ-rS-UUg" secondAttribute="bottom" id="Yqx-og-pL2"/>
-                <constraint firstItem="LQZ-rS-UUg" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="hk3-Mf-KVu"/>
+                <constraint firstItem="LQZ-rS-UUg" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="hk3-Mf-KVu"/>
                 <constraint firstAttribute="trailing" secondItem="LQZ-rS-UUg" secondAttribute="trailing" id="m3e-9n-fR7"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="290.5" y="344.5"/>
         </view>
     </objects>
 </document>
