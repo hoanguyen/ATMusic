@@ -12,11 +12,9 @@ let kAppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    let kCache = NSCache()
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        kCache.countLimit = 50
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.rootViewController = BaseTabBarController()
         window?.makeKeyAndVisible()

@@ -23,4 +23,7 @@ class Strings {
     static let CreateQuestion = "Do you want to create a new playlist?"
     static let Delete = "Do you want to delete it?"
     static let Create = "Create new Playlist"
+
+    // default duration
+    static let DefaultDuration = "0"
 }

@@ -19,8 +19,6 @@ class ChartViewController: BaseVC {
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
-    private var refreshControl = UIRefreshControl()
-    private var indicator = UIActivityIndicatorView()
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,8 +38,6 @@ class ChartViewController: BaseVC {
         tableView.addInfiniteScrollingWithActionHandler {
             self.loadMore()
         }
-        navigationController?.navigationBar.translucent = false
-        tabBarController?.tabBar.translucent = false
     }
 
     override func loadData() {
@@ -63,9 +59,9 @@ class ChartViewController: BaseVC {
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
-                self.tableView.pullToRefreshView.stopAnimating()
-                self.tableView.infiniteScrollingView.stopAnimating()
             }
+            self.tableView.pullToRefreshView.stopAnimating()
+            self.tableView.infiniteScrollingView.stopAnimating()
         }
     }
 
@@ -92,9 +88,7 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        if let track = songs?[indexPath.row] {
-            cell.configCellWithTrack(track)
-        }
+        cell.configCellWithTrack(tracks[indexPath.row])
         return cell
     }
 }
