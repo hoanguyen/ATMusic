@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUtils
+import RealmSwift
 
 private extension CGFloat {
     static let topMargin = 12 * Ratio.width
@@ -18,7 +19,7 @@ private extension CGFloat {
     static let naviButtonHeight = 25
 }
 private extension Selector {
-    static let refreshCollectionView = #selector(PlaylistViewController.refreshCollectionView(_:))
+//    static let refreshCollectionView = #selector(PlaylistViewController.refreshCollectionView(_:))
     static let addNewTrack = #selector(PlaylistViewController.addNewTrack(_:))
 }
 
@@ -27,11 +28,7 @@ class PlaylistViewController: BaseVC {
     @IBOutlet private weak var collectionView: UICollectionView!
 
     // MARK: - private property
-    private var refreshControl = UIRefreshControl()
-    private var indicator = UIActivityIndicatorView()
-    // fake number cell will display
-    private var numberCellInCollectionView = 10
-
+    private lazy var playlists: Results<Playlist>? = RealmManager.getAllPlayList()
     // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,11 +54,7 @@ class PlaylistViewController: BaseVC {
         navigationController?.navigationBar.translucent = false
         tabBarController?.tabBar.translucent = false
         collectionView.backgroundColor = UIColor.clearColor()
-        // add the refresh control
-        addPullRefreshControl()
-        // add indicatior
-        addIndicatorToLoadMore()
-        // add button on navigation
+        // show add button
         addButtonCreatePlaylist()
     }
 
@@ -73,34 +66,11 @@ class PlaylistViewController: BaseVC {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
     }
 
-    private func addIndicatorToLoadMore() {
-        indicator.frame = CGRect(origin: CGPoint(x: 0, y: view.bounds.height - 10), size: CGSize(width: view.bounds.width, height: 10))
-        indicator.hidesWhenStopped = true
-        indicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        view.addSubview(indicator)
-    }
-
-    private func addPullRefreshControl() {
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refreshControl.addTarget(self, action: .refreshCollectionView, forControlEvents: .ValueChanged)
-        collectionView.addSubview(refreshControl)
-    }
-
     @objc private func addNewTrack(sender: UIButton) {
-
-    }
-
-    @objc private func refreshCollectionView(sender: AnyObject) {
-        print("refreshed")
-        numberCellInCollectionView = 10
-        collectionView.reloadData()
-        refreshControl.endRefreshing()
-    }
-
-    private func loadMore() {
-        numberCellInCollectionView += 2
-        collectionView.reloadData()
-        indicator.stopAnimating()
+        Alert.sharedInstance.inputTextAlert(self, title: Strings.Create, message: Strings.CreateQuestion) { (text) in
+            RealmManager.add(Playlist(name: text))
+            self.collectionView.reloadData()
+        }
     }
 }
 
@@ -110,24 +80,15 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
 
     // MARK: - UICollectionViewDataSource
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return numberCellInCollectionView
+        return playlists?.count ?? 0
     }
 
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeue(PlaylistCell.self, forIndexPath: indexPath)
-        cell.configData(index: indexPath.row)
-        return cell
-    }
-
-    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        // UITableView only moves in one direction, y axis
-        let currentOffset = scrollView.contentOffset.y
-        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        // Change 10.0 to adjust the distance from bottom
-        if maximumOffset - currentOffset <= 10.0 {
-            indicator.startAnimating()
-            self.loadMore()
+        if let playlist = playlists?[indexPath.row] {
+            cell.configCell(playlist: playlist)
         }
+        return cell
     }
 }
 

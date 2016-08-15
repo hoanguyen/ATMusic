@@ -16,6 +16,7 @@ class BaseVC: ViewController {
         configUI()
     }
     func loadData() { }
-    func configUI() { }
+    func configUI() {
+    }
 
 }
