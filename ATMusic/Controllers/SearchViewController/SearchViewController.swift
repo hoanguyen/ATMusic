@@ -14,7 +14,6 @@ class SearchViewController: BaseVC {
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - private property
-    private weak var searchBar: UISearchBar? = nil
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
@@ -33,39 +32,39 @@ class SearchViewController: BaseVC {
     }
 
     override func configUI() {
-        searchBar?.placeholder = "Search"
-        searchBar?.delegate = self
-        searchBar?.returnKeyType = .Done
-        navigationItem.titleView = searchBar
-
+        super.configUI()
+        tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 49, right: 0)
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.addPullToRefreshWithActionHandler {
-            self.refresh()
+            self.loadSong(isRefresh: true)
         }
         tableView.addInfiniteScrollingWithActionHandler {
-            self.loadMore()
+            self.loadSong(isRefresh: false)
         }
     }
 
     override func loadData() {
-        searchBar = UISearchBar()
         songs = [Song]()
     }
 
     // MARK: - private func
 
-    private func loadSong(whenRefresh isRefresh: Bool) {
+    private func loadSong(isRefresh isRefresh: Bool) {
+        if isRefresh {
+            songs?.removeAll()
+            tableView.reloadData()
+            offset = 0
+        } else {
+            offset += limit
+        }
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         APIManager.sharedInstance.searchSong(withKey: searchText, limit: limit, atOffet: offset) { (result, error, message) in
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if error {
                 print("ERROR: \(message)")
             } else {
-                if isRefresh {
-                    self.songs?.removeAll()
-                }
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
@@ -75,20 +74,8 @@ class SearchViewController: BaseVC {
         }
     }
 
-    private func refresh() {
-        offset = 0
-        loadSong(whenRefresh: true)
-    }
-
-    private func loadMore() {
-        offset += limit
-        loadSong(whenRefresh: false)
-    }
-
     private func hideKeyBoardAndCancelButton() {
         UIView.animateWithDuration(0.7) {
-            self.searchBar?.resignFirstResponder()
-            self.searchBar?.setShowsCancelButton(false, animated: true)
         }
     }
 }
@@ -105,9 +92,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        if let song = songs?[indexPath.row] {
-            cell.configCellWithTrack(song)
-        }
+        cell.configCellWithTrack(songs?[indexPath.row])
         return cell
     }
 
