@@ -16,6 +16,14 @@ DerivedData/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata/
+profile
+*.moved-aside
+DerivedData
+.idea/
+*.hmap
+*.xccheckout
+*.xcworkspace
+!default.xcworkspace
 
 ## Other
 *.moved-aside
