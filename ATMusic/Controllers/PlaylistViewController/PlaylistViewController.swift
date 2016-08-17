@@ -23,6 +23,7 @@ private extension Selector {
     static let addNewPlaylist = #selector(PlaylistViewController.addNewPlaylist(_:))
     static let detailPlaylist = #selector(PlaylistViewController.detailPlaylist(_:))
     static let deletePlaylist = #selector(PlaylistViewController.deletePlaylist(_:))
+    static let longPress = #selector(PlaylistViewController.handleTableViewLongGesture(_:))
 }
 
 private let kNoSong = 0
@@ -39,6 +40,8 @@ class PlaylistViewController: BaseVC {
     // MARK: - private property
     private lazy var playlists: Results<Playlist>? = RealmManager.getAllPlayList()
     private var currentPlaylist: Playlist?
+    private var snapShot: UIView?
+    private var sourceIndexPath: NSIndexPath?
     // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +56,7 @@ class PlaylistViewController: BaseVC {
         currentPlaylist = playlists?.first
         currentPlaylistName.text = playlists?.first?.name
         addNotification()
+        addLongPressGestureRecognizer()
     }
 
     override func configUI() {
@@ -74,7 +78,7 @@ class PlaylistViewController: BaseVC {
         tabBarController?.tabBar.translucent = false
         collectionView.backgroundColor = UIColor.clearColor()
         // show add button
-        addButtonCreatePlaylist()
+        reloadWhenTapToChangePlaylist()
     }
 
     // MARK: - private action
@@ -109,20 +113,122 @@ class PlaylistViewController: BaseVC {
 
     @objc private func deletePlaylist(sender: NSNotification) {
         if let index = sender.userInfo?[Strings.NotiCellIndex] as? Int {
-            let indexPath = NSIndexPath(forItem: index, inSection: 0)
             RealmManager.delete(playlists?[index])
-            collectionView.deleteItemsAtIndexPaths([indexPath])
-            collectionView.endEditing(true)
+            collectionView.reloadData()
             currentPlaylist = playlists?.first
-            tableView.reloadData()
+            reloadWhenTapToChangePlaylist()
             Alert.sharedInstance.showAlert(self, title: Strings.Success, message: Strings.DeletePlaylistSuccess)
         }
+    }
+
+    @objc private func handleTableViewLongGesture(sender: UILongPressGestureRecognizer) {
+        let state = sender.state
+        var location = sender.locationInView(tableView)
+        location.y = handleOverSizeOfTableView(location.y)
+        guard let indexPath = tableView.indexPathForRowAtPoint(location) else { return }
+        switch state {
+        case .Began:
+            sourceIndexPath = indexPath
+            guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return }
+            // Take a snapshot of the selected row using helper method.
+            snapShot = customSnapShotFromView(cell)
+            // Add the snapshot as subview, centered at cell's center...
+            var center = CGPoint(x: cell.center.x, y: cell.center.y)
+            snapShot?.center = center
+            snapShot?.alpha = 0.0
+            guard let snapShot = snapShot else { return }
+            tableView.addSubview(snapShot)
+            UIView.animateWithDuration(0.25, animations: {
+                // Offset for gesture location.
+                center.y = location.y
+                self.snapShot?.center = center
+                self.snapShot?.transform = CGAffineTransformMakeScale(1.05, 1.05)
+                self.snapShot?.alpha = 0.98
+                cell.alpha = 0.0
+                }, completion: { _ in
+                cell.hidden = true
+            })
+        case .Changed:
+            guard let snapShot = snapShot, let sourceIndexPathTmp = sourceIndexPath else { return }
+            var center = snapShot.center
+            center.y = location.y
+            snapShot.center = center
+
+            // Is destination valid and is it different from source?
+            if !indexPath.isEqual(sourceIndexPathTmp) {
+                // self made exchange method
+                exchangeObjectAtIndex(index: indexPath.row, withObjectAtIndex: sourceIndexPathTmp.row)
+                // ... move the rows.
+                tableView.moveRowAtIndexPath(sourceIndexPathTmp, toIndexPath: indexPath)
+                // ... and update source so it is in sync with UI changes.
+                sourceIndexPath = indexPath
+            }
+        default:
+            guard let sourceIndexPathTmp = sourceIndexPath else { return }
+            guard let cell = tableView.cellForRowAtIndexPath(sourceIndexPathTmp) else { return }
+            cell.hidden = false
+            cell.alpha = 0.0
+
+            UIView.animateWithDuration(0.25, animations: {
+                self.snapShot?.center = cell.center
+                self.snapShot?.transform = CGAffineTransformIdentity
+                self.snapShot?.alpha = 0.0
+
+                cell.alpha = 1.0
+                }, completion: { _ in
+                self.sourceIndexPath = nil
+                self.snapShot?.removeFromSuperview()
+                self.snapShot = nil
+            })
+        }
+    }
+
+    private func exchangeObjectAtIndex(index firstIndex: Int, withObjectAtIndex secondIndex: Int) {
+        if let songs = currentPlaylist?.songs where songs.count > 0 {
+            RealmManager.changePosition(songs, atFirst: firstIndex, withSecond: secondIndex)
+        }
+    }
+    func handleOverSizeOfTableView(position: CGFloat) -> CGFloat {
+        var positionTmp = position
+        if positionTmp <= 0 {
+            positionTmp = 1
+        } else if position >= tableView.contentSize.height {
+            positionTmp = tableView.contentSize.height - 1
+        }
+        return positionTmp
+    }
+
+    func customSnapShotFromView(inputView: UIView) -> UIImageView {
+        // Make an image from the input view.
+        UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0)
+        inputView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        let snapshot = UIImageView(image: image)
+        snapshot.layer.masksToBounds = false
+        snapshot.layer.cornerRadius = 0.0
+        snapshot.layer.shadowOffset = CGSize(width: -5.0, height: 0.0)
+        snapshot.layer.shadowRadius = 5.0
+        snapshot.layer.shadowOpacity = 0.4
+
+        return snapshot
     }
 
     private func addNotification() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .detailPlaylist, name: Strings.NotificationDetailPlaylist, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .deletePlaylist, name: Strings.NotificationDeletePlaylist, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
+    }
+
+    private func addLongPressGestureRecognizer() {
+        let longPress = UILongPressGestureRecognizer(target: self, action: .longPress)
+        tableView.addGestureRecognizer(longPress)
+    }
+
+    private func reloadWhenTapToChangePlaylist() {
+        currentPlaylistName.text = currentPlaylist?.name
+        tableView.reloadData()
     }
 
 }
@@ -172,8 +278,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
             return
         }
         currentPlaylist = playlists?[indexPath.row]
-        currentPlaylistName.text = playlists?[indexPath.row].name
-        tableView.reloadData()
+        reloadWhenTapToChangePlaylist()
     }
 }
 
@@ -190,6 +295,7 @@ extension PlaylistViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+//MARK: - TableView Delegate and DataSource
 extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return currentPlaylist?.songs.count ?? 0
