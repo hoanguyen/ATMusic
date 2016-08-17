@@ -69,7 +69,7 @@
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="MDV-u2-I1l" secondAttribute="height" multiplier="1:1" id="Mbd-Wx-KKQ"/>
                                         </constraints>
-                                        <state key="normal" backgroundImage="more"/>
+                                        <state key="normal" backgroundImage="MoreRed"/>
                                         <connections>
                                             <action selector="didTapButtonMore:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="xgd-3T-1VT"/>
                                         </connections>
@@ -128,14 +128,18 @@
             </constraints>
             <connections>
                 <outlet property="avatar" destination="Slq-E1-nBv" id="94U-Zb-ssQ"/>
+                <outlet property="contentView1" destination="mHL-aJ-w4I" id="LEw-JV-VUE"/>
                 <outlet property="labelDurationOfSong" destination="zqc-ab-IgJ" id="OzC-3p-95G"/>
                 <outlet property="labelNameOfSinger" destination="cNS-lx-0Yl" id="quS-tt-bC5"/>
                 <outlet property="labelNameOfSong" destination="Fna-Bv-UGh" id="3ZB-5F-B5T"/>
+                <outlet property="mainView" destination="rgg-BC-sJm" id="t0t-Le-TaI"/>
+                <outlet property="moreButton" destination="MDV-u2-I1l" id="PGI-UI-ClR"/>
+                <outlet property="moreView" destination="6Yi-qJ-zB1" id="I8B-Qy-cp0"/>
             </connections>
-            <point key="canvasLocation" x="326.5" y="436"/>
+            <point key="canvasLocation" x="554.5" y="446"/>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="more" width="15" height="15"/>
+        <image name="MoreRed" width="15" height="15"/>
     </resources>
 </document>

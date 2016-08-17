@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="EmptyCell" customModule="ATMusic" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="120" height="160"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="120" height="160"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NxR-Rs-3ym">
+                        <rect key="frame" x="45" y="65" width="30" height="30"/>
+                        <state key="normal" image="Plus-circle"/>
+                        <connections>
+                            <action selector="didTapAddButton:" destination="gTV-IL-0wX" eventType="touchUpInside" id="WoD-zg-eyv"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <color key="backgroundColor" red="0.69907852564102568" green="0.69907852564102568" blue="0.69907852564102568" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="NxR-Rs-3ym" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="EwO-da-B5n"/>
+                <constraint firstItem="NxR-Rs-3ym" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="u70-fZ-kXg"/>
+            </constraints>
+            <size key="customSize" width="50" height="127"/>
+            <point key="canvasLocation" x="587" y="301.5"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="Plus-circle" width="30" height="30"/>
+    </resources>
+</document>

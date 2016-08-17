@@ -12,17 +12,19 @@ class RealmManager {
 
     static let realm = try? Realm()
 
-    class func add(object: Object) {
+    class func add(object: Object?) {
         do {
             try realm?.write({
+                guard let object = object else { return }
                 realm?.add(object)
             })
         } catch { }
     }
 
-    class func delete(object: Object) {
+    class func delete(object: Object?) {
         do {
             try realm?.write({
+                guard let object = object else { return }
                 realm?.delete(object)
             })
         } catch { }

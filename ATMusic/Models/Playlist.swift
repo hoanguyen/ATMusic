@@ -11,7 +11,6 @@ import RealmSwift
 
 class Playlist: Object {
     dynamic var name: String!
-    dynamic var avatar: String?
     var songs = List<Song>()
 
     convenience init(name: String) {

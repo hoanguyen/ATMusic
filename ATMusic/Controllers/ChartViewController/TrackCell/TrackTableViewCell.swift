@@ -27,6 +27,10 @@ class TrackTableViewCell: UITableViewCell {
     @IBOutlet private weak var labelNameOfSong: UILabel!
     @IBOutlet private weak var labelNameOfSinger: UILabel!
     @IBOutlet private weak var labelDurationOfSong: UILabel!
+    @IBOutlet private weak var contentView1: UIView!
+    @IBOutlet private weak var moreView: UIView!
+    @IBOutlet private weak var mainView: UIView!
+    @IBOutlet private weak var moreButton: UIButton!
     // MARK: - public property
     var delegate: TrackTableViewCellDelegate!
     // MARK: - private property
@@ -57,6 +61,18 @@ class TrackTableViewCell: UITableViewCell {
         labelNameOfSong.text = song?.songName
         labelNameOfSinger.text = song?.singerName
         labelDurationOfSong.text = song?.duration.convertDuration()
+    }
+
+    func configUIColor() {
+        backgroundColor = Color.Violet73
+        contentView1.backgroundColor = Color.Violet73
+        moreView.backgroundColor = Color.Violet73
+        mainView.backgroundColor = Color.Violet73
+        moreButton.setBackgroundImage(UIImage(assetIdentifier: .MoreWhite), forState: .Normal)
+        moreButton.tintColor = UIColor.whiteColor()
+        labelNameOfSong.textColor = Color.White233
+        labelNameOfSinger.textColor = Color.White178
+        labelDurationOfSong.textColor = Color.White178
     }
 
     // MARK: - static func

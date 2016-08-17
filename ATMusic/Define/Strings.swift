@@ -31,7 +31,14 @@ class Strings {
     static let AddSongSuccess = "Add successful the song: "
     static let Failure = "Failure"
     static let AddNew = "New Playlist"
+    static let DeletePlaylistSuccess = "Delete playlist successful!"
 
-    // default duration
+    // MARK: - default duration
     static let DefaultDuration = "0"
+
+    // MARK: - NSNotification
+    static let NotificationDetailPlaylist = "detailPlaylist"
+    static let NotificationDeletePlaylist = "deletePlaylist"
+    static let NotiCellIndex = "cellIndex"
+    static let NotiAddPlaylist = "addPlaylist"
 }
