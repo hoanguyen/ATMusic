@@ -12,6 +12,8 @@ import SVPullToRefresh
 class SearchViewController: BaseVC {
     // MARK: - private outlet
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var searchBar: UISearchBar!
+    @IBOutlet weak var paddingTopConstraint: NSLayoutConstraint!
 
     // MARK: - private property
     private let limit = 10
@@ -27,22 +29,19 @@ class SearchViewController: BaseVC {
         super.didReceiveMemoryWarning()
     }
 
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        hideKeyBoardAndCancelButton()
-    }
-
     override func configUI() {
+        searchBar.returnKeyType = .Done
+        searchBar.autocorrectionType = .No
+        tableView.separatorStyle = .None
         super.configUI()
         tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 49, right: 0)
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.addPullToRefreshWithActionHandler {
-            self.loadSong(isRefresh: true)
-        }
         tableView.addInfiniteScrollingWithActionHandler {
-            self.loadSong(isRefresh: false)
+            self.loadSong()
         }
+        hideBottomBorder()
     }
 
     override func loadData() {
@@ -50,15 +49,12 @@ class SearchViewController: BaseVC {
     }
 
     // MARK: - private func
-
-    private func loadSong(isRefresh isRefresh: Bool) {
-        if isRefresh {
-            songs?.removeAll()
-            tableView.reloadData()
-            offset = 0
-        } else {
-            offset += limit
+    private func loadSong() {
+        if songs?.count == 0 {
+            self.tableView.infiniteScrollingView.stopAnimating()
+            return
         }
+        offset += limit
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         APIManager.sharedInstance.searchSong(withKey: searchText, limit: limit, atOffet: offset) { (result, error, message) in
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
@@ -69,13 +65,23 @@ class SearchViewController: BaseVC {
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
             }
-            self.tableView.pullToRefreshView.stopAnimating()
             self.tableView.infiniteScrollingView.stopAnimating()
         }
     }
 
     private func hideKeyBoardAndCancelButton() {
         UIView.animateWithDuration(0.7) {
+            self.searchBar.resignFirstResponder()
+            self.searchBar.showsCancelButton = false
+        }
+    }
+
+    private func hideBottomBorder() {
+        for view in (navigationController?.navigationBar.subviews.filter({
+            NSStringFromClass($0.dynamicType) == "_UINavigationBarBackground" }))! as [UIView] {
+                if let imageView = view.subviews.filter({ $0 is UIImageView }).first as? UIImageView {
+                    imageView.removeFromSuperview()
+                }
         }
     }
 }
@@ -92,12 +98,27 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs?[indexPath.row])
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.delegate = self
         return cell
     }
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
         hideKeyBoardAndCancelButton()
+    }
+
+    func scrollViewWillEndDragging(scrollView: UIScrollView,
+        withVelocity velocity: CGPoint,
+        targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseOut,
+                animations: {
+                    if velocity.y == 0 { return }
+                    let constant = velocity.y > 0 ? (64 - self.searchBar.bounds.height) : 64
+                    self.paddingTopConstraint.constant = constant
+                    self.searchBar.layoutIfNeeded()
+                },
+                completion: { finished in })
+
     }
 }
 
@@ -117,7 +138,6 @@ extension SearchViewController: UISearchBarDelegate {
     }
 
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        APIManager.sharedInstance.cancel()
         if searchText == "" {
             songs?.removeAll()
             tableView.reloadData()
@@ -135,5 +155,11 @@ extension SearchViewController: UISearchBarDelegate {
             }
         }
     }
+}
 
+//MARK: - TrackTableViewCellDelegate
+extension SearchViewController: TrackTableViewCellDelegate {
+    func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
+        addSongIntoPlaylist(songs?[cellIndex])
+    }
 }

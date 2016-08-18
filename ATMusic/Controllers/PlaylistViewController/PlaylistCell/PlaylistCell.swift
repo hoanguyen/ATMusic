@@ -28,8 +28,8 @@ class PlaylistCell: UICollectionViewCell {
         return CGSize(width: Ratio.width * 160, height: Ratio.width * 217)
     }
 
-    func configCell(playlist playlist: Playlist) {
-        namOfSongLabel.text = playlist.name
+    func configCell(playlist playlist: Playlist?) {
+        namOfSongLabel.text = playlist?.name
 //        avatar.image = UIImage(named: (playlist.avatar == nil ? UImage.Placeholder : playlist.avatar))
     }
 

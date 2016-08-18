@@ -9,6 +9,10 @@
 import UIKit
 import SDWebImage
 
+protocol TrackTableViewCellDelegate {
+    func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int)
+}
+
 private extension Int {
     func convertDuration() -> String {
         let seconds = self / 1000 % 60
@@ -23,7 +27,10 @@ class TrackTableViewCell: UITableViewCell {
     @IBOutlet private weak var labelNameOfSong: UILabel!
     @IBOutlet private weak var labelNameOfSinger: UILabel!
     @IBOutlet private weak var labelDurationOfSong: UILabel!
-
+    // MARK: - public property
+    var delegate: TrackTableViewCellDelegate!
+    // MARK: - private property
+    private var cellIndex = 0
     // MARK: - Override func
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -38,17 +45,18 @@ class TrackTableViewCell: UITableViewCell {
 
     // MARK: - Private Action
     @IBAction private func didTapButtonMore(sender: UIButton) {
-
+        delegate.didTapMoreButton(self, cellIndex: cellIndex)
     }
 
     // MARK: - public func
-    func configCellWithTrack(song: Song?) {
+    func configCellWithTrack(song: Song?, index: Int) {
+        cellIndex = index
         if let imageUrlString = song?.urlImage, imageUrl = NSURL(string: imageUrlString) {
             avatar.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
         }
         labelNameOfSong.text = song?.songName
         labelNameOfSinger.text = song?.singerName
-        labelDurationOfSong.text = song?.duration?.convertDuration()
+        labelDurationOfSong.text = song?.duration.convertDuration()
     }
 
     // MARK: - static func

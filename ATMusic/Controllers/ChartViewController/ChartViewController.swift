@@ -19,7 +19,6 @@ class ChartViewController: BaseVC {
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
-
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +34,7 @@ class ChartViewController: BaseVC {
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.separatorStyle = .None
         tableView.addPullToRefreshWithActionHandler {
             self.loadSong(isRefresh: true)
         }
@@ -71,7 +71,6 @@ class ChartViewController: BaseVC {
             self.tableView.infiniteScrollingView.stopAnimating()
         }
     }
-
 }
 
 //MARK: - extension of UITableViewDelegate and UITableViewDataSource
@@ -86,7 +85,19 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs?[indexPath.row])
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.delegate = self
         return cell
+    }
+
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+}
+
+// MARK: - TrackTableViewDelegate
+extension ChartViewController: TrackTableViewCellDelegate {
+    func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
+        addSongIntoPlaylist(songs?[cellIndex])
     }
 }

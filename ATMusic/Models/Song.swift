@@ -18,12 +18,17 @@ class Song: Object, Mappable {
         case Image = "artwork_url"
         case Time = "duration"
     }
+    dynamic var id = 0
+    dynamic var songName: String?
+    dynamic var singerName: String?
+    dynamic var urlImage: String?
+    dynamic var duration = 0
 
-    var id: Int?
-    var songName: String?
-    var singerName: String?
-    var urlImage: String?
-    var duration: Int?
+    let owner = LinkingObjects(fromType: Playlist.self, property: "songs")
+
+    override class func primaryKey() -> String? {
+        return "id"
+    }
 
     required convenience init?(_ map: Map) {
         self.init()

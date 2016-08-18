@@ -29,6 +29,19 @@ class RealmManager {
     }
 
     class func getAllPlayList() -> Results<Playlist>? {
+        let realm = try? Realm()
         return realm?.objects(Playlist)
+    }
+
+    class func addSong(song: Song, intoSongList songs: List<Song>) {
+        var tempSong = song // a temporary song to check that exists in db
+        if let object = realm?.objects(Song).filter("id = %@", song.id).first { // check exist
+            tempSong = object
+        }
+        do {
+            try realm?.write({
+                songs.append(tempSong)
+            })
+        } catch { }
     }
 }
