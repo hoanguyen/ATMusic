@@ -41,4 +41,6 @@ class Strings {
     static let NotificationDeletePlaylist = "deletePlaylist"
     static let NotiCellIndex = "cellIndex"
     static let NotiAddPlaylist = "addPlaylist"
+    static let NotiDeleteSong = "deleteSong"
+    static let NotiChangePlaylistName = "changeName"
 }

@@ -48,13 +48,27 @@ class RealmManager {
     }
 
     class func changePosition(songs: List<Song>, atFirst firstIndex: Int, withSecond secondIndex: Int) {
-        let song = songs[firstIndex]
         do {
             try realm?.write({
-                songs.removeAtIndex(firstIndex)
-                songs.insert(songs[secondIndex], atIndex: firstIndex)
-                songs.removeAtIndex(secondIndex)
-                songs.insert(song, atIndex: secondIndex)
+                let songTmp = songs[firstIndex]
+                songs[firstIndex] = songs[secondIndex]
+                songs[secondIndex] = songTmp
+            })
+        } catch { }
+    }
+
+    class func deleteSong(atIndex index: Int, inSongList songs: List<Song>) {
+        do {
+            try realm?.write({
+                songs.removeAtIndex(index)
+            })
+        } catch { }
+    }
+
+    class func updateNameForPlaylist(playlist: Playlist, withText text: String) {
+        do {
+            try realm?.write({
+                playlist.name = text
             })
         } catch { }
     }

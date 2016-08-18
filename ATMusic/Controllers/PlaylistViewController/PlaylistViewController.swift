@@ -24,6 +24,8 @@ private extension Selector {
     static let detailPlaylist = #selector(PlaylistViewController.detailPlaylist(_:))
     static let deletePlaylist = #selector(PlaylistViewController.deletePlaylist(_:))
     static let longPress = #selector(PlaylistViewController.handleTableViewLongGesture(_:))
+    static let deleteSong = #selector(PlaylistViewController.deleteSong(_:))
+    static let changeName = #selector(PlaylistViewController.changeName(_:))
 }
 
 private let kNoSong = 0
@@ -109,6 +111,16 @@ class PlaylistViewController: BaseVC {
             let detailPlaylistVC = DetailPlaylistViewController(playlist: playlists?[index], index: index)
             navigationController?.pushViewController(detailPlaylistVC, animated: true)
         }
+    }
+
+    @objc private func deleteSong(sender: NSNotification) {
+        if let indexPath = sender.userInfo?[Strings.NotiCellIndex] as? NSIndexPath {
+            reloadTableViewWhenDeleteSong(indexPath)
+        }
+    }
+
+    @objc private func changeName(sender: NSNotification) {
+        reloadWhenTapToChangePlaylist()
     }
 
     @objc private func deletePlaylist(sender: NSNotification) {
@@ -219,6 +231,8 @@ class PlaylistViewController: BaseVC {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .detailPlaylist, name: Strings.NotificationDetailPlaylist, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .deletePlaylist, name: Strings.NotificationDeletePlaylist, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: .deleteSong, name: Strings.NotiDeleteSong, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: .changeName, name: Strings.NotiChangePlaylistName, object: nil)
     }
 
     private func addLongPressGestureRecognizer() {
@@ -229,6 +243,13 @@ class PlaylistViewController: BaseVC {
     private func reloadWhenTapToChangePlaylist() {
         currentPlaylistName.text = currentPlaylist?.name
         tableView.reloadData()
+    }
+
+    private func reloadTableViewWhenDeleteSong(indexPath: NSIndexPath) {
+        tableView.beginUpdates()
+        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        self.collectionView.reloadData()
+        tableView.endUpdates()
     }
 
 }
@@ -309,5 +330,14 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeue(TrackTableViewCell)
         cell.configCellWithTrack(currentPlaylist?.songs[indexPath.row], index: indexPath.row)
         return cell
+    }
+
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .Normal, title: "Delete") { (action, indexPath) in
+            self.currentPlaylist?.deleteSongAtIndex(indexPath.row)
+            self.reloadTableViewWhenDeleteSong(indexPath)
+        }
+        deleteAction.backgroundColor = UIColor.redColor()
+        return [deleteAction]
     }
 }

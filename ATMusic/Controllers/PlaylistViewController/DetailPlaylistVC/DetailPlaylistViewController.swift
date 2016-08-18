@@ -7,18 +7,22 @@
 //
 
 import UIKit
+import SDWebImage
 
 class DetailPlaylistViewController: BaseVC {
 
     // MARK: - private outlet
     @IBOutlet private weak var avatar: UIImageView!
-    @IBOutlet private weak var playlistName: UILabel!
+    @IBOutlet private weak var playlistNameTF: UITextField!
+    @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var numberOfSong: UILabel!
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var editButton: UIButton!
 
     // MARK: - private property
     private var playlist: Playlist?
     private var index = 0
+    private var isEnable = false
 
     // MARK: - override func
     convenience init(playlist: Playlist?, index: Int) {
@@ -37,26 +41,60 @@ class DetailPlaylistViewController: BaseVC {
     }
 
     override func configUI() {
-        playlistName.text = playlist?.name
-        if let number = playlist?.songs.count {
-            numberOfSong.text = number > 1 ? "\(number) songs" : "\(number) song"
+        if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
+            avatar.sd_setImageWithURL(imageURL)
+        } else {
+            avatar.image = UIImage(assetIdentifier: .Placeholder)
         }
+        playlistNameTF.text = playlist?.name
+        playlistNameTF.enabled = false
+        setTextForNumberSongLabel()
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
+        playlistNameTF.delegate = self
     }
 
     // MARK: - private func
-    @IBAction func didTapEditButton(sender: UIButton) {
+    @IBAction private func didTapEditButton(sender: UIButton) {
+        isEnableForEdit()
     }
 
-    @IBAction func didTapDeleteButton(sender: UIButton) {
+    @IBAction private func didTapDeleteButton(sender: UIButton) {
         Alert.sharedInstance.showConfirmAlert(self, title: Strings.Warning, message: Strings.Delete) {
             self.navigationController?.popViewControllerAnimated(true)
             NSNotificationCenter.defaultCenter().postNotificationName(
                 Strings.NotificationDeletePlaylist,
                 object: nil,
                 userInfo: [Strings.NotiCellIndex: self.index])
+        }
+    }
+
+    private func isEnableForEdit() {
+        if isEnable {
+            if playlistNameTF.text != playlist?.name {
+                playlist?.setNameWithText(playlistNameTF.text)
+            }
+        }
+        isEnable = !isEnable
+        editButton.setTitle(getTextForButtonEdit(), forState: .Normal)
+        playlistNameTF.enabled = isEnable
+        playlistNameTF.becomeFirstResponder()
+        titleLabel.hidden = !isEnable
+    }
+
+    private func getTextForButtonEdit() -> String {
+        switch isEnable {
+        case true:
+            return "SAVE"
+        case false:
+            return "EDIT"
+        }
+    }
+
+    private func setTextForNumberSongLabel() {
+        if let number = playlist?.songs.count {
+            numberOfSong.text = number > 1 ? "\(number) songs" : "\(number) song"
         }
     }
 }
@@ -76,5 +114,29 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
         cell.configCellWithTrack(playlist?.songs[indexPath.row], index: indexPath.row)
         cell.configUIColor()
         return cell
+    }
+
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .Normal, title: "Delete") { (action, indexPath) in
+            tableView.beginUpdates()
+            self.playlist?.deleteSongAtIndex(indexPath.row)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            tableView.endUpdates()
+            self.setTextForNumberSongLabel()
+            NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiDeleteSong,
+                object: nil, userInfo: [Strings.NotiCellIndex: indexPath])
+        }
+        deleteAction.backgroundColor = UIColor.redColor()
+        return [deleteAction]
+    }
+}
+
+//MARK: - TextField Delegate
+extension DetailPlaylistViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        isEnableForEdit()
+        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiChangePlaylistName, object: nil, userInfo: nil)
+        return true
     }
 }
