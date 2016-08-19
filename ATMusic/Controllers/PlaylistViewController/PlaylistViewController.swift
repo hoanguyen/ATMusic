@@ -26,6 +26,7 @@ private extension Selector {
     static let longPress = #selector(PlaylistViewController.handleTableViewLongGesture(_:))
     static let deleteSong = #selector(PlaylistViewController.deleteSong(_:))
     static let changeName = #selector(PlaylistViewController.changeName(_:))
+    static let reloadWhenAddNew = #selector(PlaylistViewController.reloadCollectionView(_:))
 }
 
 private let kNoSong = 0
@@ -97,6 +98,12 @@ class PlaylistViewController: BaseVC {
         addButton.setBackgroundImage(UIImage(assetIdentifier: .Add), forState: .Normal)
         addButton.addTarget(self, action: .addNewPlaylist, forControlEvents: .TouchUpInside)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
+    }
+
+    @objc private func reloadCollectionView(sender: NSNotification) {
+        collectionView.reloadData()
+        currentPlaylist = playlists?.first
+        reloadWhenTapToChangePlaylist()
     }
 
     @objc private func addNewPlaylist(sender: UIButton) {
@@ -233,6 +240,7 @@ class PlaylistViewController: BaseVC {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .deleteSong, name: Strings.NotiDeleteSong, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: .changeName, name: Strings.NotiChangePlaylistName, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: .reloadWhenAddNew, name: Strings.NotiReloadWhenAddNew, object: nil)
     }
 
     private func addLongPressGestureRecognizer() {

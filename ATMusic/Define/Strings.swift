@@ -43,4 +43,5 @@ class Strings {
     static let NotiAddPlaylist = "addPlaylist"
     static let NotiDeleteSong = "deleteSong"
     static let NotiChangePlaylistName = "changeName"
+    static let NotiReloadWhenAddNew = "reloadWhenAddNew"
 }
