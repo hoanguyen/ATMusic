@@ -16,7 +16,6 @@ typealias APILoadSongFinished = (data: NSData) -> Void
 private let heightView: CGFloat = 55.0 * Ratio.width
 private let tabBarHeight: CGFloat = 49.0
 private let viewLocation: CGFloat = kScreenSize.height - heightView - tabBarHeight
-private let kDurationToRotate = 20.0
 
 class PlayerViewController: BaseVC {
     @IBOutlet private weak var imageAvatar: UIImageView!
@@ -28,10 +27,18 @@ class PlayerViewController: BaseVC {
     private var songData: NSData?
     private var player: AVPlayer?
     private var playing = true
+    private var currentRotateValue: CGFloat = 0.0
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        if playing {
+            startRotate()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -50,9 +57,10 @@ class PlayerViewController: BaseVC {
             imageAvatar.sd_setImageWithURL(urlImage)
         }
         imageAvatar.circle()
-        imageAvatar.rotateView(kDurationToRotate)
         songNameLabel.text = song?.songName
+        songNameLabel.font = HelveticaFont().Regular(14)
         singerNamelabel.text = song?.singerName
+        singerNamelabel.font = HelveticaFont().Regular(11)
         playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite25), forState: .Normal)
     }
 
@@ -67,6 +75,14 @@ class PlayerViewController: BaseVC {
                 playButton.enabled = true
             }
         }
+    }
+
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        stopRotate()
+        let detailPlayerVC = DetailPlayerViewController(song: song, playing: playing, player: player)
+        detailPlayerVC.delegate = self
+        presentViewController(detailPlayerVC, animated: true, completion: nil)
+//        navigationController?.pushViewController(detailPlayerVC, animated: true)
     }
 
     @objc private func playerDidFinishPlaying(sender: NSNotification) {
@@ -86,21 +102,41 @@ class PlayerViewController: BaseVC {
         }
     }
 
-    @IBAction func playSong(sender: UIButton) {
+    private func stopRotate() {
+        if let currentRotateValue = imageAvatar.stopRotateView() {
+            self.currentRotateValue = currentRotateValue
+        }
+    }
+
+    private func startRotate() {
+        imageAvatar.rotateView(startValue: currentRotateValue, duration: Number.kDurationToRotate)
+    }
+
+    private func changePlayStatus() {
         if playing {
             player?.pause()
             playButton.setBackgroundImage(UIImage(assetIdentifier: .PlayWhite25), forState: .Normal)
-            imageAvatar.stopRotateView()
+            stopRotate()
         } else {
             player?.play()
             playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite25), forState: .Normal)
-            imageAvatar.rotateView(kDurationToRotate)
+            startRotate()
         }
         playing = !playing
+    }
+
+    @IBAction private func playSong(sender: UIButton) {
+        changePlayStatus()
     }
 
     // MARK: - static func
     static func playerViewFrame() -> CGRect {
         return CGRect(origin: CGPoint(x: 0, y: viewLocation), size: CGSize(width: kScreenSize.width, height: heightView))
+    }
+}
+
+extension PlayerViewController: DetailPlayerDelegate {
+    func didTapPlayButton(viewController: UIViewController) {
+        changePlayStatus()
     }
 }

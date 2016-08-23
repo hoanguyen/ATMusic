@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 class View {
-    static func createPlayerBlurView() -> UIView {
-        let blurView = UIView(frame: PlayerViewController.playerViewFrame())
+    static func createPlayerBlurView(frame frame: CGRect) -> UIView {
+        let blurView = UIView(frame: frame)
         let blurEffect = UIBlurEffect(style: .Dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = blurView.bounds

@@ -12,3 +12,7 @@ import SwiftUtils
 struct Ratio {
     static let width: CGFloat = kScreenSize.width / DeviceType.Phone6.size.width
 }
+
+struct Number {
+    static let kDurationToRotate = 20.0
+}

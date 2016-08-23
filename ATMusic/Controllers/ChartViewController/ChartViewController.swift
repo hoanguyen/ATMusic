@@ -44,7 +44,7 @@ class ChartViewController: BaseVC {
         tableView.addInfiniteScrollingWithActionHandler {
             self.loadSong(isRefresh: false)
         }
-        blurView = View.createPlayerBlurView()
+        blurView = View.createPlayerBlurView(frame: PlayerViewController.playerViewFrame())
     }
 
     override func loadData() {
