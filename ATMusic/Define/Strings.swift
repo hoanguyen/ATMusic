@@ -11,6 +11,7 @@ import Foundation
 class Strings {
     // MARK: - APIService strings
     static let BaseURLString = "https://api-v2.soundcloud.com"
+    static let BaseDownloadString = "https://api.soundcloud.com"
     static let ClientID = "06c6514c5b35b1617db8c129f7420f02"
 
     // MARK: - Alert strings

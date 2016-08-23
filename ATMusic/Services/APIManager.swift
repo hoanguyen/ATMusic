@@ -11,6 +11,7 @@ import Alamofire
 import ObjectMapper
 
 typealias APIFinished = (result: [Song]?, error: Bool, message: String?) -> Void
+typealias APIDownloadFinished = (data: NSData?, error: Bool, message: String?) -> Void
 
 private enum MusicKind: String {
     case TOP = "top"
@@ -27,12 +28,15 @@ enum Router: URLRequestConvertible {
     static var OAuthToken: String?
     case GetTopSong(limit: Int, offset: Int)
     case Search(key: String, limit: Int, offset: Int)
+    case DownloadSong(id: Int)
 
     var method: Alamofire.Method {
         switch self {
         case .GetTopSong:
             return .GET
         case .Search:
+            return .GET
+        case .DownloadSong:
             return .GET
         }
     }
@@ -43,6 +47,8 @@ enum Router: URLRequestConvertible {
             return "/charts"
         case .Search:
             return "/search"
+        case .DownloadSong(let id):
+            return "tracks/\(id)/stream"
         }
     }
 
@@ -61,6 +67,8 @@ enum Router: URLRequestConvertible {
             parameters["limit"] = limit
             parameters["offset"] = offset
             return parameters
+        case .DownloadSong:
+            return parameters
         }
     }
 
@@ -70,11 +78,16 @@ enum Router: URLRequestConvertible {
         let URL = NSURL(string: Strings.BaseURLString)!
         let mutableURLRequest = NSMutableURLRequest(URL: URL.URLByAppendingPathComponent(path))
         mutableURLRequest.HTTPMethod = method.rawValue
+        let URLDownloadSong = NSURL(string: Strings.BaseDownloadString)!
+        let mutableURLRequestDownloadSong = NSMutableURLRequest(URL: URLDownloadSong.URLByAppendingPathComponent(path))
+        mutableURLRequestDownloadSong.HTTPMethod = method.rawValue
         switch self {
         case .GetTopSong:
             return Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: parameter).0
         case .Search:
             return Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: parameter).0
+        case .DownloadSong:
+            return Alamofire.ParameterEncoding.URL.encode(mutableURLRequestDownloadSong, parameters: self.parameter).0
         }
     }
 }
@@ -143,5 +156,12 @@ class APIManager {
                 finished(result: nil, error: true, message: nil)
             }
         }
+    }
+
+    func downloadSong(id: Int, completionHandler finished: APIDownloadFinished) {
+        request?.cancel()
+        request = Alamofire.request(Router.DownloadSong(id: id)).response(completionHandler: { (request, respone, data, error) in
+            finished(data: data, error: false, message: "")
+        })
     }
 }

@@ -103,6 +103,13 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let playerVC = PlayerViewController(song: songs?[indexPath.row])
+        presentViewController(playerVC, animated: true, completion: nil)
+//        navigationController?.pushViewController(playerVC, animated: true)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+
     func scrollViewDidScroll(scrollView: UIScrollView) {
         hideKeyBoardAndCancelButton()
     }

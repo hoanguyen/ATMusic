@@ -9,7 +9,8 @@ import UIKit
 
 extension UIImage {
     enum AssetIdentifier: String {
-        case Chart, Playlist, Add, Search, Play30, Search22, Shuffle25, MoreRed, MoreWhite, Delete, HolderTrack, HolderPlaylist, Placeholder
+        case Chart, Playlist, Add, Search, Play30, PlayRed25, PauseRed25, PauseWhite25, PlayWhite25, Search22,
+            Shuffle25, MoreRed, MoreWhite, Delete, HolderTrack, HolderPlaylist, Placeholder
     }
 
     convenience init!(assetIdentifier: AssetIdentifier) {

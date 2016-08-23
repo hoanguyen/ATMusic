@@ -19,6 +19,9 @@ class ChartViewController: BaseVC {
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
+    private var playerVC: PlayerViewController?
+    private var blurView: UIView?
+
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +44,7 @@ class ChartViewController: BaseVC {
         tableView.addInfiniteScrollingWithActionHandler {
             self.loadSong(isRefresh: false)
         }
+        blurView = View.createPlayerBlurView()
     }
 
     override func loadData() {
@@ -90,8 +94,24 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        removeChildView()
+        playerVC = PlayerViewController(song: songs?[indexPath.row])
+        if let blurView = blurView {
+            view.addSubview(blurView)
+        }
+        if let playerVC = playerVC {
+            self.addChildViewController(playerVC)
+            playerVC.view.frame = PlayerViewController.playerViewFrame()
+            view.addSubview(playerVC.view)
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+
+    private func removeChildView() {
+        playerVC?.view.removeFromSuperview()
+        playerVC?.removeFromParentViewController()
+        blurView?.removeFromSuperview()
     }
 }
 
