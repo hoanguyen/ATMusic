@@ -10,6 +10,7 @@ import UIKit
 import SDWebImage
 import AVFoundation
 import LNPopupController
+import MediaPlayer
 
 protocol DetailPlayerDelegate {
     func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int)
@@ -134,6 +135,34 @@ class DetailPlayerViewController: BaseVC {
             NSNotificationCenter.defaultCenter().addObserver(self,
                 selector: #selector(self.playerDidFinishPlaying(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
         }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+            UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+            setupArtWorkInfo()
+        } catch {
+            print(error)
+        }
+    }
+
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        super.remoteControlReceivedWithEvent(event)
+        if let rc = event?.subtype {
+
+            print("received remote control \(rc.rawValue)") // 101 = pause, 100 = play
+            switch rc {
+            case .RemoteControlTogglePlayPause:
+                print("pause")
+//            self.togglePlayPause()
+            case .RemoteControlPreviousTrack:
+                print("previous")
+//            self.playPrevTrack()
+            case .RemoteControlNextTrack:
+                print("next")
+//            self.playNextTrack()
+            default: break
+            }
+        }
     }
 
     private func dowloadSongWithID(id: Int?, complitionHandler finished: DowloadSongFinished) {
@@ -231,10 +260,16 @@ class DetailPlayerViewController: BaseVC {
 
 extension DetailPlayerViewController {
     // MARK: - private func
+    private func setupArtWorkInfo() {
+        let nowPlayingInfo: [String: AnyObject] = [MPMediaItemPropertyArtist: song?.songName ?? "", MPMediaItemPropertyTitle: song?.singerName ?? ""]
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
+    }
+
     private func reLoadDataAndUI() {
         loadData()
         setupImage()
         setupLabel()
+        setupArtWorkInfo()
     }
 
     private func updateCurrentPlayTime() {
