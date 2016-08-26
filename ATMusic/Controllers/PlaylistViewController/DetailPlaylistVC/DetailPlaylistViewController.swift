@@ -42,9 +42,7 @@ class DetailPlaylistViewController: BaseVC {
 
     override func configUI() {
         if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
-            avatar.sd_setImageWithURL(imageURL)
-        } else {
-            avatar.image = UIImage(assetIdentifier: .Placeholder)
+            avatar.sd_setImageWithURL(imageURL, placeholderImage: UIImage(assetIdentifier: .Placeholder))
         }
         playlistNameTF.text = playlist?.name
         playlistNameTF.enabled = false

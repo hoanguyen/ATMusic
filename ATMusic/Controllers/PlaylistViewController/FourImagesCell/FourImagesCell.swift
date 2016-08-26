@@ -37,7 +37,7 @@ class FourImagesCell: BaseCell {
         super.configIndexForCell(index)
         playlistNameLabel.text = playlist?.name
         if let songs = playlist?.songs {
-            numberSongLabel.text = "\(songs.count) songs"
+            numberSongLabel.text = "\(songs.count)" + Strings.Songs
         }
         if let imageUrlString = playlist?.songs[0].urlImage, imageUrl = NSURL(string: imageUrlString) {
             imageView1.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))

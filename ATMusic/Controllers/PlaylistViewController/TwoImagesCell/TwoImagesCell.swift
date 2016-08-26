@@ -22,7 +22,9 @@ class TwoImagesCell: BaseCell {
     func configCell(playlist playlist: Playlist?, index: Int) {
         super.configIndexForCell(index)
         playlistNameLabel.text = playlist?.name
-        numberSongLabel.text = "2 songs"
+        if let countSong = playlist?.songs.count {
+            numberSongLabel.text = "\(countSong)" + Strings.Songs
+        }
         guard let playlist = playlist else { return }
         if let imageUrlString = playlist.songs[0].urlImage, imageUrl = NSURL(string: imageUrlString) {
             imageView1.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
