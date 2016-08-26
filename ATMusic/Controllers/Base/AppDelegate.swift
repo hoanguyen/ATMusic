@@ -30,17 +30,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(application: UIApplication) {
+        print("applicationWillResignActive")
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
+        print("background")
+//        detailPlayerVC?.player?.play()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
+        print("applicationWillEnterForeground")
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
+        print("applicationDidBecomeActive")
     }
 
     func applicationWillTerminate(application: UIApplication) {
+        print("applicationWillTerminate")
     }
 }
