@@ -12,6 +12,7 @@ import RealmSwift
 import Alamofire
 import ObjectMapper
 import SVPullToRefresh
+import LNPopupController
 
 class ChartViewController: BaseVC {
     // MARK: - Private Outlet
@@ -20,7 +21,6 @@ class ChartViewController: BaseVC {
     private var offset = 0
     private var songs: [Song]?
     private var playerVC: PlayerViewController?
-    private var blurView: UIView?
 
     // MARK: - Override func
     override func viewDidLoad() {
@@ -44,7 +44,6 @@ class ChartViewController: BaseVC {
         tableView.addInfiniteScrollingWithActionHandler {
             self.loadSong(isRefresh: false)
         }
-        blurView = View.createPlayerBlurView(frame: PlayerViewController.playerViewFrame())
     }
 
     override func loadData() {
@@ -89,29 +88,25 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row, showButtonMore: true)
         cell.delegate = self
         return cell
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        removeChildView()
-        playerVC = PlayerViewController(song: songs?[indexPath.row])
-        if let blurView = blurView {
-            view.addSubview(blurView)
-        }
-        if let playerVC = playerVC {
-            self.addChildViewController(playerVC)
-            playerVC.view.frame = PlayerViewController.playerViewFrame()
-            view.addSubview(playerVC.view)
+        if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
+            kAppDelegate?.detailPlayerVC?.player = nil
+            kAppDelegate?.detailPlayerVC?.delegate = nil
+            kAppDelegate?.detailPlayerVC?.dataSource = nil
+            kAppDelegate?.detailPlayerVC = nil
+            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row], songIndex: indexPath.row)
+            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
+                detailPlayerVC.delegate = self
+                detailPlayerVC.dataSource = self
+                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+            }
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    }
-
-    private func removeChildView() {
-        playerVC?.view.removeFromSuperview()
-        playerVC?.removeFromParentViewController()
-        blurView?.removeFromSuperview()
     }
 }
 
@@ -119,5 +114,20 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 extension ChartViewController: TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
         addSongIntoPlaylist(songs?[cellIndex])
+    }
+}
+
+//MARK: - DetailPlayerDelegate
+extension ChartViewController: DetailPlayerDelegate, DetailPlayerDataSource {
+    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
+        print(index)
+    }
+
+    func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
+        return songs?.count
+    }
+
+    func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
+        return songs?[index]
     }
 }

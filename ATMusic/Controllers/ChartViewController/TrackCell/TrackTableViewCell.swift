@@ -32,15 +32,15 @@ class TrackTableViewCell: UITableViewCell {
     @IBOutlet private weak var mainView: UIView!
     @IBOutlet private weak var moreButton: UIButton!
     // MARK: - public property
-    var delegate: TrackTableViewCellDelegate!
+    var delegate: TrackTableViewCellDelegate?
     // MARK: - private property
     private var cellIndex = 0
     // MARK: - Override func
     override func awakeFromNib() {
         super.awakeFromNib()
-        labelNameOfSong.font = HelveticaFont().Regular(14)
-        labelNameOfSinger.font = HelveticaFont().Regular(11)
-        labelDurationOfSong.font = HelveticaFont().Regular(11)
+        labelNameOfSong.font = HelveticaFont().Regular(17)
+        labelNameOfSinger.font = HelveticaFont().Regular(13)
+        labelDurationOfSong.font = HelveticaFont().Regular(13)
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -49,11 +49,12 @@ class TrackTableViewCell: UITableViewCell {
 
     // MARK: - Private Action
     @IBAction private func didTapButtonMore(sender: UIButton) {
-        delegate.didTapMoreButton(self, cellIndex: cellIndex)
+        delegate?.didTapMoreButton(self, cellIndex: cellIndex)
     }
 
     // MARK: - public func
-    func configCellWithTrack(song: Song?, index: Int) {
+    func configCellWithTrack(song: Song?, index: Int, showButtonMore: Bool) {
+        moreButton.hidden = !showButtonMore
         cellIndex = index
         if let imageUrlString = song?.urlImage, imageUrl = NSURL(string: imageUrlString) {
             avatar.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))

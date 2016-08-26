@@ -15,8 +15,8 @@ class TwoImagesCell: BaseCell {
     @IBOutlet private weak var imageView2: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        playlistNameLabel.font = HelveticaFont().Regular(12)
-        playlistNameLabel.font = HelveticaFont().Regular(11)
+        playlistNameLabel.font = HelveticaFont().Regular(14)
+        numberSongLabel.font = HelveticaFont().Regular(12)
     }
 
     func configCell(playlist playlist: Playlist?, index: Int) {

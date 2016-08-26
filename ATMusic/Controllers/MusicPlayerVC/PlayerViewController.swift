@@ -18,16 +18,23 @@ private let tabBarHeight: CGFloat = 49.0
 private let viewLocation: CGFloat = kScreenSize.height - heightView - tabBarHeight
 
 class PlayerViewController: BaseVC {
+    // MARK: - private Outlets
     @IBOutlet private weak var imageAvatar: UIImageView!
     @IBOutlet private weak var songNameLabel: UILabel!
     @IBOutlet private weak var singerNamelabel: UILabel!
     @IBOutlet private weak var playButton: UIButton!
+    @IBOutlet private weak var contentView: UIView!
 
+    // MARK: - public property
+    // public player to delete by his parent
+    var player: AVPlayer? // player can not be delete by him self
+
+    // MARK: - private property
     private var song: Song?
     private var songData: NSData?
-    private var player: AVPlayer?
     private var playing = true
     private var currentRotateValue: CGFloat = 0.0
+    private var detailPlayerVC: DetailPlayerViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +46,7 @@ class PlayerViewController: BaseVC {
         if playing {
             startRotate()
         }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -48,6 +56,13 @@ class PlayerViewController: BaseVC {
     convenience init(song: Song?) {
         self.init()
         self.song = song
+    }
+
+    deinit {
+        song = nil
+        player?.pause()
+        player = nil
+        songData = nil
     }
 
     override func configUI() {
@@ -62,6 +77,9 @@ class PlayerViewController: BaseVC {
         singerNamelabel.text = song?.singerName
         singerNamelabel.font = HelveticaFont().Regular(11)
         playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite25), forState: .Normal)
+        view.addSubview(View.createPlayerBlurView(frame: view.bounds))
+        view.bringSubviewToFront(contentView)
+        playButton.enabled = true
     }
 
     override func loadData() {
@@ -72,17 +90,22 @@ class PlayerViewController: BaseVC {
                 player?.play()
                 NSNotificationCenter.defaultCenter().addObserver(self,
                     selector: #selector(playerDidFinishPlaying(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-                playButton.enabled = true
+
             }
         }
     }
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         stopRotate()
-        let detailPlayerVC = DetailPlayerViewController(song: song, playing: playing, player: player)
-        detailPlayerVC.delegate = self
-        presentViewController(detailPlayerVC, animated: true, completion: nil)
-//        navigationController?.pushViewController(detailPlayerVC, animated: true)
+        detailPlayerVC?.dismissViewControllerAnimated(true, completion: {
+            print("OK")
+        })
+        detailPlayerVC = nil
+//        detailPlayerVC = DetailPlayerViewController(song: song, playing: playing, player: player)
+//        detailPlayerVC?.delegate = self
+        if let detailPlayerVC = detailPlayerVC {
+            presentViewController(detailPlayerVC, animated: true, completion: nil)
+        }
     }
 
     @objc private func playerDidFinishPlaying(sender: NSNotification) {
@@ -90,6 +113,7 @@ class PlayerViewController: BaseVC {
         player?.play()
     }
 
+    // MARK: - private func
     private func dowloadSong(id: Int?, completionHandler finished: APILoadSongFinished) {
         guard let id = id else { return }
         APIManager.sharedInstance.downloadSong(id) { (data, error, message) in
@@ -135,8 +159,8 @@ class PlayerViewController: BaseVC {
     }
 }
 
-extension PlayerViewController: DetailPlayerDelegate {
-    func didTapPlayButton(viewController: UIViewController) {
-        changePlayStatus()
-    }
-}
+//extension PlayerViewController: DetailPlayerDelegate {
+//    func didTapPlayButton(viewController: UIViewController) {
+//        changePlayStatus()
+//    }
+//}

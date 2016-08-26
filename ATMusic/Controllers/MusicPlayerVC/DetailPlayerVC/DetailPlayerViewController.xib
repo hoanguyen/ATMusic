@@ -37,42 +37,10 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nBJ-84-y6H" userLabel="Navi View">
                             <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                            <subviews>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o80-NH-LiQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="63" height="44"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QKq-rB-7BC">
-                                            <rect key="frame" x="20" y="11" width="22" height="22"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="QKq-rB-7BC" secondAttribute="height" multiplier="1:1" id="UkG-m8-Ne9"/>
-                                            </constraints>
-                                            <state key="normal" backgroundImage="DownArrowWhite22"/>
-                                            <connections>
-                                                <action selector="tapToDismis:" destination="-1" eventType="touchUpInside" id="Hpp-bt-2Lh"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <constraints>
-                                        <constraint firstItem="QKq-rB-7BC" firstAttribute="centerX" secondItem="o80-NH-LiQ" secondAttribute="centerX" id="EMe-Ye-O93"/>
-                                        <constraint firstItem="QKq-rB-7BC" firstAttribute="centerY" secondItem="o80-NH-LiQ" secondAttribute="centerY" id="SC0-jq-Y1M"/>
-                                        <constraint firstItem="QKq-rB-7BC" firstAttribute="width" secondItem="o80-NH-LiQ" secondAttribute="width" multiplier="22/63" id="vzW-Hk-jFE"/>
-                                    </constraints>
-                                </view>
-                            </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstItem="o80-NH-LiQ" firstAttribute="leading" secondItem="nBJ-84-y6H" secondAttribute="leading" id="BEp-YA-SLA"/>
                                 <constraint firstAttribute="height" constant="44" id="N3e-oh-Erk"/>
-                                <constraint firstItem="o80-NH-LiQ" firstAttribute="height" secondItem="nBJ-84-y6H" secondAttribute="height" id="ZVd-LG-S8N"/>
-                                <constraint firstItem="o80-NH-LiQ" firstAttribute="centerY" secondItem="nBJ-84-y6H" secondAttribute="centerY" id="ggR-ZH-Six"/>
-                                <constraint firstAttribute="trailing" secondItem="o80-NH-LiQ" secondAttribute="trailing" id="irA-Ci-5q2"/>
                             </constraints>
-                            <variation key="default">
-                                <mask key="constraints">
-                                    <exclude reference="irA-Ci-5q2"/>
-                                </mask>
-                            </variation>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wOe-5F-cOb" userLabel="Show Image View">
                             <rect key="frame" x="0.0" y="64" width="375" height="333"/>
@@ -420,7 +388,6 @@
                         <constraint firstItem="nBJ-84-y6H" firstAttribute="width" secondItem="ynX-Fc-kAV" secondAttribute="width" id="OFn-iv-cIK"/>
                         <constraint firstAttribute="bottom" secondItem="Mku-if-8Q8" secondAttribute="bottom" id="S5I-5D-LiX"/>
                         <constraint firstItem="wOe-5F-cOb" firstAttribute="top" secondItem="nBJ-84-y6H" secondAttribute="bottom" id="VNR-df-4a4"/>
-                        <constraint firstItem="o80-NH-LiQ" firstAttribute="width" secondItem="aE2-n9-cri" secondAttribute="width" id="gtb-Wk-i0H"/>
                         <constraint firstItem="wOe-5F-cOb" firstAttribute="width" secondItem="ynX-Fc-kAV" secondAttribute="width" id="iBK-EG-dZp"/>
                         <constraint firstItem="nBJ-84-y6H" firstAttribute="top" secondItem="ynX-Fc-kAV" secondAttribute="top" constant="20" id="kjs-Mg-Dl8"/>
                         <constraint firstItem="Mku-if-8Q8" firstAttribute="width" secondItem="ynX-Fc-kAV" secondAttribute="width" id="paO-2f-Slz"/>
@@ -444,7 +411,6 @@
         </view>
     </objects>
     <resources>
-        <image name="DownArrowWhite22" width="22" height="22"/>
         <image name="MoreWhite30" width="30" height="30"/>
         <image name="NextWhite30" width="30" height="30"/>
         <image name="PauseWhite60" width="60" height="60"/>

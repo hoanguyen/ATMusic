@@ -45,4 +45,13 @@ class Strings {
     static let NotiDeleteSong = "deleteSong"
     static let NotiChangePlaylistName = "changeName"
     static let NotiReloadWhenAddNew = "reloadWhenAddNew"
+
+    // MARK: - static func
+    static func getMusicStreamURL(id: Int?) -> NSURL? {
+        guard let id = id else { return nil }
+        return NSURL(string: BaseDownloadString + "/tracks/\(id)/stream?client_id=" + ClientID)
+    }
+
+    static let DetailPlayerVC = "DetailPlayerViewController"
+    static let ImageSizeForThumbnail = "t500x500.jpg"
 }

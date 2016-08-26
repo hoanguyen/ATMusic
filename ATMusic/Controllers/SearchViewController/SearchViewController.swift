@@ -20,6 +20,8 @@ class SearchViewController: BaseVC {
     private var offset = 0
     private var songs: [Song]?
     private var searchText = ""
+    private var playerVC: PlayerViewController?
+    private var blurView: UIView?
     // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,6 +86,15 @@ class SearchViewController: BaseVC {
                 }
         }
     }
+
+    private func removeChildView() {
+        playerVC?.player = nil
+        playerVC?.view.removeFromSuperview()
+        playerVC?.removeFromParentViewController()
+        playerVC = nil
+        blurView?.removeFromSuperview()
+
+    }
 }
 
 // MARK: - UITableViewDelegate and DataSource
@@ -98,15 +109,24 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row, showButtonMore: true)
         cell.delegate = self
         return cell
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let playerVC = PlayerViewController(song: songs?[indexPath.row])
-        presentViewController(playerVC, animated: true, completion: nil)
-//        navigationController?.pushViewController(playerVC, animated: true)
+        if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
+            kAppDelegate?.detailPlayerVC?.player = nil
+            kAppDelegate?.detailPlayerVC?.delegate = nil
+            kAppDelegate?.detailPlayerVC?.dataSource = nil
+            kAppDelegate?.detailPlayerVC = nil
+            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row], songIndex: indexPath.row)
+            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
+                detailPlayerVC.delegate = self
+                detailPlayerVC.dataSource = self
+                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+            }
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 
@@ -168,5 +188,20 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
         addSongIntoPlaylist(songs?[cellIndex])
+    }
+}
+
+//MARK: - DetailPlayerDelegate
+extension SearchViewController: DetailPlayerDelegate, DetailPlayerDataSource {
+    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
+        print(index)
+    }
+
+    func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
+        return songs?.count
+    }
+
+    func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
+        return songs?[index]
     }
 }

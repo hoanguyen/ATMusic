@@ -82,6 +82,7 @@ class PlaylistViewController: BaseVC {
         collectionView.backgroundColor = UIColor.clearColor()
         // show add button
         reloadWhenTapToChangePlaylist()
+        currentPlaylistName.font = HelveticaFont().Regular(15)
     }
 
     // MARK: - private action
@@ -336,7 +337,7 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(currentPlaylist?.songs[indexPath.row], index: indexPath.row)
+        cell.configCellWithTrack(currentPlaylist?.songs[indexPath.row], index: indexPath.row, showButtonMore: false)
         return cell
     }
 
@@ -347,5 +348,36 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
         }
         deleteAction.backgroundColor = UIColor.redColor()
         return [deleteAction]
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if kAppDelegate?.detailPlayerVC?.currentSongID() != currentPlaylist?.songs[indexPath.row].id {
+            kAppDelegate?.detailPlayerVC?.player = nil
+            kAppDelegate?.detailPlayerVC?.delegate = nil
+            kAppDelegate?.detailPlayerVC?.dataSource = nil
+            kAppDelegate?.detailPlayerVC = nil
+            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: currentPlaylist?.songs[indexPath.row], songIndex: indexPath.row)
+            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
+                detailPlayerVC.delegate = self
+                detailPlayerVC.dataSource = self
+                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+            }
+        }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+}
+
+//MARK: - DetailPlayerDelegate
+extension PlaylistViewController: DetailPlayerDelegate, DetailPlayerDataSource {
+    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
+        print(index)
+    }
+
+    func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
+        return currentPlaylist?.songs.count
+    }
+
+    func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
+        return currentPlaylist?.songs[index]
     }
 }
