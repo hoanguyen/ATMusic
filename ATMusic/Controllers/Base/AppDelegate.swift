@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVFoundation
+import MediaPlayer
 
 let kAppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
 
@@ -25,28 +27,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.rootViewController = BaseTabBarController()
         detailPlayerVC = DetailPlayerViewController(song: nil, songIndex: -1) // null init
+        setupRemoteControl()
         window?.makeKeyAndVisible()
         return true
     }
 
+    private func setupRemoteControl() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+            UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+            detailPlayerVC?.becomeFirstResponder()
+        } catch {
+            print(error)
+        }
+    }
+
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if let rc = event?.subtype {
+            switch rc {
+            case .RemoteControlPlay:
+                detailPlayerVC?.play()
+            case .RemoteControlPause:
+                detailPlayerVC?.pause()
+            case .RemoteControlPreviousTrack:
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPNowPlayingInfoPropertyPlaybackRate: 0.0]
+                detailPlayerVC?.previousSong()
+            case .RemoteControlNextTrack:
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPNowPlayingInfoPropertyPlaybackRate: 0.0]
+                detailPlayerVC?.nextSong()
+            default: break
+            }
+        }
+    }
+
     func applicationWillResignActive(application: UIApplication) {
-        print("applicationWillResignActive")
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
-        print("background")
-//        detailPlayerVC?.player?.play()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-        print("applicationWillEnterForeground")
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
-        print("applicationDidBecomeActive")
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        print("applicationWillTerminate")
     }
 }

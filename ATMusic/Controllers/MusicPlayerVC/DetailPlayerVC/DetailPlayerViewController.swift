@@ -25,6 +25,7 @@ private extension Selector {
     static let tapToPause = #selector(DetailPlayerViewController.didTapPlayButton(_:))
     static let nextSong = #selector(DetailPlayerViewController.nextSong(_:))
     static let prevSong = #selector(DetailPlayerViewController.previousSong(_:))
+    static let playFinish = #selector(DetailPlayerViewController.playerDidFinishPlaying(_:))
 }
 
 typealias DowloadSongFinished = (player: AVPlayer) -> Void
@@ -60,6 +61,7 @@ class DetailPlayerViewController: BaseVC {
     private var isShuffle = false
     private var timeObserver: AnyObject?
     private var maxValue: Float = 0.0
+    private var currentTime: Float = 0.0
 
     private var songTitle: String = "" {
         didSet {
@@ -131,47 +133,10 @@ class DetailPlayerViewController: BaseVC {
         super.loadData()
         dowloadSongWithID(song?.id) { (player) in
             self.player = player
-            self.player?.play()
-            NSNotificationCenter.defaultCenter().addObserver(self,
-                selector: #selector(self.playerDidFinishPlaying(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-        }
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
-            try AVAudioSession.sharedInstance().setActive(true)
-            UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-            setupArtWorkInfo()
-        } catch {
-            print(error)
+            self.play()
+            self.setupDuration()
         }
     }
-
-    override func remoteControlReceivedWithEvent(event: UIEvent?) {
-        super.remoteControlReceivedWithEvent(event)
-        if let rc = event?.subtype {
-
-            print("received remote control \(rc.rawValue)") // 101 = pause, 100 = play
-            switch rc {
-            case .RemoteControlTogglePlayPause:
-                print("pause")
-//            self.togglePlayPause()
-            case .RemoteControlPreviousTrack:
-                print("previous")
-//            self.playPrevTrack()
-            case .RemoteControlNextTrack:
-                print("next")
-//            self.playNextTrack()
-            default: break
-            }
-        }
-    }
-
-    private func dowloadSongWithID(id: Int?, complitionHandler finished: DowloadSongFinished) {
-        if let url = Strings.getMusicStreamURL(id) {
-            let player = AVPlayer(URL: url)
-            finished(player: player)
-        }
-    }
-
     override func configUI() {
         if let _ = song {
             super.configUI()
@@ -192,6 +157,54 @@ class DetailPlayerViewController: BaseVC {
     // MARK: - public func
     func currentSongID() -> Int? {
         return song?.id
+    }
+
+    func pause() {
+        playing = false
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
+        player?.pause()
+        playBarButtonItem?.image = UIImage(assetIdentifier: .PlayBlack)
+        playButton.setBackgroundImage(UIImage(assetIdentifier: .PlayWhite60), forState: .Normal)
+        stopRotate()
+    }
+
+    func play() {
+        playing = true
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: .playFinish, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
+        player?.play()
+        playBarButtonItem?.image = UIImage(assetIdentifier: .PauseBlack)
+        playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite60), forState: .Normal)
+        startRotate()
+    }
+
+    func nextSong() -> Bool {
+        if isShuffle {
+            randomSong()
+            return true
+        } else {
+            if let songCount = dataSource?.numberOfSongInPlaylist(self) where (songIndex + 1) < songCount {
+                songIndex = songIndex + 1
+                player?.cancelPendingPrerolls()
+                reloadSong()
+                return true
+            }
+        }
+        return false
+    }
+
+    func previousSong() {
+        if isShuffle {
+            randomSong()
+        } else {
+            if let songCount = dataSource?.numberOfSongInPlaylist(self) where (songIndex - 1) >= 0 {
+                if songIndex > songCount {
+                    songIndex = songCount
+                }
+                songIndex = songIndex - 1
+                reloadSong()
+            }
+        }
     }
 
     // MARK: - private Actions
@@ -244,25 +257,34 @@ class DetailPlayerViewController: BaseVC {
     }
 
     @IBAction @objc private func previousSong(sender: UIButton) {
-        if isShuffle {
-            randomSong()
-        } else {
-            if let songCount = dataSource?.numberOfSongInPlaylist(self) where (songIndex - 1) >= 0 {
-                if songIndex > songCount {
-                    songIndex = songCount
-                }
-                songIndex = songIndex - 1
-                reloadSong()
-            }
-        }
+        previousSong()
     }
 }
 
 extension DetailPlayerViewController {
     // MARK: - private func
     private func setupArtWorkInfo() {
-        let nowPlayingInfo: [String: AnyObject] = [MPMediaItemPropertyArtist: song?.songName ?? "", MPMediaItemPropertyTitle: song?.singerName ?? ""]
+        let nowPlayingInfo: [String: AnyObject] = [
+            MPMediaItemPropertyArtist: song?.singerName ?? "",
+            MPMediaItemPropertyTitle: song?.songName ?? "",
+            MPMediaItemPropertyPlaybackDuration: maxValue,
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: currentTime,
+            MPNowPlayingInfoPropertyPlaybackRate: playing ? 1.0 : 0.0
+        ]
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
+    }
+
+    private func dowloadSongWithID(id: Int?, complitionHandler finished: DowloadSongFinished) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            if let url = Strings.getMusicStreamURL(id) {
+                let player = AVPlayer(URL: url)
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                dispatch_async(dispatch_get_main_queue()) {
+                    finished(player: player)
+                }
+            }
+        }
     }
 
     private func reLoadDataAndUI() {
@@ -275,7 +297,7 @@ extension DetailPlayerViewController {
     private func updateCurrentPlayTime() {
         let interval = CMTimeMakeWithSeconds(1.0, 1)
         timeObserver = player?.addPeriodicTimeObserverForInterval(interval, queue: nil, usingBlock: { (cmTime) in
-            self.updateChangeForLabel(self.convertToSecond(cmTime), maxValue: self.maxValue)
+            self.updateChangeForLabel(self.convertToSecond(cmTime))
         })
     }
 
@@ -284,11 +306,22 @@ extension DetailPlayerViewController {
         return Int(CMTimeGetSeconds(time))
     }
 
-    private func updateChangeForLabel(second: Int?, maxValue: Float) {
+    private func updateChangeForLabel(second: Int?) {
         guard let second = second else { return }
+        currentTime = Float(second)
         self.currentDurationLabel.text = second.convertToMinute()
-        self.durationSlider.value = Float(second)
-        popupItem.progress = Float(second) / maxValue
+        self.durationSlider.value = currentTime
+        setupArtWorkInfo()
+        popupItem.progress = currentTime / maxValue
+    }
+
+    private func setupDuration() {
+        if let duration = player?.currentItem?.asset.duration, let second = convertToSecond(duration) {
+            restDurationLabel.text = second.convertToMinute()
+            durationSlider.maximumValue = Float(second)
+            maxValue = Float(second)
+        }
+        updateCurrentPlayTime()
     }
 
     private func setupLabel() {
@@ -298,12 +331,6 @@ extension DetailPlayerViewController {
         singerNameLabel.font = HelveticaFont().Regular(11)
         restDurationLabel.font = HelveticaFont().Regular(11)
         songNameLabel.font = HelveticaFont().Regular(15)
-        if let duration = player?.currentItem?.asset.duration, let second = convertToSecond(duration) {
-            restDurationLabel.text = second.convertToMinute()
-            durationSlider.maximumValue = Float(second)
-            maxValue = Float(second)
-        }
-        updateCurrentPlayTime()
     }
 
     private func setupImage() {
@@ -356,31 +383,15 @@ extension DetailPlayerViewController {
         imageAvatar.rotateView(startValue: currentRotateValue, duration: Number.kDurationToRotate)
     }
 
-    private func pause() {
-        playing = false
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-        player?.pause()
-        playBarButtonItem?.image = UIImage(assetIdentifier: .PlayBlack)
-        playButton.setBackgroundImage(UIImage(assetIdentifier: .PlayWhite60), forState: .Normal)
-        stopRotate()
-    }
-
-    private func play() {
-        playing = true
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(self.playerDidFinishPlaying(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-        player?.play()
-        playBarButtonItem?.image = UIImage(assetIdentifier: .PauseBlack)
-        playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite60), forState: .Normal)
-        startRotate()
-    }
-
     private func reloadSong() {
         if let timeObserver = timeObserver {
             player?.removeTimeObserver(timeObserver)
         }
+        pause()
         durationSlider.value = 0
         currentDurationLabel.text = "0:00"
+        maxValue = 0
+        currentTime = 0
         if let song = dataSource?.songInPlaylist(self, atIndex: (songIndex)) {
             player = nil
             self.song = song
@@ -396,25 +407,10 @@ extension DetailPlayerViewController {
 
     }
 
-    private func nextSong() -> Bool {
-        if isShuffle {
-            randomSong()
-            return true
-        } else {
-            if let songCount = dataSource?.numberOfSongInPlaylist(self) where (songIndex + 1) < songCount {
-                songIndex = songIndex + 1
-                player?.cancelPendingPrerolls()
-                reloadSong()
-                return true
-            }
-        }
-        return false
-    }
-
     @objc private func playerDidFinishPlaying(sender: NSNotification) {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
         player?.seekToTime(kCMTimeZero)
-        player?.pause()
+        pause()
         if let repeating = kAppDelegate?.repeating {
             switch repeating {
             case .None:
@@ -425,6 +421,7 @@ extension DetailPlayerViewController {
             case .One:
                 player?.seekToTime(kCMTimeZero)
                 player?.play()
+                play()
             case .All:
                 if !nextSong() {
                     songIndex = -1

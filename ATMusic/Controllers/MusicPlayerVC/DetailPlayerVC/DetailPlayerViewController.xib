@@ -69,7 +69,7 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qYk-fP-cEK">
                                             <rect key="frame" x="63" y="0.0" width="250" height="50"/>
                                             <subviews>
-                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="jpW-kA-yyK">
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="jpW-kA-yyK">
                                                     <rect key="frame" x="-2" y="10" width="254" height="31"/>
                                                     <rect key="contentStretch" x="0.0" y="0.0" width="0.10000000000000001" height="0.10000000000000001"/>
                                                     <color key="minimumTrackTintColor" red="0.88235294119999996" green="0.16078431369999999" blue="0.21960784310000001" alpha="1" colorSpace="calibratedRGB"/>
