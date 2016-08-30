@@ -18,7 +18,13 @@ class ImageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupImage()
+
+        if let imageURLString = urlImage, url = NSURL(string: imageURLString) {
+            imageAvatar.sd_setImageWithURL(url)
+        }
+        imageAvatar.circle()
+        imageAvatar.clipsToBounds = true
+        startRotate()
     }
 
     override func viewDidLayoutSubviews() {
@@ -53,22 +59,6 @@ class ImageViewController: UIViewController {
 
     func startRotate() {
         imageAvatar.rotateView(startValue: currentRotateValue, duration: Number.kDurationToRotate)
-    }
-
-    func reloadImage(urlImage: String?) {
-        self.urlImage = urlImage
-        setupImage()
-    }
-
-    // MARK: - private func
-    private func setupImage() {
-        if let imageURLString = urlImage, url = NSURL(string: imageURLString) {
-            imageAvatar.sd_setImageWithURL(url)
-        }
-        currentRotateValue = 0.0
-        imageAvatar.circle()
-        imageAvatar.clipsToBounds = true
-        startRotate()
     }
 
 }

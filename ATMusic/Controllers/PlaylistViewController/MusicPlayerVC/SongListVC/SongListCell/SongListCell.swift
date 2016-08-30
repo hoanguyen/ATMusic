@@ -30,16 +30,8 @@ class SongListCell: UITableViewCell {
         songNameLabel.font = HelveticaFont().Regular(14)
         indexLabel.font = HelveticaFont().Regular(14)
         indexLabel.text = "\(self.index + 1)"
-        reloadWithPlayingIndex(playingAtIndex)
-    }
-
-    func reloadWithPlayingIndex(index: Int) {
-        self.playing = isPlay(index)
-        highlighForCell()
-    }
-
-    private func highlighForCell() {
-        playingButton.hidden = !playing // show or hide play button
+        playing = isPlay(playingAtIndex)
+        playingButton.hidden = !playing
         songNameLabel.textColor = playing ? .redColor() : .whiteColor()
         indexLabel.textColor = playing ? .redColor() : .whiteColor()
     }

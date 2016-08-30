@@ -212,10 +212,6 @@ class DetailPlayerViewController: BaseVC {
         }
     }
 
-    func reloadWhenChangeSongList() {
-        songListVC?.reloadWhenChangeSongList(dataSource?.songNameList(self))
-    }
-
     // MARK: - private Actions
     @IBAction private func didTapButtonMore(sender: UIButton) {
     }
@@ -254,23 +250,19 @@ class DetailPlayerViewController: BaseVC {
     }
 
     @IBAction @objc private func didTapPlayButton(sender: UIButton) {
-        playing ? pause() : play()
+        if playing {
+            pause()
+        } else {
+            play()
+        }
     }
 
     @IBAction @objc private func nextSong(sender: UIButton) {
-        sender.enabled = false
         nextSong()
-        Helper.delay(second: 1) {
-            sender.enabled = true
-        }
     }
 
     @IBAction @objc private func previousSong(sender: UIButton) {
-        sender.enabled = false
         previousSong()
-        Helper.delay(second: 1) {
-            sender.enabled = true
-        }
     }
 
     @IBAction @objc private func showSongList(sender: UIButton) {
@@ -285,7 +277,6 @@ extension DetailPlayerViewController {
         } else {
             songListVC = SongListViewController.vc()
         }
-        songListVC?.delegate = self
         imageVC = ImageViewController(imageURLString: song?.urlImage)
         lyricVC = LyricViewController.vc()
         let arrayVC = [songListVC!, imageVC!, lyricVC!]
@@ -337,7 +328,6 @@ extension DetailPlayerViewController {
         setupImage()
         setupLabel()
         setupArtWorkInfo()
-        songListVC?.highlightCellAtIndex(songIndex)
     }
 
     private func updateCurrentPlayTime() {
@@ -414,7 +404,6 @@ extension DetailPlayerViewController {
         if let imageURLString = song?.urlImage, let url = NSURL(string: imageURLString) {
             backgroundImageView.sd_setImageWithURL(url)
         }
-        imageVC?.reloadImage(song?.urlImage)
     }
 
     private func reloadSong() {
@@ -435,13 +424,8 @@ extension DetailPlayerViewController {
 
     private func randomSong() {
         if let count = dataSource?.numberOfSongInPlaylist(self) {
-            let rand = Int(arc4random_uniform(UInt32(count)))
-            if songIndex != rand {
-                songIndex = rand
-                reloadSong()
-                return
-            }
-            randomSong()
+            songIndex = Int(arc4random_uniform(UInt32(count)))
+            reloadSong()
         }
 
     }
@@ -469,13 +453,5 @@ extension DetailPlayerViewController {
             }
         }
         updateCurrentPlayTime()
-    }
-}
-
-extension DetailPlayerViewController: SongListControllerDelegate {
-    func songListViewController(viewController: UIViewController, didSelectSongAtIndex index: Int) {
-        songIndex = index
-        player?.cancelPendingPrerolls()
-        reloadSong()
     }
 }

@@ -8,18 +8,9 @@
 
 import UIKit
 
-protocol SongListControllerDelegate {
-    func songListViewController(viewController: UIViewController, didSelectSongAtIndex index: Int)
-}
-
 class SongListViewController: BaseVC {
-    // MARK: - private outlet
-    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
 
-    // MARK: - public property
-    var delegate: SongListControllerDelegate?
-
-    // MARK: - private property
     private var songNameList: [String]?
     private var playingIndex: Int = -1
     override func viewDidLoad() {
@@ -46,27 +37,6 @@ class SongListViewController: BaseVC {
     override func loadData() {
         super.loadData()
     }
-
-    func highlightCellAtIndex(index: Int) {
-        let newIndextPath = NSIndexPath(forRow: index, inSection: 0)
-        let oldIndextPath = NSIndexPath(forRow: playingIndex, inSection: 0)
-        tableView.beginUpdates()
-        let oldCell = tableView.cellForRowAtIndexPath(oldIndextPath) as? SongListCell
-        let newCell = tableView.cellForRowAtIndexPath(newIndextPath) as? SongListCell
-        oldCell?.reloadWithPlayingIndex(index)
-        newCell?.reloadWithPlayingIndex(index)
-        tableView.scrollToRowAtIndexPath(newIndextPath, atScrollPosition: .Middle, animated: true)
-        tableView.endUpdates()
-        playingIndex = index
-    }
-
-    func reloadWhenChangeSongList(songNameList: [String]?) {
-        self.songNameList = songNameList
-        tableView.reloadData()
-    }
-
-    // MARK: - private fuc
-
 }
 
 extension SongListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -82,10 +52,5 @@ extension SongListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeue(SongListCell)
         cell.configCellWithname(songNameList?[indexPath.row], andIndex: indexPath.row, playingAtIndex: playingIndex)
         return cell
-    }
-
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        delegate?.songListViewController(self, didSelectSongAtIndex: indexPath.row)
     }
 }

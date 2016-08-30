@@ -20,7 +20,6 @@ class ChartViewController: BaseVC {
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
-    private var playerVC: PlayerViewController?
 
     // MARK: - Override func
     override func viewDidLoad() {
@@ -69,6 +68,7 @@ class ChartViewController: BaseVC {
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
+                kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList()
             }
             self.tableView.pullToRefreshView.stopAnimating()
             self.tableView.infiniteScrollingView.stopAnimating()
