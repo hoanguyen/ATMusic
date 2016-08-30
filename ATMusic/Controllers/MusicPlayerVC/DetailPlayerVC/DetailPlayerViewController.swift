@@ -11,6 +11,7 @@ import SDWebImage
 import AVFoundation
 import LNPopupController
 import MediaPlayer
+import PageMenu
 
 protocol DetailPlayerDelegate {
     func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int)
@@ -19,6 +20,7 @@ protocol DetailPlayerDelegate {
 protocol DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int?
     func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song?
+    func songNameList(viewController: UIViewController) -> [String]?
 }
 
 private extension Selector {
@@ -26,6 +28,7 @@ private extension Selector {
     static let nextSong = #selector(DetailPlayerViewController.nextSong(_:))
     static let prevSong = #selector(DetailPlayerViewController.previousSong(_:))
     static let playFinish = #selector(DetailPlayerViewController.playerDidFinishPlaying(_:))
+    static let showSongList = #selector(DetailPlayerViewController.showSongList(_:))
 }
 
 typealias DowloadSongFinished = (player: AVPlayer) -> Void
@@ -44,6 +47,7 @@ class DetailPlayerViewController: BaseVC {
     @IBOutlet private weak var playButton: UIButton!
     @IBOutlet private weak var backgroundImageView: UIImageView!
     @IBOutlet private weak var mainView: UIView!
+    @IBOutlet private weak var contentView: UIView!
 
     // MARK: - public property
     var delegate: DetailPlayerDelegate?
@@ -58,10 +62,15 @@ class DetailPlayerViewController: BaseVC {
     private var playBarButtonItem: UIBarButtonItem?
     private var prevBarButtonItem: UIBarButtonItem?
     private var nextBarButtonItem: UIBarButtonItem?
+    private var moreBatButtonItem: UIBarButtonItem?
     private var isShuffle = false
     private var timeObserver: AnyObject?
     private var maxValue: Float = 0.0
     private var currentTime: Float = 0.0
+    private var pageMenu: CAPSPageMenu?
+    private var songListVC: SongListViewController?
+    private var imageVC: ImageViewController?
+    private var lyricVC: LyricViewController?
 
     private var songTitle: String = "" {
         didSet {
@@ -101,13 +110,6 @@ class DetailPlayerViewController: BaseVC {
         imageAvatar.circle()
     }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        if playing {
-            startRotate()
-        }
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -115,17 +117,18 @@ class DetailPlayerViewController: BaseVC {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         playBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .PauseBlack), style: .Plain, target: self, action: .tapToPause)
+        moreBatButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .MoreRed), style: .Plain, target: self, action: .showSongList)
 
         if UIScreen.mainScreen().traitCollection.userInterfaceIdiom == .Phone {
             prevBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .PrevBlack), style: .Plain, target: self, action: .prevSong)
             nextBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .NextBlack), style: .Plain, target: self, action: .nextSong)
 
             popupItem.leftBarButtonItems = [prevBarButtonItem!, playBarButtonItem!, nextBarButtonItem!]
+            popupItem.rightBarButtonItems = [moreBatButtonItem!]
             popupBar?.leftBarButtonItems?.startIndex
-//            popupBar?.popupItem?.rightBarButtonItems = [list, more]
         } else {
             popupItem.leftBarButtonItems = [playBarButtonItem!]
-//            popupItem.rightBarButtonItems = [more]
+            popupItem.rightBarButtonItems = [moreBatButtonItem!]
         }
     }
 
@@ -137,6 +140,7 @@ class DetailPlayerViewController: BaseVC {
             self.setupDuration()
         }
     }
+
     override func configUI() {
         if let _ = song {
             super.configUI()
@@ -148,10 +152,11 @@ class DetailPlayerViewController: BaseVC {
             view.tintColor = UIColor.whiteColor()
             setupLabel()
         }
+        setupPageMenu()
     }
 
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .Default
+        return .LightContent
     }
 
     // MARK: - public func
@@ -165,7 +170,7 @@ class DetailPlayerViewController: BaseVC {
         player?.pause()
         playBarButtonItem?.image = UIImage(assetIdentifier: .PlayBlack)
         playButton.setBackgroundImage(UIImage(assetIdentifier: .PlayWhite60), forState: .Normal)
-        stopRotate()
+        imageVC?.stopRotate()
     }
 
     func play() {
@@ -175,7 +180,7 @@ class DetailPlayerViewController: BaseVC {
         player?.play()
         playBarButtonItem?.image = UIImage(assetIdentifier: .PauseBlack)
         playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite60), forState: .Normal)
-        startRotate()
+        imageVC?.startRotate()
     }
 
     func nextSong() -> Bool {
@@ -259,10 +264,41 @@ class DetailPlayerViewController: BaseVC {
     @IBAction @objc private func previousSong(sender: UIButton) {
         previousSong()
     }
+
+    @IBAction @objc private func showSongList(sender: UIButton) {
+    }
 }
 
+//MARK: - DetailPlayVC extension for private func
 extension DetailPlayerViewController {
-    // MARK: - private func
+    private func setupPageMenu() {
+        if let songNameList = dataSource?.songNameList(self) {
+            songListVC = SongListViewController(songNameList: songNameList, playAtIndex: songIndex)
+        } else {
+            songListVC = SongListViewController.vc()
+        }
+        imageVC = ImageViewController(imageURLString: song?.urlImage)
+        lyricVC = LyricViewController.vc()
+        let arrayVC = [songListVC!, imageVC!, lyricVC!]
+        let parameters: [CAPSPageMenuOption] = [
+                .MenuItemSeparatorWidth(4.3),
+                .UseMenuLikeSegmentedControl(true),
+                .MenuItemSeparatorPercentageHeight(0.1),
+                .HideTopMenuBar(true)
+        ]
+        pageMenu = CAPSPageMenu(viewControllers: arrayVC,
+            frame: contentView.bounds,
+            pageMenuOptions: parameters)
+        if let view = pageMenu?.view {
+            contentView.addSubview(view)
+        }
+        pageMenu?.moveToPage(1) // focus on ImageVC
+        pageMenu?.view.backgroundColor = UIColor.clearColor()
+        songListVC?.view.backgroundColor = UIColor.clearColor()
+        imageVC?.view.backgroundColor = UIColor.clearColor()
+        lyricVC?.view.backgroundColor = UIColor.clearColor()
+    }
+
     private func setupArtWorkInfo() {
         let nowPlayingInfo: [String: AnyObject] = [
             MPMediaItemPropertyArtist: song?.singerName ?? "",
@@ -367,20 +403,7 @@ extension DetailPlayerViewController {
     private func setupAvatarImage() {
         if let imageURLString = song?.urlImage, let url = NSURL(string: imageURLString) {
             backgroundImageView.sd_setImageWithURL(url)
-            imageAvatar.sd_setImageWithURL(url)
-            imageAvatar.circle()
-            imageAvatar.clipsToBounds = true
         }
-    }
-
-    private func stopRotate() {
-        if let currentRotateValue = imageAvatar.stopRotateView() {
-            self.currentRotateValue = currentRotateValue
-        }
-    }
-
-    private func startRotate() {
-        imageAvatar.rotateView(startValue: currentRotateValue, duration: Number.kDurationToRotate)
     }
 
     private func reloadSong() {

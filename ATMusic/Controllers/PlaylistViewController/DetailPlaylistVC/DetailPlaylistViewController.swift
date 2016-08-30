@@ -170,4 +170,8 @@ extension DetailPlaylistViewController: DetailPlayerDelegate, DetailPlayerDataSo
     func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
         return playlist?.songs[index]
     }
+
+    func songNameList(viewController: UIViewController) -> [String]? {
+        return nil
+    }
 }

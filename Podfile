@@ -8,4 +8,5 @@ target 'ATMusic' do
   pod 'RealmSwift'
   pod 'SDWebImage'
   pod 'SVPullToRefresh'
+  pod 'PageMenu'
 end

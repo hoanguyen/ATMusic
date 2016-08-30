@@ -130,4 +130,15 @@ extension ChartViewController: DetailPlayerDelegate, DetailPlayerDataSource {
     func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
         return songs?[index]
     }
+
+    func songNameList(viewController: UIViewController) -> [String]? {
+        var songNameList = [String]()
+        guard let songs = songs else { return nil }
+        for item in songs {
+            if let name = item.songName {
+                songNameList.append(name)
+            }
+        }
+        return songNameList
+    }
 }
