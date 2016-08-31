@@ -61,7 +61,7 @@ class DetailPlaylistViewController: BaseVC {
     @IBAction private func didTapDeleteButton(sender: UIButton) {
         Alert.sharedInstance.showConfirmAlert(self, title: Strings.Warning, message: Strings.Delete) {
             self.navigationController?.popViewControllerAnimated(true)
-            NSNotificationCenter.defaultCenter().postNotificationName(
+           kNotification.postNotificationName(
                 Strings.NotificationDeletePlaylist,
                 object: nil,
                 userInfo: [Strings.NotiCellIndex: self.index])
@@ -69,10 +69,8 @@ class DetailPlaylistViewController: BaseVC {
     }
 
     private func isEnableForEdit() {
-        if isEnable {
-            if playlistNameTF.text != playlist?.name {
-                playlist?.setNameWithText(playlistNameTF.text)
-            }
+        if isEnable && playlistNameTF.text != playlist?.name {
+            playlist?.setNameWithText(playlistNameTF.text)
         }
         isEnable = !isEnable
         editButton.setTitle(getTextForButtonEdit(), forState: .Normal)
@@ -82,12 +80,7 @@ class DetailPlaylistViewController: BaseVC {
     }
 
     private func getTextForButtonEdit() -> String {
-        switch isEnable {
-        case true:
-            return "SAVE"
-        case false:
-            return "EDIT"
-        }
+        return isEnable ? "SAVE" : "EDIT"
     }
 
     private func setTextForNumberSongLabel() {
@@ -121,7 +114,7 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             tableView.endUpdates()
             self.setTextForNumberSongLabel()
-            NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiDeleteSong,
+           kNotification.postNotificationName(Strings.NotiDeleteSong,
                 object: nil, userInfo: [Strings.NotiCellIndex: indexPath])
         }
         deleteAction.backgroundColor = UIColor.redColor()
@@ -134,7 +127,7 @@ extension DetailPlaylistViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         isEnableForEdit()
-        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiChangePlaylistName, object: nil, userInfo: nil)
+       kNotification.postNotificationName(Strings.NotiChangePlaylistName, object: nil, userInfo: nil)
         return true
     }
 }

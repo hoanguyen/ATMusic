@@ -9,13 +9,6 @@
 import UIKit
 import SDWebImage
 
-private extension CGFloat {
-    static let topMargin = 0 * Ratio.width
-    static let leftMargin = 0 * Ratio.width
-    static let bottomMargin = 0 * Ratio.width
-    static let rightMargin = 0 * Ratio.width
-}
-
 class FourImagesCell: BaseCell {
     // MARK: - private outlet
     @IBOutlet private weak var playlistNameLabel: UILabel!

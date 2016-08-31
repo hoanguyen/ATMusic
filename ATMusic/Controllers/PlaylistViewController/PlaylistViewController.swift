@@ -11,12 +11,9 @@ import SwiftUtils
 import RealmSwift
 
 private extension CGFloat {
-    static let topMargin = 0 * Ratio.width
-    static let leftMargin = 0 * Ratio.width
-    static let bottomMargin = 0 * Ratio.width
-    static let rightMargin = 0 * Ratio.width
-    static let naviButtonWidth = 25
-    static let naviButtonHeight = 25
+    static let zeroMargin: CGFloat = 0
+    static let leftMargin = 5 * Ratio.width
+    static let rightMargin = 5 * Ratio.width
 }
 
 private extension Selector {
@@ -28,11 +25,6 @@ private extension Selector {
     static let changeName = #selector(PlaylistViewController.changeName(_:))
     static let reloadWhenAddNew = #selector(PlaylistViewController.reloadCollectionView(_:))
 }
-
-private let kNoSong = 0
-private let kOneSong = 1
-private let kTwoSongs = 2
-private let kThreeSongs = 3
 
 class PlaylistViewController: BaseVC {
     // MARK: - private outlet
@@ -60,6 +52,7 @@ class PlaylistViewController: BaseVC {
         currentPlaylistName.text = playlists?.first?.name
         addNotification()
         addLongPressGestureRecognizer()
+        reloadWhenTapToChangePlaylist()
     }
 
     override func configUI() {
@@ -79,9 +72,7 @@ class PlaylistViewController: BaseVC {
         // set translucent for tabbar and navigationbar
         navigationController?.navigationBar.translucent = false
         tabBarController?.tabBar.translucent = false
-        collectionView.backgroundColor = UIColor.clearColor()
-        // show add button
-        reloadWhenTapToChangePlaylist()
+        collectionView.backgroundColor = .clearColor()
     }
 
     // MARK: - private action
@@ -92,14 +83,6 @@ class PlaylistViewController: BaseVC {
     }
 
     // MARK: - private func
-    private func addButtonCreatePlaylist() {
-        let addButton = UIButton(type: .Custom)
-        addButton.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: CGFloat.naviButtonWidth, height: CGFloat.naviButtonHeight))
-        addButton.setBackgroundImage(UIImage(assetIdentifier: .Add), forState: .Normal)
-        addButton.addTarget(self, action: .addNewPlaylist, forControlEvents: .TouchUpInside)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
-    }
-
     @objc private func reloadCollectionView(sender: NSNotification) {
         collectionView.reloadData()
         currentPlaylist = playlists?.first
@@ -152,21 +135,24 @@ class PlaylistViewController: BaseVC {
             // Take a snapshot of the selected row using helper method.
             snapShot = customSnapShotFromView(cell)
             // Add the snapshot as subview, centered at cell's center...
-            var center = CGPoint(x: cell.center.x, y: cell.center.y)
+            var center = cell.center
             snapShot?.center = center
             snapShot?.alpha = 0.0
             guard let snapShot = snapShot else { return }
             tableView.addSubview(snapShot)
-            UIView.animateWithDuration(0.25, animations: {
-                // Offset for gesture location.
-                center.y = location.y
-                self.snapShot?.center = center
-                self.snapShot?.transform = CGAffineTransformMakeScale(1.05, 1.05)
-                self.snapShot?.alpha = 0.98
-                cell.alpha = 0.0
-                }, completion: { _ in
-                cell.hidden = true
-            })
+            UIView.animateWithDuration(0.25,
+                animations: {
+                    // Offset for gesture location.
+                    center.y = location.y
+                    self.snapShot?.center = center
+                    self.snapShot?.transform = CGAffineTransformMakeScale(1.05, 1.05)
+                    self.snapShot?.alpha = 0.98
+                    cell.alpha = 0.0
+                },
+                completion: { _ in
+                    cell.hidden = true
+                }
+            )
         case .Changed:
             guard let snapShot = snapShot, let sourceIndexPathTmp = sourceIndexPath else { return }
             var center = snapShot.center
@@ -188,17 +174,19 @@ class PlaylistViewController: BaseVC {
             cell.hidden = false
             cell.alpha = 0.0
 
-            UIView.animateWithDuration(0.25, animations: {
-                self.snapShot?.center = cell.center
-                self.snapShot?.transform = CGAffineTransformIdentity
-                self.snapShot?.alpha = 0.0
-
-                cell.alpha = 1.0
-                }, completion: { _ in
-                self.sourceIndexPath = nil
-                self.snapShot?.removeFromSuperview()
-                self.snapShot = nil
-            })
+            UIView.animateWithDuration(0.25,
+                animations: {
+                    self.snapShot?.center = cell.center
+                    self.snapShot?.transform = CGAffineTransformIdentity
+                    self.snapShot?.alpha = 0.0
+                    cell.alpha = 1.0
+                },
+                completion: { _ in
+                    self.sourceIndexPath = nil
+                    self.snapShot?.removeFromSuperview()
+                    self.snapShot = nil
+                }
+            )
         }
     }
 
@@ -207,6 +195,7 @@ class PlaylistViewController: BaseVC {
             RealmManager.changePosition(songs, atFirst: firstIndex, withSecond: secondIndex)
         }
     }
+
     func handleOverSizeOfTableView(position: CGFloat) -> CGFloat {
         var positionTmp = position
         if positionTmp <= 0 {
@@ -223,24 +212,20 @@ class PlaylistViewController: BaseVC {
         inputView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
         let snapshot = UIImageView(image: image)
         snapshot.layer.masksToBounds = false
         snapshot.layer.cornerRadius = 0.0
-        snapshot.layer.shadowOffset = CGSize(width: -5.0, height: 0.0)
-        snapshot.layer.shadowRadius = 5.0
-        snapshot.layer.shadowOpacity = 0.4
-
+        snapshot.shadow(color: .blackColor(), offset: CGSize(width: -5.0, height: 0.0), opacity: 0.4, radius: 5.0)
         return snapshot
     }
 
     private func addNotification() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: .detailPlaylist, name: Strings.NotificationDetailPlaylist, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: .deletePlaylist, name: Strings.NotificationDeletePlaylist, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: .deleteSong, name: Strings.NotiDeleteSong, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: .changeName, name: Strings.NotiChangePlaylistName, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: .reloadWhenAddNew, name: Strings.NotiReloadWhenAddNew, object: nil)
+       kNotification.addObserver(self, selector: .detailPlaylist, name: Strings.NotificationDetailPlaylist, object: nil)
+       kNotification.addObserver(self, selector: .deletePlaylist, name: Strings.NotificationDeletePlaylist, object: nil)
+       kNotification.addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
+       kNotification.addObserver(self, selector: .deleteSong, name: Strings.NotiDeleteSong, object: nil)
+       kNotification.addObserver(self, selector: .changeName, name: Strings.NotiChangePlaylistName, object: nil)
+       kNotification.addObserver(self, selector: .reloadWhenAddNew, name: Strings.NotiReloadWhenAddNew, object: nil)
     }
 
     private func addLongPressGestureRecognizer() {
@@ -256,7 +241,7 @@ class PlaylistViewController: BaseVC {
     private func reloadTableViewWhenDeleteSong(indexPath: NSIndexPath) {
         tableView.beginUpdates()
         tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        self.collectionView.reloadData()
+        collectionView.reloadData()
         tableView.endUpdates()
     }
 
@@ -280,19 +265,20 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
             return cell
         } else {
             if let playlist = playlists?[indexPath.row] {
-                if playlist.songs.count == kNoSong || playlist.songs.count == kOneSong {
+                switch playlist.songs.count {
+                case 0, 1:
                     let cell = collectionView.dequeue(OneImageCell.self, forIndexPath: indexPath)
                     cell.configCell(playlist: playlist, index: indexPath.row)
                     return cell
-                } else if playlist.songs.count == kTwoSongs {
+                case 2:
                     let cell = collectionView.dequeue(TwoImagesCell.self, forIndexPath: indexPath)
                     cell.configCell(playlist: playlist, index: indexPath.row)
                     return cell
-                } else if playlist.songs.count == kThreeSongs {
+                case 3:
                     let cell = collectionView.dequeue(ThreeImagesCell.self, forIndexPath: indexPath)
                     cell.configCell(playlist: playlist, index: indexPath.row)
                     return cell
-                } else {
+                default:
                     let cell = collectionView.dequeue(FourImagesCell.self, forIndexPath: indexPath)
                     cell.configCell(playlist: playlist, index: indexPath.row)
                     return cell
@@ -320,7 +306,7 @@ extension PlaylistViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAtIndex section: Int) -> UIEdgeInsets {
-            return UIEdgeInsets(top: .topMargin, left: .leftMargin, bottom: .bottomMargin, right: .rightMargin)
+            return UIEdgeInsets(top: .zeroMargin, left: .leftMargin, bottom: .zeroMargin, right: .rightMargin)
     }
 }
 
@@ -345,7 +331,7 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
             self.currentPlaylist?.deleteSongAtIndex(indexPath.row)
             self.reloadTableViewWhenDeleteSong(indexPath)
         }
-        deleteAction.backgroundColor = UIColor.redColor()
+        deleteAction.backgroundColor = .redColor()
         return [deleteAction]
     }
 }

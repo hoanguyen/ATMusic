@@ -27,7 +27,7 @@ class OneImageCell: BaseCell {
         super.configIndexForCell(index)
         playlistNameLabel.text = playlist?.name
         if playlist?.songs.count == 0 {
-            imageView.image = UIImage(assetIdentifier: UIImage.AssetIdentifier.HolderPlaylist)
+            imageView.image = UIImage(assetIdentifier: .HolderPlaylist)
             numberSongLabel.text = Strings.ZeroSong
         } else {
             if let imageUrlString = playlist?.songs.first?.urlImage, imageUrl = NSURL(string: imageUrlString) {
