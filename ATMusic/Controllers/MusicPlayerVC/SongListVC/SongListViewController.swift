@@ -22,6 +22,9 @@ class SongListViewController: BaseVC {
     // MARK: - private property
     private var songNameList: [String]?
     private var playingIndex: Int = -1
+    private var playlistName: String?
+
+    // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,16 +34,20 @@ class SongListViewController: BaseVC {
         super.didReceiveMemoryWarning()
     }
 
-    convenience init(songNameList: [String]?, playAtIndex playingIndex: Int) {
+    convenience init(songNameList: [String]?, playAtIndex playingIndex: Int, playlistName: String?) {
         self.init(nibName: "SongListViewController", bundle: nil)
         self.songNameList = songNameList
         self.playingIndex = playingIndex
+        self.playlistName = playlistName
     }
 
     override func configUI() {
         super.configUI()
         tableView.registerNib(SongListCell)
+        tableView.registerNib(SongListHeader)
         tableView.separatorStyle = .None
+        tableView.headerViewForSection(0)?.backgroundColor = .clearColor()
+        tableView.headerViewForSection(0)?.textLabel?.textColor = Color.White233
     }
 
     override func loadData() {
@@ -74,8 +81,18 @@ extension SongListViewController: UITableViewDelegate, UITableViewDataSource {
         return SongListCell.cellHeight()
     }
 
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return SongListHeader.headerHeight()
+    }
+
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return songNameList?.count ?? 0
+    }
+
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = tableView.dequeue(SongListHeader)
+        header.configHeaderWithName(playlistName)
+        return header
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

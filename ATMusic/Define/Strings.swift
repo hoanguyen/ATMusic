@@ -54,4 +54,7 @@ class Strings {
 
     static let DetailPlayerVC = "DetailPlayerViewController"
     static let ImageSizeForThumbnail = "t500x500.jpg"
+
+    static let Trending = "Trending"
+    static let Search = "Search"
 }

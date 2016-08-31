@@ -136,7 +136,8 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
             kAppDelegate?.detailPlayerVC?.delegate = nil
             kAppDelegate?.detailPlayerVC?.dataSource = nil
             kAppDelegate?.detailPlayerVC = nil
-            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: playlist?.songs[indexPath.row], songIndex: indexPath.row)
+            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: playlist?.songs[indexPath.row],
+                songIndex: indexPath.row, playlistName: playlist?.name)
             if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
                 detailPlayerVC.delegate = self
                 detailPlayerVC.dataSource = self

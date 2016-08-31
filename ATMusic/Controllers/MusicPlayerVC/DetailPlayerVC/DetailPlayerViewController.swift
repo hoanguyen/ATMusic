@@ -57,6 +57,7 @@ class DetailPlayerViewController: BaseVC {
     // MARK: - private property
     private var songIndex = 0
     private var song: Song?
+    private var playlistName: String?
     private var currentRotateValue: CGFloat = 0.0
     private var playing = true
     private var playBarButtonItem: UIBarButtonItem?
@@ -90,10 +91,11 @@ class DetailPlayerViewController: BaseVC {
         }
     }
     // MARK: - init func
-    convenience init(song: Song?, songIndex: Int) {
+    convenience init(song: Song?, songIndex: Int, playlistName: String?) {
         self.init(nibName: "DetailPlayerViewController", bundle: nil)
         self.song = song
         self.songIndex = songIndex
+        self.playlistName = playlistName
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -281,7 +283,8 @@ class DetailPlayerViewController: BaseVC {
 extension DetailPlayerViewController {
     private func setupPageMenu() {
         if let songNameList = dataSource?.songNameList(self) {
-            songListVC = SongListViewController(songNameList: songNameList, playAtIndex: songIndex)
+            songListVC = SongListViewController(songNameList: songNameList,
+                playAtIndex: songIndex, playlistName: playlistName)
         } else {
             songListVC = SongListViewController.vc()
         }

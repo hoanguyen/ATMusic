@@ -26,7 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.rootViewController = BaseTabBarController()
-        detailPlayerVC = DetailPlayerViewController(song: nil, songIndex: -1) // null init
         setupRemoteControl()
         window?.makeKeyAndVisible()
         return true
