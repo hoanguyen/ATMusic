@@ -15,4 +15,6 @@ struct Color {
     static let White233 = UIColor.RGB(233, 233, 233)
     static let White178 = UIColor.RGB(178, 178, 178)
     static let White69 = UIColor.RGB(69, 69, 69)
+    static let Green175 = UIColor.RGB(3, 175, 11)
+    static let Red225 = UIColor.RGB(225, 41, 56)
 }

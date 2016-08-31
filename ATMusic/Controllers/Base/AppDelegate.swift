@@ -20,15 +20,37 @@ enum RepeatType {
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+
     var window: UIWindow?
     var detailPlayerVC: DetailPlayerViewController?
+    var timerVC: TimerViewController?
     var repeating: RepeatType = .None
+    var isCounting: Bool = false
+    var isPause: Bool = false
+    var timer: NSTimer?
+    var restCounter: Int = 0
+
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.rootViewController = BaseTabBarController()
         setupRemoteControl()
         window?.makeKeyAndVisible()
         return true
+    }
+
+    func setupTimer() {
+        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(updateTimer(_:)), userInfo: nil, repeats: true)
+    }
+
+    @objc private func updateTimer(timer: NSTimer) {
+        restCounter = restCounter - 1
+        print("Appdelegate: \(restCounter)")
+        timerVC?.reloadTitleForRestTimeLabel()
+        if restCounter == 0 {
+            detailPlayerVC?.pause()
+            timer.invalidate()
+            kAppDelegate?.isCounting = false
+        }
     }
 
     private func setupRemoteControl() {

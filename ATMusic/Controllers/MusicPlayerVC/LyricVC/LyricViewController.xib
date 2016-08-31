@@ -15,17 +15,17 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="412"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="IGE-ws-Sb7">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="412"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </tableView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lyric feature not available in this Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dau-Dh-Zug">
+                    <rect key="frame" x="35" y="195" width="306" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="IGE-ws-Sb7" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="6ge-jM-v4V"/>
-                <constraint firstAttribute="trailing" secondItem="IGE-ws-Sb7" secondAttribute="trailing" id="mNs-oA-R1z"/>
-                <constraint firstAttribute="bottom" secondItem="IGE-ws-Sb7" secondAttribute="bottom" id="pjh-tW-NWh"/>
-                <constraint firstItem="IGE-ws-Sb7" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="vdO-Yr-Bs2"/>
+                <constraint firstItem="dau-Dh-Zug" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="ClS-hs-exF"/>
+                <constraint firstItem="dau-Dh-Zug" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="o6I-SM-SU9"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="540.5" y="480"/>

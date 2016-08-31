@@ -13,6 +13,8 @@ import LNPopupController
 import MediaPlayer
 import PageMenu
 
+private let kTimerButtonSize = CGSize(width: 30, height: 30)
+
 protocol DetailPlayerDelegate {
     func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int)
 }
@@ -108,8 +110,14 @@ class DetailPlayerViewController: BaseVC {
 
     }
 
-    override func viewDidLayoutSubviews() {
-        imageAvatar.circle()
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        imageVC?.startRotate()
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        imageVC?.stopRotate()
     }
 
     override func didReceiveMemoryWarning() {
@@ -219,6 +227,14 @@ class DetailPlayerViewController: BaseVC {
     }
 
     // MARK: - private Actions
+    @IBAction func didTapTimerButton(sender: UIButton) {
+        kAppDelegate?.timerVC = nil
+        kAppDelegate?.timerVC = TimerViewController()
+        if let timerVC = kAppDelegate?.timerVC {
+            presentViewController(timerVC, animated: true, completion: nil)
+        }
+    }
+
     @IBAction private func didTapButtonMore(sender: UIButton) {
     }
 

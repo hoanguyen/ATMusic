@@ -14,7 +14,8 @@ extension UIImage {
             ShuffleRed30, ShuffleWhite30,
             PlayWhite60, PauseWhite60, PauseWhite25, MoreWhite, PlayWhite25,
             RepeatAllRed30, RepeatOffWhite30, RepeatOneRed30,
-            PlayBlack, PauseBlack, NextBlack, PrevBlack, ListBlack
+            PlayBlack, PauseBlack, NextBlack, PrevBlack, ListBlack,
+            Timer, DownArrowRed30
     }
 
     convenience init!(assetIdentifier: AssetIdentifier) {
