@@ -235,12 +235,6 @@ class DetailPlayerViewController: BaseVC {
         }
     }
 
-    @IBAction private func didTapButtonMore(sender: UIButton) {
-    }
-
-    @IBAction private func addToFavourite(sender: UIButton) {
-    }
-
     @IBAction private func changeRepeatMode(sender: UIButton) {
         if let repeating = kAppDelegate?.repeating {
             switch repeating {
@@ -335,6 +329,7 @@ extension DetailPlayerViewController {
             MPNowPlayingInfoPropertyElapsedPlaybackTime: currentTime,
             MPNowPlayingInfoPropertyPlaybackRate: playing ? 1.0 : 0.0
         ]
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo?.removeAll()
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
     }
 
@@ -381,7 +376,7 @@ extension DetailPlayerViewController {
     }
 
     private func setupDuration() {
-        if let duration = player?.currentItem?.asset.duration, let second = convertToSecond(duration) {
+        if let duration = player?.currentItem?.asset.duration, second = convertToSecond(duration) {
             restDurationLabel.text = second.convertToMinute()
             durationSlider.maximumValue = Float(second)
             maxValue = Float(second)
@@ -430,7 +425,7 @@ extension DetailPlayerViewController {
     }
 
     private func setupAvatarImage() {
-        if let imageURLString = song?.urlImage, let url = NSURL(string: imageURLString) {
+        if let imageURLString = song?.urlImage, url = NSURL(string: imageURLString) {
             backgroundImageView.sd_setImageWithURL(url)
         }
         imageVC?.reloadImage(song?.urlImage)
@@ -491,6 +486,7 @@ extension DetailPlayerViewController {
     }
 }
 
+//MARK: - SongList Delegate
 extension DetailPlayerViewController: SongListControllerDelegate {
     func songListViewController(viewController: UIViewController, didSelectSongAtIndex index: Int) {
         songIndex = index

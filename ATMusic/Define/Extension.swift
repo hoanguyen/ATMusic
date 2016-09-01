@@ -25,4 +25,16 @@ class Helper {
         }
 
     }
+
+    class func checkingPlayList(string: String?) -> Bool {
+        if let string = string {
+            do {
+                let regex = try NSRegularExpression(pattern: Strings.paternMatchString, options: .CaseInsensitive)
+                let range = NSRange(location: 0, length: string.characters.count)
+                let matches = regex.matchesInString(string, options: [], range: range)
+                return matches.count > 0
+            } catch { }
+        }
+        return false
+    }
 }

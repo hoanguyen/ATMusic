@@ -68,7 +68,7 @@ class PlayerViewController: BaseVC {
     override func configUI() {
         super.configUI()
         view.backgroundColor = UIColor.clearColor()
-        if let urlImageString = song?.urlImage, let urlImage = NSURL(string: urlImageString) {
+        if let urlImageString = song?.urlImage, urlImage = NSURL(string: urlImageString) {
             imageAvatar.sd_setImageWithURL(urlImage)
         }
         imageAvatar.circle()

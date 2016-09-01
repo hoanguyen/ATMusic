@@ -15,19 +15,22 @@ private let kWidthHourRow: CGFloat = 50.0
 private let kWidthMinuteRow: CGFloat = 80.0
 
 class TimerViewController: BaseVC {
-    @IBOutlet weak var restTimeLabel: UILabel!
-    @IBOutlet weak var pickerTimer: UIPickerView!
-    @IBOutlet weak var pauseButton: UIButton!
-    @IBOutlet weak var startButton: UIButton!
-    @IBOutlet weak var startView: UIView!
-    @IBOutlet weak var pauseView: UIView!
+    // MARK: - private Outlet
+    @IBOutlet private weak var restTimeLabel: UILabel!
+    @IBOutlet private weak var pickerTimer: UIPickerView!
+    @IBOutlet private weak var pauseButton: UIButton!
+    @IBOutlet private weak var startButton: UIButton!
+    @IBOutlet private weak var startView: UIView!
+    @IBOutlet private weak var pauseView: UIView!
 
+    // MARK: - private property
     private var hours = [Int]()
     private var minutes = [Int]()
     private var currentHourRow = 0
     private var currentMinuteRow = 1
     private var timer: NSTimer?
 
+    // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -63,6 +66,7 @@ class TimerViewController: BaseVC {
         pauseView.clipsToBounds = true
     }
 
+    // MARK: - public func
     func setupTime() {
         for i in 0...kMaxMinute {
             if i <= kMaxHour {
@@ -72,8 +76,8 @@ class TimerViewController: BaseVC {
         }
     }
 
-    // MARK: - private outlet
-    @IBAction func didTapPauseButton(sender: UIButton) {
+    // MARK: - private Action
+    @IBAction private func didTapPauseButton(sender: UIButton) {
         if let isPause = kAppDelegate?.isPause {
             kAppDelegate?.isPause = !isPause
             if isPause {
@@ -86,7 +90,7 @@ class TimerViewController: BaseVC {
         }
     }
 
-    @IBAction func didTapStartButton(sender: UIButton) {
+    @IBAction private func didTapStartButton(sender: UIButton) {
         if let isCounting = kAppDelegate?.isCounting {
             kAppDelegate?.isCounting = !isCounting
             if isCounting {
@@ -100,11 +104,12 @@ class TimerViewController: BaseVC {
         }
     }
 
-    @IBAction func didTapDismisButton(sender: UIButton) {
+    @IBAction private func didTapDismisButton(sender: UIButton) {
         timer?.invalidate()
         dismissViewControllerAnimated(true, completion: nil)
     }
 
+    // MARK: - private func
     private func invalidateTimer() {
         kAppDelegate?.timer?.invalidate()
         timer?.invalidate()
@@ -157,19 +162,17 @@ class TimerViewController: BaseVC {
 
 extension TimerViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 4
+        return 4 // ex: "5" "hours" "1" "min" = 4 component
     }
 
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch component {
         case 0:
             return hours.count
-        case 1:
-            return 1
         case 2:
             return minutes.count
         default:
-            return 1
+            return 1 // just show one line is hour or min
         }
     }
 
@@ -214,10 +217,10 @@ extension TimerViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         switch component {
         case 0:
             currentHourRow = row
-            pickerView.reloadComponent(1)
+            pickerView.reloadComponent(1) // "hour" : "hours" change between them.
         case 2:
             currentMinuteRow = row
-            if currentHourRow == 0 && currentMinuteRow == 0 {
+            if currentHourRow == 0 && currentMinuteRow == 0 { // minimum of Timer is 1 min, can not assign 0 hour 0 min
                 setDefaultForPickerView()
             }
         default:

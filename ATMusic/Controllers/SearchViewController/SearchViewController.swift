@@ -16,7 +16,7 @@ class SearchViewController: BaseVC {
     @IBOutlet weak var paddingTopConstraint: NSLayoutConstraint!
 
     // MARK: - private property
-    private let limit = 10
+    private let limit = 20
     private var offset = 0
     private var songs: [Song]?
     private var searchText = ""

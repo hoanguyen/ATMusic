@@ -40,16 +40,16 @@ class FourImagesCell: BaseCell {
             numberSongLabel.text = "\(songs.count) songs"
         }
         if let imageUrlString = playlist?.songs[0].urlImage, imageUrl = NSURL(string: imageUrlString) {
-            imageView1.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            imageView1.sd_setImageWithURL(imageUrl)
         }
         if let imageUrlString = playlist?.songs[1].urlImage, imageUrl = NSURL(string: imageUrlString) {
-            imageView2.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            imageView2.sd_setImageWithURL(imageUrl)
         }
         if let imageUrlString = playlist?.songs[2].urlImage, imageUrl = NSURL(string: imageUrlString) {
-            imageView3.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            imageView3.sd_setImageWithURL(imageUrl)
         }
         if let imageUrlString = playlist?.songs[3].urlImage, imageUrl = NSURL(string: imageUrlString) {
-            imageView4.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            imageView4.sd_setImageWithURL(imageUrl)
         }
     }
 

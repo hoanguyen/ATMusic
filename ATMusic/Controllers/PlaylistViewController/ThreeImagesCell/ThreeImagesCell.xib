@@ -49,15 +49,18 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="atx-SE-NnQ" userLabel="Image1">
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="atx-SE-NnQ" secondAttribute="height" multiplier="1:1" id="GcQ-FC-y4z"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="brr-Ee-TlZ" userLabel="Image2">
                                 <rect key="frame" x="60" y="0.0" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Rt2-uq-2cc" userLabel="Image3">
                                 <rect key="frame" x="0.0" y="60" width="120" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Rt2-uq-2cc" secondAttribute="height" multiplier="2:1" id="TjB-Wv-fzS"/>
                                 </constraints>
@@ -108,8 +111,8 @@
             <size key="customSize" width="150" height="196"/>
             <variation key="default">
                 <mask key="constraints">
-                    <exclude reference="dCe-Zj-qRQ"/>
                     <exclude reference="YrA-KH-HvS"/>
+                    <exclude reference="dCe-Zj-qRQ"/>
                 </mask>
             </variation>
             <connections>

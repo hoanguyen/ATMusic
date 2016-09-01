@@ -25,10 +25,10 @@ class TwoImagesCell: BaseCell {
         numberSongLabel.text = "2 songs"
         guard let playlist = playlist else { return }
         if let imageUrlString = playlist.songs[0].urlImage, imageUrl = NSURL(string: imageUrlString) {
-            imageView1.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            imageView1.sd_setImageWithURL(imageUrl)
         }
         if let imageUrlString = playlist.songs[1].urlImage, imageUrl = NSURL(string: imageUrlString) {
-            imageView2.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            imageView2.sd_setImageWithURL(imageUrl)
         }
     }
     @IBAction func didTapPlayButton(sender: UIButton) {

@@ -17,7 +17,7 @@ import LNPopupController
 class ChartViewController: BaseVC {
     // MARK: - Private Outlet
     @IBOutlet private weak var tableView: UITableView!
-    private let limit = 10
+    private let limit = 20
     private var offset = 0
     private var songs: [Song]?
 

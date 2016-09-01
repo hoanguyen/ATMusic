@@ -35,6 +35,15 @@ class RealmManager {
         return realm?.objects(Playlist)
     }
 
+    class func getLastID<T: Object>(aClass: T.Type) -> T? {
+        let objects = realm?.objects(aClass)
+        return objects?.last
+    }
+
+    class func getFirstItemFree() -> PlaylistName? {
+        return realm?.objects(PlaylistName).filter("isUse = false").first
+    }
+
     class func addSong(song: Song, intoSongList songs: List<Song>) {
         var tempSong = song // a temporary song to check that exists in db
         if let object = realm?.objects(Song).filter("id = %@", song.id).first { // check exist
@@ -71,5 +80,17 @@ class RealmManager {
                 playlist.name = text
             })
         } catch { }
+    }
+
+    class func setUsingForItem(object: PlaylistName, isUse: Bool) {
+        do {
+            try realm?.write({
+                object.isUse = isUse
+            })
+        } catch { }
+    }
+
+    class func getItemWithName(name: String) -> PlaylistName? {
+        return realm?.objects(PlaylistName).filter("name = %@", name).first
     }
 }

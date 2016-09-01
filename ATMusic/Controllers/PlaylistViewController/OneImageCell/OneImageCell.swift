@@ -31,7 +31,7 @@ class OneImageCell: BaseCell {
             numberSongLabel.text = "0 song"
         } else {
             if let imageUrlString = playlist?.songs.first?.urlImage, imageUrl = NSURL(string: imageUrlString) {
-                imageView.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+                imageView.sd_setImageWithURL(imageUrl)
                 numberSongLabel.text = "1 song"
             }
         }

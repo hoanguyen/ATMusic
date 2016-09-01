@@ -85,13 +85,6 @@ class PlaylistViewController: BaseVC {
         currentPlaylistName.font = HelveticaFont().Regular(15)
     }
 
-    // MARK: - private action
-    @IBAction private func didTapEditButton(sender: UIButton) {
-    }
-
-    @IBAction private func didTapNewButton(sender: UIButton) {
-    }
-
     // MARK: - private func
     private func addButtonCreatePlaylist() {
         let addButton = UIButton(type: .Custom)
@@ -108,9 +101,19 @@ class PlaylistViewController: BaseVC {
     }
 
     @objc private func addNewPlaylist(sender: UIButton) {
-        Alert.sharedInstance.inputTextAlert(self, title: Strings.Create, message: Strings.CreateQuestion) { (text) in
-            RealmManager.add(Playlist(name: text))
-            self.collectionView.reloadData()
+        let playlistNameObject = PlaylistName.firstItemFree()
+        Alert.sharedInstance.inputTextAlert(self, title: Strings.Create,
+            message: Strings.CreateQuestion, placeholder: Strings.PlaylistNamePlaceHolder + " \(playlistNameObject.id)") { (text, isUse) in
+                playlistNameObject.setUsing(isUse)
+                if !isUse && Helper.checkingPlayList(text) {
+                    if let item = PlaylistName.getItemWithName(text) {
+                        item.setUsing(true)
+                    } else {
+                        RealmManager.add(PlaylistName(isUse: true))
+                    }
+                }
+                RealmManager.add(Playlist(name: text))
+                self.collectionView.reloadData()
         }
     }
 
@@ -169,7 +172,7 @@ class PlaylistViewController: BaseVC {
                 cell.hidden = true
             })
         case .Changed:
-            guard let snapShot = snapShot, let sourceIndexPathTmp = sourceIndexPath else { return }
+            guard let snapShot = snapShot, sourceIndexPathTmp = sourceIndexPath else { return }
             var center = snapShot.center
             center.y = location.y
             snapShot.center = center
@@ -207,6 +210,12 @@ class PlaylistViewController: BaseVC {
         if let songs = currentPlaylist?.songs where songs.count > 0 {
             RealmManager.changePosition(songs, atFirst: firstIndex, withSecond: secondIndex)
         }
+        let firstIndexPath = NSIndexPath(forRow: firstIndex, inSection: 0)
+        let secondIndexPath = NSIndexPath(forRow: secondIndex, inSection: 0)
+        let firstCell = tableView.cellForRowAtIndexPath(firstIndexPath) as? TrackTableViewCell
+        let secondCell = tableView.cellForRowAtIndexPath(secondIndexPath) as? TrackTableViewCell
+        firstCell?.changeIndex(firstIndex)
+        secondCell?.changeIndex(secondIndex)
     }
     func handleOverSizeOfTableView(position: CGFloat) -> CGFloat {
         var positionTmp = position

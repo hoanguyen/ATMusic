@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 typealias ConfirmYes = () -> Void
-typealias InputTextConfirmYes = (text: String) -> Void
+typealias InputTextConfirmYes = (text: String, usingPlaceHolder: Bool) -> Void
 typealias ConfirmPlaylistFinished = (index: Int?, isCreate: Bool) -> Void
 
 private let kNumberItemOverHeight = 4 // if number of item >= 4, the alert height will be bigger
@@ -36,18 +36,23 @@ class Alert {
     }
     // input text alert, to create something.
     func inputTextAlert(viewController: UIViewController, title: String,
-        message: String, confirmHandler confirmYes: InputTextConfirmYes) {
+        message: String, placeholder: String, confirmHandler confirmYes: InputTextConfirmYes) {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: Strings.Confirm, style: .Default, handler: { (action: UIAlertAction) in
-                if let textFields = alert.textFields, text = textFields[0].text {
-                    confirmYes(text: text)
+                if let textFields = alert.textFields, var text = textFields[0].text {
+                    var isUse = false
+                    if text == "" {
+                        text = textFields[0].placeholder ?? Strings.PlaylistNamePlaceHolder
+                        isUse = true
+                    }
+                    confirmYes(text: text, usingPlaceHolder: isUse)
                 }
                 }))
             alert.addAction(UIAlertAction(title: Strings.Cancel, style: .Default, handler: { (action: UIAlertAction!) in
                 alert .dismissViewControllerAnimated(true, completion: nil)
                 }))
             alert.addTextFieldWithConfigurationHandler { (textField) in
-                textField.placeholder = Strings.PlaylistNamePlaceHolder
+                textField.placeholder = placeholder
             }
             viewController.presentViewController(alert, animated: true, completion: nil)
     }
