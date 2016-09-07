@@ -26,13 +26,13 @@ private enum MusicGenre: String {
 
 enum Router: URLRequestConvertible {
     static var OAuthToken: String?
-    case GetTopSong(limit: Int, offset: Int)
+    case GetSong(kind: String, genre: String, limit: Int, offset: Int)
     case Search(key: String, limit: Int, offset: Int)
     case DownloadSong(id: Int)
 
     var method: Alamofire.Method {
         switch self {
-        case .GetTopSong:
+        case .GetSong:
             return .GET
         case .Search:
             return .GET
@@ -43,7 +43,7 @@ enum Router: URLRequestConvertible {
 
     var path: String {
         switch self {
-        case .GetTopSong:
+        case .GetSong:
             return "/charts"
         case .Search:
             return "/search"
@@ -56,9 +56,9 @@ enum Router: URLRequestConvertible {
         var parameters = [String: AnyObject]()
         parameters["client_id"] = Strings.ClientID
         switch self {
-        case .GetTopSong(let limit, let offset):
-            parameters["kind"] = MusicKind.TOP.rawValue
-            parameters["genre"] = MusicGenre.All.rawValue
+        case .GetSong(let kind, let path, let limit, let offset):
+            parameters["kind"] = kind
+            parameters["genre"] = path
             parameters["limit"] = limit
             parameters["offset"] = offset
             return parameters
@@ -82,7 +82,7 @@ enum Router: URLRequestConvertible {
         let mutableURLRequestDownloadSong = NSMutableURLRequest(URL: URLDownloadSong.URLByAppendingPathComponent(path))
         mutableURLRequestDownloadSong.HTTPMethod = method.rawValue
         switch self {
-        case .GetTopSong:
+        case .GetSong:
             return Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: parameter).0
         case .Search:
             return Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: parameter).0
@@ -106,26 +106,30 @@ class APIManager {
 
     private var request: Alamofire.Request?
 
-    func getTopSong(withlimit limit: Int, atOffset offset: Int, completionHandler finished: APIFinished) {
-        Alamofire.request(Router.GetTopSong(limit: limit, offset: offset)).responseJSON { (response) in
-            switch response.result {
-            case .Success:
-                guard let JSON = response.result.value else { finished(result: nil,
-                    error: true, message: response.result.debugDescription) ; return }
-                let collection = JSON["collection"] as? NSArray
-                var songs = [Song]()
-                if let collection = collection {
-                    for item in collection {
-                        let track = item["track"]
-                        guard let song = Mapper<Song>().map(track) else { break }
-                        songs.append(song)
+    func getSong(withKind kind: String,
+        andGenre genre: String,
+        limit: Int,
+        atOffset offset: Int,
+        completionHandler finished: APIFinished) {
+            Alamofire.request(Router.GetSong(kind: kind, genre: genre, limit: limit, offset: offset)).responseJSON { (response) in
+                switch response.result {
+                case .Success:
+                    guard let JSON = response.result.value else { finished(result: nil,
+                        error: true, message: response.result.debugDescription) ; return }
+                    let collection = JSON["collection"] as? NSArray
+                    var songs = [Song]()
+                    if let collection = collection {
+                        for item in collection {
+                            let track = item["track"]
+                            guard let song = Mapper<Song>().map(track) else { break }
+                            songs.append(song)
+                        }
                     }
+                    finished(result: songs, error: false, message: nil)
+                case .Failure:
+                    finished(result: nil, error: true, message: nil)
                 }
-                finished(result: songs, error: false, message: nil)
-            case .Failure:
-                finished(result: nil, error: true, message: nil)
             }
-        }
     }
 
     func searchSong(withKey key: String, limit: Int, atOffet offset: Int, completionHandler finished: APIFinished) {

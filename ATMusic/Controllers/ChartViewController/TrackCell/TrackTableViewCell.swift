@@ -9,6 +9,8 @@
 import UIKit
 import SDWebImage
 
+private let kRatioCornerRadius = 15 * Ratio.width
+
 protocol TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int)
 }
@@ -41,6 +43,8 @@ class TrackTableViewCell: UITableViewCell {
         labelNameOfSong.font = HelveticaFont().Regular(17)
         labelNameOfSinger.font = HelveticaFont().Regular(13)
         labelDurationOfSong.font = HelveticaFont().Regular(13)
+        avatar.layer.cornerRadius = kRatioCornerRadius
+        avatar.layer.masksToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
