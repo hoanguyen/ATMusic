@@ -48,8 +48,8 @@ class ChartViewController: BaseVC {
     }
 
     override func configUI() {
-        afterConfigUI = true
         super.configUI()
+        afterConfigUI = true
         tableView.contentInset = UIEdgeInsets(top: kTableviewTopMargin, left: 0, bottom: kTableviewBottomMargin, right: 0)
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
