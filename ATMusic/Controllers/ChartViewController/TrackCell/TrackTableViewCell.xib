@@ -64,7 +64,7 @@
                                         <color key="textColor" red="0.32549019607843138" green="0.34509803921568627" blue="0.37254901960784315" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MDV-u2-I1l">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MDV-u2-I1l">
                                         <rect key="frame" x="79" y="23" width="15" height="15"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="MDV-u2-I1l" secondAttribute="height" multiplier="1:1" id="Mbd-Wx-KKQ"/>

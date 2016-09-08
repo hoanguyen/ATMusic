@@ -7,18 +7,63 @@
 //
 
 import UIKit
+import AVFoundation
+import MediaPlayer
 
 let kAppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+
+enum RepeatType {
+    case None
+    case One
+    case All
+}
+
 let kNotification = NSNotificationCenter.defaultCenter()
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-
+    var detailPlayerVC: DetailPlayerViewController?
+    var repeating: RepeatType = .None
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.rootViewController = BaseTabBarController()
+        setupRemoteControl()
         window?.makeKeyAndVisible()
         return true
+    }
+
+    private func setupRemoteControl() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+            UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+            detailPlayerVC?.becomeFirstResponder()
+        } catch {
+            print(error)
+        }
+    }
+
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if let rc = event?.subtype {
+            switch rc {
+            case .RemoteControlPlay:
+                detailPlayerVC?.play()
+            case .RemoteControlPause:
+                detailPlayerVC?.pause()
+            case .RemoteControlPreviousTrack:
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPNowPlayingInfoPropertyPlaybackRate: 0.0]
+                detailPlayerVC?.previousSong()
+            case .RemoteControlNextTrack:
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPNowPlayingInfoPropertyPlaybackRate: 0.0]
+                detailPlayerVC?.nextSong()
+            default: break
+            }
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {

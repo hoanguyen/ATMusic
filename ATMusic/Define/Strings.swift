@@ -11,6 +11,7 @@ import Foundation
 class Strings {
     // MARK: - APIService strings
     static let BaseURLString = "https://api-v2.soundcloud.com"
+    static let BaseDownloadString = "https://api.soundcloud.com"
     static let ClientID = "06c6514c5b35b1617db8c129f7420f02"
 
     // MARK: - Alert strings
@@ -45,6 +46,18 @@ class Strings {
     static let NotiChangePlaylistName = "changeName"
     static let NotiReloadWhenAddNew = "reloadWhenAddNew"
 
+    // MARK: - static func
+    static func getMusicStreamURL(id: Int?) -> NSURL? {
+        guard let id = id else { return nil }
+        return NSURL(string: BaseDownloadString + "/tracks/\(id)/stream?client_id=" + ClientID)
+    }
+
+    static let DetailPlayerVC = "DetailPlayerViewController"
+    static let ImageSizeForThumbnail = "t500x500"
+    static let LargeString = "large"
+
+    static let Trending = "Trending"
+    static let Search = "Search"
     static let ZeroSong = "0 song"
     static let OneSong = "1 song"
     static let Songs = " songs"

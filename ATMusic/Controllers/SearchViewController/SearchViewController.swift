@@ -20,6 +20,7 @@ class SearchViewController: BaseVC {
     private var offset = 0
     private var songs: [Song]?
     private var searchText = ""
+    private var blurView: UIView?
     // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,9 +99,26 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row, showButtonMore: true)
         cell.delegate = self
         return cell
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
+            kAppDelegate?.detailPlayerVC?.player = nil
+            kAppDelegate?.detailPlayerVC?.delegate = nil
+            kAppDelegate?.detailPlayerVC?.dataSource = nil
+            kAppDelegate?.detailPlayerVC = nil
+            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row],
+                songIndex: indexPath.row, playlistName: Strings.Search)
+            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
+                detailPlayerVC.delegate = self
+                detailPlayerVC.dataSource = self
+                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+            }
+        }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -161,5 +179,31 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
         addSongIntoPlaylist(songs?[cellIndex])
+    }
+}
+
+//MARK: - DetailPlayerDelegate
+extension SearchViewController: DetailPlayerDelegate, DetailPlayerDataSource {
+    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
+        print(index)
+    }
+
+    func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
+        return songs?.count
+    }
+
+    func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
+        return songs?[index]
+    }
+
+    func songNameList(viewController: UIViewController) -> [String]? {
+        var songNameList = [String]()
+        guard let songs = songs else { return nil }
+        for item in songs {
+            if let name = item.songName {
+                songNameList.append(name)
+            }
+        }
+        return songNameList
     }
 }

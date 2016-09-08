@@ -12,6 +12,7 @@ import RealmSwift
 import Alamofire
 import ObjectMapper
 import SVPullToRefresh
+import LNPopupController
 
 class ChartViewController: BaseVC {
     // MARK: - Private Outlet
@@ -19,6 +20,7 @@ class ChartViewController: BaseVC {
     private let limit = 10
     private var offset = 0
     private var songs: [Song]?
+
     // MARK: - Override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +68,7 @@ class ChartViewController: BaseVC {
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
+                kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList()
             }
             self.tableView.pullToRefreshView.stopAnimating()
             self.tableView.infiniteScrollingView.stopAnimating()
@@ -85,12 +88,25 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
-        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row)
+        cell.configCellWithTrack(songs?[indexPath.row], index: indexPath.row, showButtonMore: true)
         cell.delegate = self
         return cell
     }
 
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
+            kAppDelegate?.detailPlayerVC?.player = nil
+            kAppDelegate?.detailPlayerVC?.delegate = nil
+            kAppDelegate?.detailPlayerVC?.dataSource = nil
+            kAppDelegate?.detailPlayerVC = nil
+            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row],
+                songIndex: indexPath.row, playlistName: Strings.Trending)
+            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
+                detailPlayerVC.delegate = self
+                detailPlayerVC.dataSource = self
+                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+            }
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 }
@@ -99,5 +115,31 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 extension ChartViewController: TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
         addSongIntoPlaylist(songs?[cellIndex])
+    }
+}
+
+//MARK: - DetailPlayerDelegate
+extension ChartViewController: DetailPlayerDelegate, DetailPlayerDataSource {
+    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
+        print(index)
+    }
+
+    func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
+        return songs?.count
+    }
+
+    func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song? {
+        return songs?[index]
+    }
+
+    func songNameList(viewController: UIViewController) -> [String]? {
+        var songNameList = [String]()
+        guard let songs = songs else { return nil }
+        for item in songs {
+            if let name = item.songName {
+                songNameList.append(name)
+            }
+        }
+        return songNameList
     }
 }

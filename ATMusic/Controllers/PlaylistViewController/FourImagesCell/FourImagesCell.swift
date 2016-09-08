@@ -21,8 +21,8 @@ class FourImagesCell: BaseCell {
     // MARK: - override func
     override func awakeFromNib() {
         super.awakeFromNib()
-        playlistNameLabel.font = HelveticaFont().Regular(12)
-        playlistNameLabel.font = HelveticaFont().Regular(11)
+        playlistNameLabel.font = HelveticaFont().Regular(14)
+        numberSongLabel.font = HelveticaFont().Regular(12)
     }
 
     // MARK: - public func

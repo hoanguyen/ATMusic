@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="SongListCell" customModule="ATMusic" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u01-uW-jYq">
+                        <rect key="frame" x="62" y="11" width="250" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oka-o4-LKe">
+                        <rect key="frame" x="33" y="13" width="9" height="18"/>
+                        <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="15"/>
+                        <color key="textColor" red="0.91538461530000004" green="0.91538461530000004" blue="0.91538461530000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ajh-qA-gX6">
+                        <rect key="frame" x="332" y="9" width="25" height="25"/>
+                        <state key="normal" image="PlayRed25"/>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="ajh-qA-gX6" firstAttribute="leading" secondItem="u01-uW-jYq" secondAttribute="trailing" constant="20" id="3co-GB-yod"/>
+                    <constraint firstItem="u01-uW-jYq" firstAttribute="leading" secondItem="Oka-o4-LKe" secondAttribute="trailing" constant="20" id="Loc-aL-GsG"/>
+                    <constraint firstItem="ajh-qA-gX6" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="TyQ-zI-XfG"/>
+                    <constraint firstItem="u01-uW-jYq" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="X2N-Xx-5if"/>
+                    <constraint firstItem="u01-uW-jYq" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="2/3" id="YnO-2K-ahv"/>
+                    <constraint firstItem="Oka-o4-LKe" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="gfr-Ne-b9w"/>
+                    <constraint firstItem="u01-uW-jYq" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="xtc-Z0-N6T"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="indexLabel" destination="Oka-o4-LKe" id="oFe-Zj-Fbe"/>
+                <outlet property="playingButton" destination="ajh-qA-gX6" id="ri0-lQ-XQn"/>
+                <outlet property="songNameLabel" destination="u01-uW-jYq" id="ZwW-Nj-OTb"/>
+            </connections>
+            <point key="canvasLocation" x="203.5" y="364"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="PlayRed25" width="25" height="25"/>
+    </resources>
+</document>

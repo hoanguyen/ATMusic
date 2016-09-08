@@ -10,6 +10,8 @@ import ObjectMapper
 import RealmSwift
 import Realm
 
+private let numberCharacterNeedToChange = 9 // (large.jpg) have 9 character
+
 class Song: Object, Mappable {
     private enum Key: String {
         case SongID = "id"
@@ -39,6 +41,11 @@ class Song: Object, Mappable {
         songName <- map[Key.Name.rawValue]
         singerName <- map[Key.Artist.rawValue]
         urlImage <- map[Key.Image.rawValue]
+        changeURLImage()
         duration <- map[Key.Time.rawValue]
+    }
+
+    private func changeURLImage() {
+        urlImage = urlImage?.stringByReplacingOccurrencesOfString(Strings.LargeString, withString: Strings.ImageSizeForThumbnail)
     }
 }
