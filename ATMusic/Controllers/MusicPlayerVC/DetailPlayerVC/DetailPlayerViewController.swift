@@ -59,7 +59,7 @@ class DetailPlayerViewController: BaseVC {
     private var song: Song?
     private var playlistName: String?
     private var currentRotateValue: CGFloat = 0.0
-    private var playing = true
+    private var isPlaying = true
     private var playBarButtonItem: UIBarButtonItem?
     private var prevBarButtonItem: UIBarButtonItem?
     private var nextBarButtonItem: UIBarButtonItem?
@@ -167,8 +167,8 @@ class DetailPlayerViewController: BaseVC {
     }
 
     func pause() {
-        playing = false
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
+        isPlaying = false
+        kNotification.removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
         player?.pause()
         playBarButtonItem?.image = UIImage(assetIdentifier: .PlayBlack)
         playButton.setBackgroundImage(UIImage(assetIdentifier: .PlayWhite60), forState: .Normal)
@@ -176,8 +176,8 @@ class DetailPlayerViewController: BaseVC {
     }
 
     func play() {
-        playing = true
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        isPlaying = true
+        kNotification.addObserver(self,
             selector: .playFinish, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
         player?.play()
         playBarButtonItem?.image = UIImage(assetIdentifier: .PauseBlack)
@@ -256,7 +256,7 @@ class DetailPlayerViewController: BaseVC {
     }
 
     @IBAction @objc private func didTapPlayButton(sender: UIButton) {
-        playing ? pause() : play()
+        isPlaying ? pause() : play()
     }
 
     @IBAction @objc private func nextSong(sender: UIButton) {
@@ -317,7 +317,7 @@ extension DetailPlayerViewController {
             MPMediaItemPropertyTitle: song?.songName ?? "",
             MPMediaItemPropertyPlaybackDuration: maxValue,
             MPNowPlayingInfoPropertyElapsedPlaybackTime: currentTime,
-            MPNowPlayingInfoPropertyPlaybackRate: playing ? 1.0 : 0.0
+            MPNowPlayingInfoPropertyPlaybackRate: isPlaying ? 1.0 : 0.0
         ]
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
     }
@@ -358,8 +358,8 @@ extension DetailPlayerViewController {
     private func updateChangeForLabel(second: Int?) {
         guard let second = second else { return }
         currentTime = Float(second)
-        self.currentDurationLabel.text = second.convertToMinute()
-        self.durationSlider.value = currentTime
+        currentDurationLabel.text = second.convertToMinute()
+        durationSlider.value = currentTime
         setupArtWorkInfo()
         popupItem.progress = currentTime / maxValue
     }
@@ -450,14 +450,14 @@ extension DetailPlayerViewController {
     }
 
     @objc private func playerDidFinishPlaying(sender: NSNotification) {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
+        kNotification.removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
         player?.seekToTime(kCMTimeZero)
         pause()
         if let repeating = kAppDelegate?.repeating {
             switch repeating {
             case .None:
                 if !nextSong() {
-                    playing = false
+                    isPlaying = false
                     pause()
                 }
             case .One:
