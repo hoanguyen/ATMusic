@@ -57,4 +57,11 @@ class Strings {
 
     static let Trending = "Trending"
     static let Search = "Search"
+    static let ZeroSong = "0 song"
+    static let OneSong = "1 song"
+    static let Songs = " songs"
+
+    static let DeleteString = "Delete"
+    static let Edit = "EDIT"
+    static let Save = "SAVE"
 }

@@ -24,10 +24,10 @@ private extension Int {
 class TrackTableViewCell: UITableViewCell {
     // MARK: - private Outlets
     @IBOutlet private weak var avatar: UIImageView!
-    @IBOutlet private weak var labelNameOfSong: UILabel!
-    @IBOutlet private weak var labelNameOfSinger: UILabel!
-    @IBOutlet private weak var labelDurationOfSong: UILabel!
-    @IBOutlet private weak var contentView1: UIView!
+    @IBOutlet private weak var nameOfSongLabel: UILabel!
+    @IBOutlet private weak var nameOfSingerLabel: UILabel!
+    @IBOutlet private weak var durationOfSongLabel: UILabel!
+    @IBOutlet private weak var secondContentView: UIView!
     @IBOutlet private weak var moreView: UIView!
     @IBOutlet private weak var mainView: UIView!
     @IBOutlet private weak var moreButton: UIButton!
@@ -38,9 +38,9 @@ class TrackTableViewCell: UITableViewCell {
     // MARK: - Override func
     override func awakeFromNib() {
         super.awakeFromNib()
-        labelNameOfSong.font = HelveticaFont().Regular(17)
-        labelNameOfSinger.font = HelveticaFont().Regular(13)
-        labelDurationOfSong.font = HelveticaFont().Regular(13)
+        nameOfSongLabel.font = HelveticaFont().Regular(17)
+        nameOfSingerLabel.font = HelveticaFont().Regular(13)
+        durationOfSongLabel.font = HelveticaFont().Regular(13)
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -59,21 +59,21 @@ class TrackTableViewCell: UITableViewCell {
         if let imageUrlString = song?.urlImage, imageUrl = NSURL(string: imageUrlString) {
             avatar.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
         }
-        labelNameOfSong.text = song?.songName
-        labelNameOfSinger.text = song?.singerName
-        labelDurationOfSong.text = song?.duration.convertDuration()
+        nameOfSongLabel.text = song?.songName
+        nameOfSingerLabel.text = song?.singerName
+        durationOfSongLabel.text = song?.duration.convertDuration()
     }
 
     func configUIColor() {
         backgroundColor = Color.Violet73
-        contentView1.backgroundColor = Color.Violet73
+        secondContentView.backgroundColor = Color.Violet73
         moreView.backgroundColor = Color.Violet73
         mainView.backgroundColor = Color.Violet73
         moreButton.setBackgroundImage(UIImage(assetIdentifier: .MoreWhite), forState: .Normal)
         moreButton.tintColor = UIColor.whiteColor()
-        labelNameOfSong.textColor = Color.White233
-        labelNameOfSinger.textColor = Color.White178
-        labelDurationOfSong.textColor = Color.White178
+        nameOfSongLabel.textColor = Color.White233
+        nameOfSingerLabel.textColor = Color.White178
+        durationOfSongLabel.textColor = Color.White178
     }
 
     // MARK: - static func

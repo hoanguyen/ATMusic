@@ -18,6 +18,8 @@ enum RepeatType {
     case All
 }
 
+let kNotification = NSNotificationCenter.defaultCenter()
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?

@@ -9,13 +9,6 @@
 import UIKit
 import SDWebImage
 
-private extension CGFloat {
-    static let topMargin = 0 * Ratio.width
-    static let leftMargin = 0 * Ratio.width
-    static let bottomMargin = 0 * Ratio.width
-    static let rightMargin = 0 * Ratio.width
-}
-
 class FourImagesCell: BaseCell {
     // MARK: - private outlet
     @IBOutlet private weak var playlistNameLabel: UILabel!
@@ -37,7 +30,7 @@ class FourImagesCell: BaseCell {
         super.configIndexForCell(index)
         playlistNameLabel.text = playlist?.name
         if let songs = playlist?.songs {
-            numberSongLabel.text = "\(songs.count) songs"
+            numberSongLabel.text = "\(songs.count)" + Strings.Songs
         }
         if let imageUrlString = playlist?.songs[0].urlImage, imageUrl = NSURL(string: imageUrlString) {
             imageView1.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))

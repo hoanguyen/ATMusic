@@ -27,12 +27,12 @@ class OneImageCell: BaseCell {
         super.configIndexForCell(index)
         playlistNameLabel.text = playlist?.name
         if playlist?.songs.count == 0 {
-            imageView.image = UIImage(assetIdentifier: UIImage.AssetIdentifier.HolderPlaylist)
-            numberSongLabel.text = "0 song"
+            imageView.image = UIImage(assetIdentifier: .HolderPlaylist)
+            numberSongLabel.text = Strings.ZeroSong
         } else {
             if let imageUrlString = playlist?.songs.first?.urlImage, imageUrl = NSURL(string: imageUrlString) {
                 imageView.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
-                numberSongLabel.text = "1 song"
+                numberSongLabel.text = Strings.OneSong
             }
         }
     }
