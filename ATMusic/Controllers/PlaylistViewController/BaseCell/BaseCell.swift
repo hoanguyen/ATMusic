@@ -18,11 +18,11 @@ class BaseCell: UICollectionViewCell {
     }
 
     func didTapPlayButton() {
-        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotificationDetailPlaylist,
+       kNotification.postNotificationName(Strings.NotificationDetailPlaylist,
             object: nil, userInfo: [Strings.NotiCellIndex: cellIndex])
     }
 
     static func cellSize() -> CGSize {
-        return CGSize(width: Ratio.width * 120, height: Ratio.width * 160)
+        return CGSize(width: Ratio.width * 118, height: Ratio.width * 160)
     }
 }

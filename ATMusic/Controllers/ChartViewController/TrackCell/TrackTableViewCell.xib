@@ -128,13 +128,13 @@
             </constraints>
             <connections>
                 <outlet property="avatar" destination="Slq-E1-nBv" id="94U-Zb-ssQ"/>
-                <outlet property="contentView1" destination="mHL-aJ-w4I" id="LEw-JV-VUE"/>
-                <outlet property="labelDurationOfSong" destination="zqc-ab-IgJ" id="OzC-3p-95G"/>
-                <outlet property="labelNameOfSinger" destination="cNS-lx-0Yl" id="quS-tt-bC5"/>
-                <outlet property="labelNameOfSong" destination="Fna-Bv-UGh" id="3ZB-5F-B5T"/>
+                <outlet property="durationOfSongLabel" destination="zqc-ab-IgJ" id="8bs-sB-OdY"/>
                 <outlet property="mainView" destination="rgg-BC-sJm" id="t0t-Le-TaI"/>
                 <outlet property="moreButton" destination="MDV-u2-I1l" id="PGI-UI-ClR"/>
                 <outlet property="moreView" destination="6Yi-qJ-zB1" id="I8B-Qy-cp0"/>
+                <outlet property="nameOfSingerLabel" destination="cNS-lx-0Yl" id="Kax-Tn-yLo"/>
+                <outlet property="nameOfSongLabel" destination="Fna-Bv-UGh" id="Wqi-1s-83u"/>
+                <outlet property="secondContentView" destination="mHL-aJ-w4I" id="jQ7-fz-CGR"/>
             </connections>
             <point key="canvasLocation" x="554.5" y="446"/>
         </tableViewCell>
