@@ -42,7 +42,7 @@ class DetailPlaylistViewController: BaseVC {
 
     override func configUI() {
         if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
-            avatar.sd_setImageWithURL(imageURL, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            avatar.sd_setImageWithURL(imageURL)
         }
         playlistNameTextField.text = playlist?.name
         playlistNameTextField.enabled = false
@@ -60,6 +60,11 @@ class DetailPlaylistViewController: BaseVC {
 
     @IBAction private func didTapDeleteButton(sender: UIButton) {
         Alert.sharedInstance.showConfirmAlert(self, title: Strings.Warning, message: Strings.Delete) {
+            if Helper.checkingPlayList(self.playlist?.name) {
+                if let item = PlaylistName.getItemWithName(self.playlist?.name) {
+                    item.setUsing(false)
+                }
+            }
             self.navigationController?.popViewControllerAnimated(true)
             kNotification.postNotificationName(
                 Strings.NotificationDeletePlaylist,
@@ -103,7 +108,6 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(TrackTableViewCell)
         cell.configCellWithTrack(playlist?.songs[indexPath.row], index: indexPath.row, showButtonMore: false)
-        cell.configUIColor()
         return cell
     }
 

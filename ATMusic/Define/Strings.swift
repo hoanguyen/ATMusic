@@ -24,7 +24,7 @@ class Strings {
     static let CreateQuestion = "Do you want to create a new playlist?"
     static let Delete = "Do you want to delete it?"
     static let Create = "Create new Playlist"
-    static let PlaylistNamePlaceHolder = "Playlist name"
+    static let PlaylistNamePlaceHolder = "Playlist"
     static let AddPlaylist = "Add Playlist"
     static let AddPlaylistMessage = "Choose playlist you want to add in."
     static let ExistSong = "Sorry! This playlist exists that song: "
@@ -58,6 +58,9 @@ class Strings {
 
     static let Trending = "Trending"
     static let Search = "Search"
+
+    static let paternMatchString = "^(Playlist\\s[0-9]+)$"
+
     static let ZeroSong = "0 song"
     static let OneSong = "1 song"
     static let Songs = " songs"

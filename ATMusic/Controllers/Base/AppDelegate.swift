@@ -77,10 +77,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .RemoteControlPause:
                 detailPlayerVC?.pause()
             case .RemoteControlPreviousTrack:
-                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPNowPlayingInfoPropertyPlaybackRate: 0.0]
                 detailPlayerVC?.previousSong()
             case .RemoteControlNextTrack:
-                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPNowPlayingInfoPropertyPlaybackRate: 0.0]
                 detailPlayerVC?.nextSong()
             default: break
             }

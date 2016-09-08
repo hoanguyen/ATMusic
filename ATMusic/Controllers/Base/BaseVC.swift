@@ -48,7 +48,7 @@ class BaseVC: ViewController {
                     if let song = song, index = index {
                         if playlists[index].addSong(song) {
                             Alert.sharedInstance.showAlert(self, title: Strings.Success, message: Strings.AddSongSuccess.concat(song.songName))
-                           kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
+                            kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
                         } else {
                             Alert.sharedInstance.showAlert(self, title: Strings.Failure, message: Strings.ExistSong.concat(song.songName))
                         }
@@ -58,10 +58,21 @@ class BaseVC: ViewController {
     }
 
     private func createNewPlaylist(finished: AddFinished) {
-        Alert.sharedInstance.inputTextAlert(self, title: Strings.Create, message: Strings.CreateQuestion) { (text) in
-            RealmManager.add(Playlist(name: text))
-           kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
-            finished()
+        let playlistNameObject = PlaylistName.firstItemFree()
+        Alert.sharedInstance.inputTextAlert(self, title: Strings.Create,
+            message: Strings.CreateQuestion,
+            placeholder: Strings.PlaylistNamePlaceHolder + "\(playlistNameObject.id)") { (text, isUse) in
+                playlistNameObject.setUsing(isUse)
+                if !isUse && Helper.checkingPlayList(text) {
+                    if let item = PlaylistName.getItemWithName(text) {
+                        item.setUsing(true)
+                    } else {
+                        RealmManager.add(PlaylistName(isUse: true))
+                    }
+                }
+                RealmManager.add(Playlist(name: text))
+                kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
+                finished()
         }
     }
 

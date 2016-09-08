@@ -48,6 +48,7 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MkE-FB-nua" userLabel="Image1">
                                 <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="MkE-FB-nua" secondAttribute="height" multiplier="1:1" id="R5K-vU-dbV"/>
                                 </constraints>

@@ -57,23 +57,15 @@ class TrackTableViewCell: UITableViewCell {
         moreButton.hidden = !showButtonMore
         cellIndex = index
         if let imageUrlString = song?.urlImage, imageUrl = NSURL(string: imageUrlString) {
-            avatar.sd_setImageWithURL(imageUrl, placeholderImage: UIImage(assetIdentifier: .Placeholder))
+            avatar.sd_setImageWithURL(imageUrl)
         }
         nameOfSongLabel.text = song?.songName
         nameOfSingerLabel.text = song?.singerName
         durationOfSongLabel.text = song?.duration.convertDuration()
     }
 
-    func configUIColor() {
-        backgroundColor = Color.Violet73
-        secondContentView.backgroundColor = Color.Violet73
-        moreView.backgroundColor = Color.Violet73
-        mainView.backgroundColor = Color.Violet73
-        moreButton.setBackgroundImage(UIImage(assetIdentifier: .MoreWhite), forState: .Normal)
-        moreButton.tintColor = UIColor.whiteColor()
-        nameOfSongLabel.textColor = Color.White233
-        nameOfSingerLabel.textColor = Color.White178
-        durationOfSongLabel.textColor = Color.White178
+    func changeIndex(index: Int) {
+        cellIndex = index
     }
 
     // MARK: - static func

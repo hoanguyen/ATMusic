@@ -49,12 +49,14 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hej-FV-vZF" userLabel="Image1">
                                 <rect key="frame" x="0.0" y="0.0" width="120" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="hej-FV-vZF" secondAttribute="height" multiplier="2:1" id="sBe-nt-6AK"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ouE-D3-6x2" userLabel="Image2">
                                 <rect key="frame" x="0.0" y="60" width="120" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hbH-ns-gXh">
                                 <rect key="frame" x="82" y="82" width="30" height="30"/>

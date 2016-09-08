@@ -49,18 +49,22 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7e6-1A-AZ5" userLabel="Image1">
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="7e6-1A-AZ5" secondAttribute="height" multiplier="1:1" id="l9R-1Z-yTV"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AHo-rH-eEc" userLabel="Image2">
                                 <rect key="frame" x="60" y="0.0" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mAn-Pg-fHH" userLabel="Image3">
                                 <rect key="frame" x="0.0" y="60" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zZH-gv-C0J" userLabel="Image4">
                                 <rect key="frame" x="60" y="60" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.32537341120000002" green="0.34457534550000002" blue="0.3732254505" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GWl-0f-4qq">
                                 <rect key="frame" x="82" y="82" width="30" height="30"/>
