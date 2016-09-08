@@ -20,7 +20,6 @@ class SearchViewController: BaseVC {
     private var offset = 0
     private var songs: [Song]?
     private var searchText = ""
-    private var playerVC: PlayerViewController?
     private var blurView: UIView?
     // MARK: - override func
     override func viewDidLoad() {
@@ -85,15 +84,6 @@ class SearchViewController: BaseVC {
                     imageView.removeFromSuperview()
                 }
         }
-    }
-
-    private func removeChildView() {
-        playerVC?.player = nil
-        playerVC?.view.removeFromSuperview()
-        playerVC?.removeFromParentViewController()
-        playerVC = nil
-        blurView?.removeFromSuperview()
-
     }
 }
 
