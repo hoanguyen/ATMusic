@@ -24,6 +24,8 @@ class ImageViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         startRotate()
+        imageAvatar.circle()
+        imageAvatar.clipsToBounds = true
     }
 
     override func viewWillAppear(animated: Bool) {

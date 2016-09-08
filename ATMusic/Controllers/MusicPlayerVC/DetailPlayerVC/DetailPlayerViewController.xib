@@ -50,6 +50,13 @@
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P5G-bi-LDo">
+                                    <rect key="frame" x="330" y="10" width="30" height="30"/>
+                                    <state key="normal" image="Timer"/>
+                                    <connections>
+                                        <action selector="didTapTimerButton:" destination="-1" eventType="touchUpInside" id="Uaf-jk-jAN"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
@@ -61,6 +68,8 @@
                                 <constraint firstAttribute="height" constant="50" id="N3e-oh-Erk"/>
                                 <constraint firstItem="19F-J8-i1I" firstAttribute="width" secondItem="eln-SN-uiK" secondAttribute="width" id="ekN-6d-mS8"/>
                                 <constraint firstItem="eln-SN-uiK" firstAttribute="top" secondItem="nBJ-84-y6H" secondAttribute="top" id="lvh-IJ-h48"/>
+                                <constraint firstAttribute="trailing" secondItem="P5G-bi-LDo" secondAttribute="trailing" constant="15" id="rjN-Lp-59w"/>
+                                <constraint firstItem="P5G-bi-LDo" firstAttribute="centerY" secondItem="nBJ-84-y6H" secondAttribute="centerY" id="tRn-le-La7"/>
                                 <constraint firstItem="eln-SN-uiK" firstAttribute="height" secondItem="nBJ-84-y6H" secondAttribute="height" multiplier="1/2" id="wQM-aS-76s"/>
                             </constraints>
                         </view>
@@ -344,5 +353,6 @@
         <image name="PreviousWhite30" width="30" height="30"/>
         <image name="RepeatOffWhite30" width="30" height="30"/>
         <image name="ShuffleWhite30" width="30" height="30"/>
+        <image name="Timer" width="30" height="30"/>
     </resources>
 </document>
