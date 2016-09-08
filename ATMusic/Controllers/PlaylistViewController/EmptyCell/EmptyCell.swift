@@ -16,6 +16,6 @@ class EmptyCell: UICollectionViewCell {
     }
 
     @IBAction func didTapAddButton(sender: UIButton) {
-        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiAddPlaylist, object: nil, userInfo: nil)
+       kNotification.postNotificationName(Strings.NotiAddPlaylist, object: nil, userInfo: nil)
     }
 }

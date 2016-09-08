@@ -48,7 +48,7 @@ class BaseVC: ViewController {
                     if let song = song, index = index {
                         if playlists[index].addSong(song) {
                             Alert.sharedInstance.showAlert(self, title: Strings.Success, message: Strings.AddSongSuccess.concat(song.songName))
-                            NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
+                            kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
                         } else {
                             Alert.sharedInstance.showAlert(self, title: Strings.Failure, message: Strings.ExistSong.concat(song.songName))
                         }

@@ -46,11 +46,6 @@ class Song: Object, Mappable {
     }
 
     private func changeURLImage() {
-        if var characters = urlImage?.characters {
-            for _ in 0..<numberCharacterNeedToChange {
-                characters.removeLast()
-            }
-            urlImage = String(characters) + Strings.ImageSizeForThumbnail
-        }
+        urlImage = urlImage?.stringByReplacingOccurrencesOfString(Strings.LargeString, withString: Strings.ImageSizeForThumbnail)
     }
 }

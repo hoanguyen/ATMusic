@@ -13,7 +13,7 @@ class SongListCell: UITableViewCell {
     @IBOutlet private weak var playingButton: UIButton!
     @IBOutlet private weak var indexLabel: UILabel!
 
-    private var index: Int = 0
+    private var index = 0
     private var playing: Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,7 +34,7 @@ class SongListCell: UITableViewCell {
     }
 
     func reloadWithPlayingIndex(index: Int) {
-        self.playing = isPlay(index)
+        playing = isPlay(index)
         highlighForCell()
     }
 

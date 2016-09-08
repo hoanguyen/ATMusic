@@ -13,7 +13,7 @@ class DetailPlaylistViewController: BaseVC {
 
     // MARK: - private outlet
     @IBOutlet private weak var avatar: UIImageView!
-    @IBOutlet private weak var playlistNameTF: UITextField!
+    @IBOutlet private weak var playlistNameTextField: UITextField!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var numberOfSong: UILabel!
     @IBOutlet private weak var tableView: UITableView!
@@ -44,13 +44,13 @@ class DetailPlaylistViewController: BaseVC {
         if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
             avatar.sd_setImageWithURL(imageURL)
         }
-        playlistNameTF.text = playlist?.name
-        playlistNameTF.enabled = false
+        playlistNameTextField.text = playlist?.name
+        playlistNameTextField.enabled = false
         setTextForNumberSongLabel()
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
-        playlistNameTF.delegate = self
+        playlistNameTextField.delegate = self
     }
 
     // MARK: - private func
@@ -66,7 +66,7 @@ class DetailPlaylistViewController: BaseVC {
                 }
             }
             self.navigationController?.popViewControllerAnimated(true)
-            NSNotificationCenter.defaultCenter().postNotificationName(
+            kNotification.postNotificationName(
                 Strings.NotificationDeletePlaylist,
                 object: nil,
                 userInfo: [Strings.NotiCellIndex: self.index])
@@ -74,25 +74,18 @@ class DetailPlaylistViewController: BaseVC {
     }
 
     private func isEnableForEdit() {
-        if isEnable {
-            if playlistNameTF.text != playlist?.name {
-                playlist?.setNameWithText(playlistNameTF.text)
-            }
+        if isEnable && playlistNameTextField.text != playlist?.name {
+            playlist?.setNameWithText(playlistNameTextField.text)
         }
         isEnable = !isEnable
         editButton.setTitle(getTextForButtonEdit(), forState: .Normal)
-        playlistNameTF.enabled = isEnable
-        playlistNameTF.becomeFirstResponder()
+        playlistNameTextField.enabled = isEnable
+        playlistNameTextField.becomeFirstResponder()
         titleLabel.hidden = !isEnable
     }
 
     private func getTextForButtonEdit() -> String {
-        switch isEnable {
-        case true:
-            return "SAVE"
-        case false:
-            return "EDIT"
-        }
+        return isEnable ? Strings.Save : Strings.Edit
     }
 
     private func setTextForNumberSongLabel() {
@@ -119,13 +112,13 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .Normal, title: "Delete") { (action, indexPath) in
+        let deleteAction = UITableViewRowAction(style: .Normal, title: Strings.DeleteString) { (action, indexPath) in
             tableView.beginUpdates()
             self.playlist?.deleteSongAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             tableView.endUpdates()
             self.setTextForNumberSongLabel()
-            NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiDeleteSong,
+            kNotification.postNotificationName(Strings.NotiDeleteSong,
                 object: nil, userInfo: [Strings.NotiCellIndex: indexPath])
         }
         deleteAction.backgroundColor = UIColor.redColor()
@@ -155,7 +148,7 @@ extension DetailPlaylistViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         isEnableForEdit()
-        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiChangePlaylistName, object: nil, userInfo: nil)
+        kNotification.postNotificationName(Strings.NotiChangePlaylistName, object: nil, userInfo: nil)
         return true
     }
 }
