@@ -49,8 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
-        if let rc = event?.subtype {
-            switch rc {
+        if let remoteControl = event?.subtype {
+            switch remoteControl {
             case .RemoteControlPlay:
                 detailPlayerVC?.play()
             case .RemoteControlPause:
