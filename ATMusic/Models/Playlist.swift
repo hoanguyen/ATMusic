@@ -11,7 +11,6 @@ import RealmSwift
 
 class Playlist: Object {
     dynamic var name: String!
-    dynamic var avatar: String?
     var songs = List<Song>()
 
     convenience init(name: String) {
@@ -26,6 +25,16 @@ class Playlist: Object {
             }
         }
         RealmManager.addSong(song, intoSongList: songs)
+        return true
+    }
+
+    func deleteSongAtIndex(index: Int) {
+        RealmManager.deleteSong(atIndex: index, inSongList: self.songs)
+    }
+
+    func setNameWithText(text: String?) -> Bool {
+        guard let text = text else { return false }
+        RealmManager.updateNameForPlaylist(self, withText: text)
         return true
     }
 }

@@ -12,17 +12,19 @@ class RealmManager {
 
     static let realm = try? Realm()
 
-    class func add(object: Object) {
+    class func add(object: Object?) {
         do {
             try realm?.write({
+                guard let object = object else { return }
                 realm?.add(object)
             })
         } catch { }
     }
 
-    class func delete(object: Object) {
+    class func delete(object: Object?) {
         do {
             try realm?.write({
+                guard let object = object else { return }
                 realm?.delete(object)
             })
         } catch { }
@@ -41,6 +43,32 @@ class RealmManager {
         do {
             try realm?.write({
                 songs.append(tempSong)
+            })
+        } catch { }
+    }
+
+    class func changePosition(songs: List<Song>, atFirst firstIndex: Int, withSecond secondIndex: Int) {
+        do {
+            try realm?.write({
+                let songTmp = songs[firstIndex]
+                songs[firstIndex] = songs[secondIndex]
+                songs[secondIndex] = songTmp
+            })
+        } catch { }
+    }
+
+    class func deleteSong(atIndex index: Int, inSongList songs: List<Song>) {
+        do {
+            try realm?.write({
+                songs.removeAtIndex(index)
+            })
+        } catch { }
+    }
+
+    class func updateNameForPlaylist(playlist: Playlist, withText text: String) {
+        do {
+            try realm?.write({
+                playlist.name = text
             })
         } catch { }
     }

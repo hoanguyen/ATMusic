@@ -9,7 +9,7 @@
 import UIKit
 
 let kAppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
-
+let kNotification = NSNotificationCenter.defaultCenter()
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
