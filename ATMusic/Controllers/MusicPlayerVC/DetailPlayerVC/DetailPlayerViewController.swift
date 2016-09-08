@@ -228,7 +228,6 @@ class DetailPlayerViewController: BaseVC {
 
     // MARK: - private Actions
     @IBAction func didTapTimerButton(sender: UIButton) {
-        kAppDelegate?.timerVC = nil
         kAppDelegate?.timerVC = TimerViewController()
         if let timerVC = kAppDelegate?.timerVC {
             presentViewController(timerVC, animated: true, completion: nil)

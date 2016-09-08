@@ -65,4 +65,7 @@ class Strings {
     static let DeleteString = "Delete"
     static let Edit = "EDIT"
     static let Save = "SAVE"
+    static let Start = "Start"
+    static let Pause = "Pause"
+    static let Resume = "Resume"
 }

@@ -164,8 +164,7 @@ class PlaylistViewController: BaseVC {
                 },
                 completion: { _ in
                     cell.hidden = true
-                }
-            )
+            })
         case .Changed:
             guard let snapShot = snapShot, let sourceIndexPathTmp = sourceIndexPath else { return }
             var center = snapShot.center
@@ -198,8 +197,7 @@ class PlaylistViewController: BaseVC {
                     self.sourceIndexPath = nil
                     self.snapShot?.removeFromSuperview()
                     self.snapShot = nil
-                }
-            )
+            })
         }
     }
 

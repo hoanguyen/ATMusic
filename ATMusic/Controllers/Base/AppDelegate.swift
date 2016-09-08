@@ -27,10 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var detailPlayerVC: DetailPlayerViewController?
     var timerVC: TimerViewController?
     var repeating: RepeatType = .None
-    var isCounting: Bool = false
-    var isPause: Bool = false
+    var isCounting = false
+    var isPause = false
     var timer: NSTimer?
-    var restCounter: Int = 0
+    var restCounter = 0
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
@@ -46,7 +46,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func updateTimer(timer: NSTimer) {
         restCounter = restCounter - 1
-        print("Appdelegate: \(restCounter)")
         timerVC?.reloadTitleForRestTimeLabel()
         if restCounter == 0 {
             detailPlayerVC?.pause()

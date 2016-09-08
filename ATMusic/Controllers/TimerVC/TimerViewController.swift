@@ -26,7 +26,6 @@ class TimerViewController: BaseVC {
     private var minutes = [Int]()
     private var currentHourRow = 0
     private var currentMinuteRow = 1
-    private var timer: NSTimer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,11 +76,11 @@ class TimerViewController: BaseVC {
         if let isPause = kAppDelegate?.isPause {
             kAppDelegate?.isPause = !isPause
             if isPause {
-                pauseButton.setTitle("Pause", forState: .Normal)
+                pauseButton.setTitle(Strings.Pause, forState: .Normal)
                 kAppDelegate?.setupTimer()
             } else {
                 invalidateTimer()
-                pauseButton.setTitle("Resume", forState: .Normal)
+                pauseButton.setTitle(Strings.Resume, forState: .Normal)
             }
         }
     }
@@ -101,19 +100,17 @@ class TimerViewController: BaseVC {
     }
 
     @IBAction func didTapDismisButton(sender: UIButton) {
-        timer?.invalidate()
         dismissViewControllerAnimated(true, completion: nil)
     }
 
     private func invalidateTimer() {
         kAppDelegate?.timer?.invalidate()
-        timer?.invalidate()
     }
 
     private func setupWhenTimerDidStop() {
-        startButton.setTitle("Start", forState: .Normal)
+        startButton.setTitle(Strings.Start, forState: .Normal)
         startButton.setTitleColor(Color.Green175, forState: .Normal)
-        pauseButton.setTitle("Pause", forState: .Normal)
+        pauseButton.setTitle(Strings.Pause, forState: .Normal)
         pauseButton.setTitleColor(Color.White69, forState: .Normal)
         pauseView.backgroundColor = Color.White178
         pauseButton.enabled = false
@@ -123,7 +120,7 @@ class TimerViewController: BaseVC {
     }
 
     private func setupWhenTimerIsRunning() {
-        startButton.setTitle("Cancel", forState: .Normal)
+        startButton.setTitle(Strings.Cancel, forState: .Normal)
         startButton.setTitleColor(Color.Red225, forState: .Normal)
         pauseButton.enabled = true
         pauseButton.setTitleColor(.blackColor(), forState: .Normal)
