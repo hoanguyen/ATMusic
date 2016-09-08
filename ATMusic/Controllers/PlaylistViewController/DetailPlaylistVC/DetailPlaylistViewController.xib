@@ -12,7 +12,7 @@
                 <outlet property="avatar" destination="qcS-2m-JZt" id="4NL-Ef-8wb"/>
                 <outlet property="editButton" destination="txm-OY-6Xr" id="eJA-ye-9RY"/>
                 <outlet property="numberOfSong" destination="QIz-mD-jRW" id="6Es-5U-fET"/>
-                <outlet property="playlistNameTF" destination="ENC-Vx-Otl" id="8UF-H8-9GE"/>
+                <outlet property="playlistNameTextField" destination="ENC-Vx-Otl" id="btD-LY-eA2"/>
                 <outlet property="tableView" destination="dkd-5z-piR" id="97K-og-Sg4"/>
                 <outlet property="titleLabel" destination="CUc-kE-esT" id="xIL-nK-LfG"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -98,7 +98,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vie-M2-FjH">
                     <rect key="frame" x="0.0" y="130" width="375" height="48"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nvi-LM-YOM">
+                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nvi-LM-YOM">
                             <rect key="frame" x="340" y="12" width="25" height="25"/>
                             <state key="normal" image="Shuffle25"/>
                         </button>

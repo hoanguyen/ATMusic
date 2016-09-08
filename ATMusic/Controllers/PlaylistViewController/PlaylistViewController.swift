@@ -10,6 +10,16 @@ import UIKit
 import SwiftUtils
 import RealmSwift
 
+private enum NumberOfSong: Int {
+    case NoneSong = 0
+    case OneSong
+    case TwoSong
+    case ThreeSong
+    case FourSong
+}
+
+private let kFourSong = 4
+
 private extension CGFloat {
     static let zeroMargin: CGFloat = 0
     static let leftMargin = 5 * Ratio.width
@@ -220,12 +230,12 @@ class PlaylistViewController: BaseVC {
     }
 
     private func addNotification() {
-       kNotification.addObserver(self, selector: .detailPlaylist, name: Strings.NotificationDetailPlaylist, object: nil)
-       kNotification.addObserver(self, selector: .deletePlaylist, name: Strings.NotificationDeletePlaylist, object: nil)
-       kNotification.addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
-       kNotification.addObserver(self, selector: .deleteSong, name: Strings.NotiDeleteSong, object: nil)
-       kNotification.addObserver(self, selector: .changeName, name: Strings.NotiChangePlaylistName, object: nil)
-       kNotification.addObserver(self, selector: .reloadWhenAddNew, name: Strings.NotiReloadWhenAddNew, object: nil)
+        kNotification.addObserver(self, selector: .detailPlaylist, name: Strings.NotificationDetailPlaylist, object: nil)
+        kNotification.addObserver(self, selector: .deletePlaylist, name: Strings.NotificationDeletePlaylist, object: nil)
+        kNotification.addObserver(self, selector: .addNewPlaylist, name: Strings.NotiAddPlaylist, object: nil)
+        kNotification.addObserver(self, selector: .deleteSong, name: Strings.NotiDeleteSong, object: nil)
+        kNotification.addObserver(self, selector: .changeName, name: Strings.NotiChangePlaylistName, object: nil)
+        kNotification.addObserver(self, selector: .reloadWhenAddNew, name: Strings.NotiReloadWhenAddNew, object: nil)
     }
 
     private func addLongPressGestureRecognizer() {
@@ -265,23 +275,25 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
             return cell
         } else {
             if let playlist = playlists?[indexPath.row] {
-                switch playlist.songs.count {
-                case 0, 1:
-                    let cell = collectionView.dequeue(OneImageCell.self, forIndexPath: indexPath)
-                    cell.configCell(playlist: playlist, index: indexPath.row)
-                    return cell
-                case 2:
-                    let cell = collectionView.dequeue(TwoImagesCell.self, forIndexPath: indexPath)
-                    cell.configCell(playlist: playlist, index: indexPath.row)
-                    return cell
-                case 3:
-                    let cell = collectionView.dequeue(ThreeImagesCell.self, forIndexPath: indexPath)
-                    cell.configCell(playlist: playlist, index: indexPath.row)
-                    return cell
-                default:
-                    let cell = collectionView.dequeue(FourImagesCell.self, forIndexPath: indexPath)
-                    cell.configCell(playlist: playlist, index: indexPath.row)
-                    return cell
+                if let numerOfSong = NumberOfSong(rawValue: playlist.songs.count > kFourSong ? kFourSong : playlist.songs.count) {
+                    switch numerOfSong {
+                    case .NoneSong, .OneSong:
+                        let cell = collectionView.dequeue(OneImageCell.self, forIndexPath: indexPath)
+                        cell.configCell(playlist: playlist, index: indexPath.row)
+                        return cell
+                    case .TwoSong:
+                        let cell = collectionView.dequeue(TwoImagesCell.self, forIndexPath: indexPath)
+                        cell.configCell(playlist: playlist, index: indexPath.row)
+                        return cell
+                    case .ThreeSong:
+                        let cell = collectionView.dequeue(ThreeImagesCell.self, forIndexPath: indexPath)
+                        cell.configCell(playlist: playlist, index: indexPath.row)
+                        return cell
+                    case .FourSong:
+                        let cell = collectionView.dequeue(FourImagesCell.self, forIndexPath: indexPath)
+                        cell.configCell(playlist: playlist, index: indexPath.row)
+                        return cell
+                    }
                 }
             }
         }
@@ -327,7 +339,7 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .Normal, title: "Delete") { (action, indexPath) in
+        let deleteAction = UITableViewRowAction(style: .Normal, title: Strings.DeleteString) { (action, indexPath) in
             self.currentPlaylist?.deleteSongAtIndex(indexPath.row)
             self.reloadTableViewWhenDeleteSong(indexPath)
         }
