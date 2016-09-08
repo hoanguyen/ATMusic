@@ -15,11 +15,11 @@ extension UIImage {
             PlayWhite60, PauseWhite60, PauseWhite25, MoreWhite, PlayWhite25,
             RepeatAllRed30, RepeatOffWhite30, RepeatOneRed30,
             PlayBlack, PauseBlack, NextBlack, PrevBlack, ListBlack,
-            Timer, DownArrowRed30
+            Timer, DownArrowRed30, CheckMarkRed30, Audio, Music,
+            TopRed22, TrendingRed22
     }
 
     convenience init!(assetIdentifier: AssetIdentifier) {
         self.init(named: assetIdentifier.rawValue)
     }
-
 }

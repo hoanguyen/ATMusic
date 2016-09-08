@@ -9,6 +9,8 @@
 import UIKit
 import SDWebImage
 
+private let kRatioCornerRadius = 15 * Ratio.width
+
 protocol TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int)
 }
@@ -24,10 +26,10 @@ private extension Int {
 class TrackTableViewCell: UITableViewCell {
     // MARK: - private Outlets
     @IBOutlet private weak var avatar: UIImageView!
-    @IBOutlet private weak var nameOfSongLabel: UILabel!
-    @IBOutlet private weak var nameOfSingerLabel: UILabel!
-    @IBOutlet private weak var durationOfSongLabel: UILabel!
-    @IBOutlet private weak var secondContentView: UIView!
+    @IBOutlet private weak var labelNameOfSong: UILabel!
+    @IBOutlet private weak var labelNameOfSinger: UILabel!
+    @IBOutlet private weak var labelDurationOfSong: UILabel!
+    @IBOutlet private weak var contentView1: UIView!
     @IBOutlet private weak var moreView: UIView!
     @IBOutlet private weak var mainView: UIView!
     @IBOutlet private weak var moreButton: UIButton!
@@ -38,9 +40,11 @@ class TrackTableViewCell: UITableViewCell {
     // MARK: - Override func
     override func awakeFromNib() {
         super.awakeFromNib()
-        nameOfSongLabel.font = HelveticaFont().Regular(17)
-        nameOfSingerLabel.font = HelveticaFont().Regular(13)
-        durationOfSongLabel.font = HelveticaFont().Regular(13)
+        labelNameOfSong.font = HelveticaFont().Regular(17)
+        labelNameOfSinger.font = HelveticaFont().Regular(13)
+        labelDurationOfSong.font = HelveticaFont().Regular(13)
+        avatar.layer.cornerRadius = kRatioCornerRadius
+        avatar.layer.masksToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -59,9 +63,9 @@ class TrackTableViewCell: UITableViewCell {
         if let imageUrlString = song?.urlImage, imageUrl = NSURL(string: imageUrlString) {
             avatar.sd_setImageWithURL(imageUrl)
         }
-        nameOfSongLabel.text = song?.songName
-        nameOfSingerLabel.text = song?.singerName
-        durationOfSongLabel.text = song?.duration.convertDuration()
+        labelNameOfSong.text = song?.songName
+        labelNameOfSinger.text = song?.singerName
+        labelDurationOfSong.text = song?.duration.convertDuration()
     }
 
     func changeIndex(index: Int) {

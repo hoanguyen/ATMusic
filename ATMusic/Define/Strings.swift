@@ -33,6 +33,7 @@ class Strings {
     static let Failure = "Failure"
     static let AddNew = "New Playlist"
     static let DeletePlaylistSuccess = "Delete playlist successful!"
+    static let DisconnectedNetwork = "No Internet, Please, check your network!"
 
     // MARK: - default duration
     static let DefaultDuration = "0"
@@ -58,6 +59,10 @@ class Strings {
 
     static let Trending = "Trending"
     static let Search = "Search"
+    static let Top = "Top"
+    static let Music = "Music"
+    static let Audio = "Audio"
+    static let Categories = "Categories"
 
     static let paternMatchString = "^(Playlist\\s[0-9]+)$"
 
