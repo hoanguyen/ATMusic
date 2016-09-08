@@ -71,7 +71,7 @@ class BaseVC: ViewController {
                     }
                 }
                 RealmManager.add(Playlist(name: text))
-                NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
+                kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
                 finished()
         }
     }
