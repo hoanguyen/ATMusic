@@ -15,10 +15,6 @@ import PageMenu
 
 private let kTimerButtonSize = CGSize(width: 30, height: 30)
 
-protocol DetailPlayerDelegate {
-    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int)
-}
-
 protocol DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int?
     func songInPlaylist(viewController: UIViewController, atIndex index: Int) -> Song?
@@ -52,7 +48,6 @@ class DetailPlayerViewController: BaseVC {
     @IBOutlet private weak var contentView: UIView!
 
     // MARK: - public property
-    var delegate: DetailPlayerDelegate?
     var dataSource: DetailPlayerDataSource?
     var player: AVPlayer?
 
@@ -170,6 +165,14 @@ class DetailPlayerViewController: BaseVC {
     }
 
     // MARK: - public func
+    func getSongIndex() -> Int {
+        return songIndex
+    }
+
+    func changeIndex(songIndex: Int) {
+        self.songIndex = songIndex
+    }
+
     func currentSongID() -> Int? {
         return song?.id
     }

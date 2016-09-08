@@ -208,13 +208,11 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
         if Helper.isConnectedToNetwork() {
             if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
                 kAppDelegate?.detailPlayerVC?.player = nil
-                kAppDelegate?.detailPlayerVC?.delegate = nil
                 kAppDelegate?.detailPlayerVC?.dataSource = nil
                 kAppDelegate?.detailPlayerVC = nil
                 kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row],
                     songIndex: indexPath.row, playlistName: Strings.Trending)
                 if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                    detailPlayerVC.delegate = self
                     detailPlayerVC.dataSource = self
                     tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
                 }
@@ -234,11 +232,7 @@ extension ChartViewController: TrackTableViewCellDelegate {
 }
 
 //MARK: - DetailPlayerDelegate
-extension ChartViewController: DetailPlayerDelegate, DetailPlayerDataSource {
-    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
-        print(index)
-    }
-
+extension ChartViewController: DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return songs?.count
     }

@@ -22,13 +22,15 @@ class DetailPlaylistViewController: BaseVC {
     // MARK: - private property
     private var playlist: Playlist?
     private var index = 0
-    private var isEnable = false
+    private var isEnableToEditNamePlaylist = false
+    private var isCurrentPlaylistAtParentVC = false
 
     // MARK: - override func
-    convenience init(playlist: Playlist?, index: Int) {
+    convenience init(playlist: Playlist?, index: Int, isCurrentPlaylistAtParentVC: Bool) {
         self.init()
         self.playlist = playlist
         self.index = index
+        self.isCurrentPlaylistAtParentVC = isCurrentPlaylistAtParentVC
     }
 
     override func viewDidLoad() {
@@ -41,9 +43,9 @@ class DetailPlaylistViewController: BaseVC {
     }
 
     override func configUI() {
-        if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
-            avatar.sd_setImageWithURL(imageURL)
-        }
+        navigationController?.navigationBar.tintColor = Color.Red225
+        navigationItem.backBarButtonItem?.title = ""
+        setupImage()
         playlistNameTF.text = playlist?.name
         playlistNameTF.enabled = false
         setTextForNumberSongLabel()
@@ -74,20 +76,33 @@ class DetailPlaylistViewController: BaseVC {
     }
 
     private func isEnableForEdit() {
-        if isEnable {
-            if playlistNameTF.text != playlist?.name {
-                playlist?.setNameWithText(playlistNameTF.text)
+        if isEnableToEditNamePlaylist {
+            let text = playlistNameTF.text?.trimmedCJK()
+            if text == "" {
+                Alert.sharedInstance.showAlert(self, title: Strings.Warning, message: Strings.EmptyPlaylistName)
+            } else {
+                if text != playlist?.name {
+                    playlist?.setNameWithText(text)
+                    NSNotificationCenter.defaultCenter().postNotificationName(
+                        Strings.NotiChangePlaylistName,
+                        object: nil,
+                        userInfo: [Strings.NotiCurrentPlaylistAtParentVC: isCurrentPlaylistAtParentVC])
+                }
             }
+            playlistNameTF.borderStyle = .None
+        } else {
+            playlistNameTF.borderStyle = .RoundedRect
         }
-        isEnable = !isEnable
+        playlistNameTF.text = playlist?.name
+        isEnableToEditNamePlaylist = !isEnableToEditNamePlaylist
         editButton.setTitle(getTextForButtonEdit(), forState: .Normal)
-        playlistNameTF.enabled = isEnable
+        playlistNameTF.enabled = isEnableToEditNamePlaylist
         playlistNameTF.becomeFirstResponder()
-        titleLabel.hidden = !isEnable
+        titleLabel.hidden = !isEnableToEditNamePlaylist
     }
 
     private func getTextForButtonEdit() -> String {
-        switch isEnable {
+        switch isEnableToEditNamePlaylist {
         case true:
             return "SAVE"
         case false:
@@ -98,6 +113,14 @@ class DetailPlaylistViewController: BaseVC {
     private func setTextForNumberSongLabel() {
         if let number = playlist?.songs.count {
             numberOfSong.text = number > 1 ? "\(number) songs" : "\(number) song"
+        }
+    }
+
+    private func setupImage() {
+        if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
+            avatar.sd_setImageWithURL(imageURL)
+        } else {
+            avatar.image = UIImage()
         }
     }
 }
@@ -125,8 +148,12 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             tableView.endUpdates()
             self.setTextForNumberSongLabel()
+            self.setupImage()
+            if indexPath.row == kAppDelegate?.detailPlayerVC?.getSongIndex() && self.isCurrentPlaylistAtParentVC {
+                kAppDelegate?.detailPlayerVC?.changeIndex(indexPath.row - 1)
+            }
             NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiDeleteSong,
-                object: nil, userInfo: [Strings.NotiCellIndex: indexPath])
+                object: nil, userInfo: [Strings.NotiCellIndex: indexPath, Strings.NotiCurrentPlaylistAtParentVC: self.isCurrentPlaylistAtParentVC])
         }
         deleteAction.backgroundColor = UIColor.redColor()
         return [deleteAction]
@@ -135,13 +162,11 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if kAppDelegate?.detailPlayerVC?.currentSongID() != playlist?.songs[indexPath.row].id {
             kAppDelegate?.detailPlayerVC?.player = nil
-            kAppDelegate?.detailPlayerVC?.delegate = nil
             kAppDelegate?.detailPlayerVC?.dataSource = nil
             kAppDelegate?.detailPlayerVC = nil
             kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: playlist?.songs[indexPath.row],
                 songIndex: indexPath.row, playlistName: playlist?.name)
             if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                detailPlayerVC.delegate = self
                 detailPlayerVC.dataSource = self
                 tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
             }
@@ -155,16 +180,12 @@ extension DetailPlaylistViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         isEnableForEdit()
-        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiChangePlaylistName, object: nil, userInfo: nil)
         return true
     }
 }
 
 //MARK: - DetailPlayerDelegate
-extension DetailPlaylistViewController: DetailPlayerDelegate, DetailPlayerDataSource {
-    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
-        print(index)
-    }
+extension DetailPlaylistViewController: DetailPlayerDataSource {
 
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return playlist?.songs.count

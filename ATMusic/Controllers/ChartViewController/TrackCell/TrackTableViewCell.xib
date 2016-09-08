@@ -59,17 +59,22 @@
                                 <rect key="frame" x="190" y="0.0" width="95" height="60"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4:32" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="zqc-ab-IgJ">
-                                        <rect key="frame" x="37" y="24" width="22" height="13"/>
+                                        <rect key="frame" x="18" y="24" width="22" height="13"/>
                                         <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="11"/>
                                         <color key="textColor" red="0.32549019607843138" green="0.34509803921568627" blue="0.37254901960784315" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MDV-u2-I1l">
-                                        <rect key="frame" x="79" y="23" width="15" height="15"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MDV-u2-I1l">
+                                        <rect key="frame" x="50" y="0.0" width="50" height="60"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="MDV-u2-I1l" secondAttribute="height" multiplier="1:1" id="Mbd-Wx-KKQ"/>
                                         </constraints>
-                                        <state key="normal" backgroundImage="MoreRed"/>
+                                        <state key="normal" image="MoreRed"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="Mbd-Wx-KKQ"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
                                             <action selector="didTapButtonMore:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="xgd-3T-1VT"/>
                                         </connections>
@@ -77,11 +82,12 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="MDV-u2-I1l" secondAttribute="trailing" constant="1" id="75y-iH-4TY"/>
+                                    <constraint firstAttribute="trailing" secondItem="MDV-u2-I1l" secondAttribute="trailing" constant="-5" id="75y-iH-4TY"/>
                                     <constraint firstItem="zqc-ab-IgJ" firstAttribute="centerY" secondItem="6Yi-qJ-zB1" secondAttribute="centerY" id="KMc-bV-T3g"/>
-                                    <constraint firstItem="MDV-u2-I1l" firstAttribute="leading" secondItem="zqc-ab-IgJ" secondAttribute="trailing" constant="20" id="k20-gM-M9F"/>
-                                    <constraint firstItem="MDV-u2-I1l" firstAttribute="width" secondItem="6Yi-qJ-zB1" secondAttribute="width" multiplier="16/95" constant="-1.4489795918367356" id="uPy-dF-XZg"/>
+                                    <constraint firstItem="MDV-u2-I1l" firstAttribute="leading" secondItem="zqc-ab-IgJ" secondAttribute="trailing" constant="10" id="k20-gM-M9F"/>
+                                    <constraint firstItem="MDV-u2-I1l" firstAttribute="width" secondItem="6Yi-qJ-zB1" secondAttribute="width" multiplier="50/95" id="uPy-dF-XZg"/>
                                     <constraint firstItem="MDV-u2-I1l" firstAttribute="centerY" secondItem="6Yi-qJ-zB1" secondAttribute="centerY" id="xD1-n0-TdV"/>
+                                    <constraint firstItem="MDV-u2-I1l" firstAttribute="height" secondItem="6Yi-qJ-zB1" secondAttribute="height" id="yza-Ar-GbI"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -140,6 +146,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="MoreRed" width="15" height="15"/>
+        <image name="MoreRed" width="25" height="25"/>
     </resources>
 </document>
