@@ -168,4 +168,8 @@ class APIManager {
             finished(data: data, error: false, message: "")
         })
     }
+
+    func cancelRequest() {
+        request?.cancel()
+    }
 }

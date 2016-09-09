@@ -7,8 +7,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="ATMusic" customModuleProvider="target">
             <connections>
+                <outlet property="dataLabel" destination="Zsp-rU-9s9" id="4DD-Rf-4MA"/>
                 <outlet property="paddingTopConstraint" destination="tnX-j8-dWV" id="e4w-ph-d3a"/>
-                <outlet property="searchBar" destination="9XE-i8-XVE" id="wRk-Bc-j1e"/>
                 <outlet property="tableView" destination="LQZ-rS-UUg" id="9oS-cW-otl"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -22,7 +22,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
-                <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="9XE-i8-XVE">
+                <searchBar hidden="YES" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="9XE-i8-XVE">
                     <rect key="frame" x="0.0" y="64" width="375" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <textInputTraits key="textInputTraits"/>
@@ -30,17 +30,22 @@
                         <string>Title</string>
                         <string>Title</string>
                     </scopeButtonTitles>
-                    <connections>
-                        <outlet property="delegate" destination="-1" id="dmM-O2-CSz"/>
-                    </connections>
                 </searchBar>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zsp-rU-9s9">
+                    <rect key="frame" x="157" y="323" width="61" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.69907852559999994" green="0.69907852559999994" blue="0.69907852559999994" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="9XE-i8-XVE" secondAttribute="trailing" id="7Xw-kJ-qcg"/>
                 <constraint firstItem="LQZ-rS-UUg" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="GeP-E4-Y6C"/>
                 <constraint firstItem="LQZ-rS-UUg" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="GjW-12-oDF"/>
+                <constraint firstItem="Zsp-rU-9s9" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="RLZ-CD-4JY"/>
                 <constraint firstAttribute="bottom" secondItem="LQZ-rS-UUg" secondAttribute="bottom" id="Yqx-og-pL2"/>
+                <constraint firstItem="Zsp-rU-9s9" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="ZAk-pv-YxY"/>
                 <constraint firstAttribute="trailing" secondItem="LQZ-rS-UUg" secondAttribute="trailing" id="m3e-9n-fR7"/>
                 <constraint firstItem="9XE-i8-XVE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="my1-DG-mnR"/>
                 <constraint firstItem="9XE-i8-XVE" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="tnX-j8-dWV"/>

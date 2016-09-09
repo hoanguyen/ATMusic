@@ -25,6 +25,7 @@ private extension Selector {
 class ChartViewController: BaseVC {
     // MARK: - Private Outlet
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var indicatorView: UIActivityIndicatorView!
 
     // MARK: - private property
     private var currentGenre: String = ""
@@ -34,7 +35,6 @@ class ChartViewController: BaseVC {
     private var offset = 0
     private var songs: [Song]?
     private var rightNaviBarButton: UIBarButtonItem!
-    private var indicator: UIActivityIndicatorView?
     private var afterConfigUI = false
 
     // MARK: - Override func
@@ -132,21 +132,11 @@ class ChartViewController: BaseVC {
         navigationController?.navigationBar.tintColor = Color.Red225
     }
 
-    private func addIndicator() {
-        indicator = UIActivityIndicatorView()
-        indicator?.color = Color.Red225
-        indicator?.hidesWhenStopped = true
-        indicator?.center = view.center
-        indicator?.bounds.size = CGSize(width: 30, height: 30)
-        view.addSubview(indicator ?? UIView())
-        indicator?.startAnimating()
-    }
-
     private func loadSong(isRefresh isRefresh: Bool) {
         if Helper.isConnectedToNetwork() {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             if isRefresh {
-                addIndicator()
+                indicatorView.startAnimating()
                 offset = 0
                 songs?.removeAll()
                 tableView.reloadData()
@@ -157,7 +147,7 @@ class ChartViewController: BaseVC {
                 andGenre: currentGenre,
                 limit: limit,
                 atOffset: offset) { (result, error, message) in
-                    self.indicator?.stopAnimating()
+                    self.indicatorView.stopAnimating()
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     if error {
                         print("ERROR: \(message)")
@@ -171,7 +161,7 @@ class ChartViewController: BaseVC {
                     self.tableView.infiniteScrollingView.stopAnimating()
             }
         } else {
-            indicator?.stopAnimating()
+            indicatorView.stopAnimating()
             if afterConfigUI {
                 tableView.pullToRefreshView.stopAnimating()
                 tableView.infiniteScrollingView.stopAnimating()
