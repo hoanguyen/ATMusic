@@ -13,7 +13,7 @@ class DetailPlaylistViewController: BaseVC {
 
     // MARK: - private outlet
     @IBOutlet private weak var avatar: UIImageView!
-    @IBOutlet private weak var playlistNameTF: UITextField!
+    @IBOutlet private weak var playlistNameTextField: UITextField!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var numberOfSong: UILabel!
     @IBOutlet private weak var tableView: UITableView!
@@ -46,13 +46,16 @@ class DetailPlaylistViewController: BaseVC {
         navigationController?.navigationBar.tintColor = Color.Red225
         navigationItem.backBarButtonItem?.title = ""
         setupImage()
-        playlistNameTF.text = playlist?.name
-        playlistNameTF.enabled = false
+        if let imageURLString = playlist?.songs.first?.urlImage, imageURL = NSURL(string: imageURLString) {
+            avatar.sd_setImageWithURL(imageURL)
+        }
+        playlistNameTextField.text = playlist?.name
+        playlistNameTextField.enabled = false
         setTextForNumberSongLabel()
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
-        playlistNameTF.delegate = self
+        playlistNameTextField.delegate = self
     }
 
     // MARK: - private func
@@ -68,7 +71,7 @@ class DetailPlaylistViewController: BaseVC {
                 }
             }
             self.navigationController?.popViewControllerAnimated(true)
-            NSNotificationCenter.defaultCenter().postNotificationName(
+            kNotification.postNotificationName(
                 Strings.NotificationDeletePlaylist,
                 object: nil,
                 userInfo: [Strings.NotiCellIndex: self.index])
@@ -77,7 +80,7 @@ class DetailPlaylistViewController: BaseVC {
 
     private func isEnableForEdit() {
         if isEnableToEditNamePlaylist {
-            let text = playlistNameTF.text?.trimmedCJK()
+            let text = playlistNameTextField.text?.trimmedCJK()
             if text == "" {
                 Alert.sharedInstance.showAlert(self, title: Strings.Warning, message: Strings.EmptyPlaylistName)
             } else {
@@ -89,25 +92,20 @@ class DetailPlaylistViewController: BaseVC {
                         userInfo: [Strings.NotiCurrentPlaylistAtParentVC: isCurrentPlaylistAtParentVC])
                 }
             }
-            playlistNameTF.borderStyle = .None
+            playlistNameTextField.borderStyle = .None
         } else {
-            playlistNameTF.borderStyle = .RoundedRect
+            playlistNameTextField.borderStyle = .RoundedRect
         }
-        playlistNameTF.text = playlist?.name
+        playlistNameTextField.text = playlist?.name
         isEnableToEditNamePlaylist = !isEnableToEditNamePlaylist
         editButton.setTitle(getTextForButtonEdit(), forState: .Normal)
-        playlistNameTF.enabled = isEnableToEditNamePlaylist
-        playlistNameTF.becomeFirstResponder()
+        playlistNameTextField.enabled = isEnableToEditNamePlaylist
+        playlistNameTextField.becomeFirstResponder()
         titleLabel.hidden = !isEnableToEditNamePlaylist
     }
 
     private func getTextForButtonEdit() -> String {
-        switch isEnableToEditNamePlaylist {
-        case true:
-            return "SAVE"
-        case false:
-            return "EDIT"
-        }
+        return isEnableToEditNamePlaylist ? Strings.Save : Strings.Edit
     }
 
     private func setTextForNumberSongLabel() {
@@ -142,7 +140,7 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .Normal, title: "Delete") { (action, indexPath) in
+        let deleteAction = UITableViewRowAction(style: .Normal, title: Strings.DeleteString) { (action, indexPath) in
             tableView.beginUpdates()
             self.playlist?.deleteSongAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
@@ -152,8 +150,8 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
             if indexPath.row == kAppDelegate?.detailPlayerVC?.getSongIndex() && self.isCurrentPlaylistAtParentVC {
                 kAppDelegate?.detailPlayerVC?.changeIndex(indexPath.row - 1)
             }
-            NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiDeleteSong,
-                object: nil, userInfo: [Strings.NotiCellIndex: indexPath, Strings.NotiCurrentPlaylistAtParentVC: self.isCurrentPlaylistAtParentVC])
+            kNotification.postNotificationName(Strings.NotiDeleteSong,
+                object: nil, userInfo: [Strings.NotiCellIndex: indexPath])
         }
         deleteAction.backgroundColor = UIColor.redColor()
         return [deleteAction]

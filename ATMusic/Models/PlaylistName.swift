@@ -10,8 +10,8 @@ import Foundation
 import RealmSwift
 
 class PlaylistName: Object {
-    dynamic var id: Int = -1
-    dynamic var name: String!
+    dynamic var id = -1
+    dynamic var name = ""
     dynamic var isUse: Bool = false
 
     override class func primaryKey() -> String? {

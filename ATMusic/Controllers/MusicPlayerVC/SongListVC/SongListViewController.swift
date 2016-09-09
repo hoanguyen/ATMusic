@@ -21,7 +21,7 @@ class SongListViewController: BaseVC {
 
     // MARK: - private property
     private var songNameList: [String]?
-    private var playingIndex: Int = -1
+    private var playingIndex = -1
     private var playlistName: String?
 
     // MARK: - override func
