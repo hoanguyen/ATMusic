@@ -9,6 +9,9 @@
 import UIKit
 import SVPullToRefresh
 
+private let kTableviewTopMargin: CGFloat = 64
+private let kTableviewBottomMargin: CGFloat = 49
+
 class SearchViewController: BaseVC {
     // MARK: - private outlet
     @IBOutlet private weak var tableView: UITableView!
@@ -44,14 +47,14 @@ class SearchViewController: BaseVC {
         navigationController?.navigationBar.backgroundColor = Color.White178
         tableView.separatorStyle = .None
         super.configUI()
-        tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 49, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: kTableviewTopMargin, left: 0, bottom: kTableviewBottomMargin, right: 0)
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.addInfiniteScrollingWithActionHandler {
             self.loadSong()
         }
-        hideBottomBorder()
+//        hideBottomBorder()
     }
 
     override func loadData() {
@@ -60,7 +63,7 @@ class SearchViewController: BaseVC {
 
     // MARK: - private func
     private func loadSong() {
-        if songs?.count == 0 {
+        if let isEmpty = songs?.isEmpty where isEmpty {
             self.tableView.infiniteScrollingView.stopAnimating()
             return
         }
@@ -86,14 +89,14 @@ class SearchViewController: BaseVC {
         }
     }
 
-    private func hideBottomBorder() {
-        for view in (navigationController?.navigationBar.subviews.filter({
-            NSStringFromClass($0.dynamicType) == "_UINavigationBarBackground" }))! as [UIView] {
-                if let imageView = view.subviews.filter({ $0 is UIImageView }).first as? UIImageView {
-                    imageView.removeFromSuperview()
-                }
-        }
-    }
+//    private func hideBottomBorder() {
+//        for view in (navigationController?.navigationBar.subviews.filter({
+//            NSStringFromClass($0.dynamicType) == "_UINavigationBarBackground" }))! as [UIView] {
+//                if let imageView = view.subviews.filter({ $0 is UIImageView }).first as? UIImageView {
+//                    imageView.removeFromSuperview()
+//                }
+//        }
+//    }
 }
 
 // MARK: - UITableViewDelegate and DataSource
@@ -186,14 +189,14 @@ extension SearchViewController: UISearchBarDelegate {
     }
 }
 
-//MARK: - TrackTableViewCellDelegate
+// MARK: - TrackTableViewCellDelegate
 extension SearchViewController: TrackTableViewCellDelegate {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int) {
         addSongIntoPlaylist(songs?[cellIndex])
     }
 }
 
-//MARK: - DetailPlayerDelegate
+// MARK: - DetailPlayerDelegate
 extension SearchViewController: DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return songs?.count
@@ -204,7 +207,7 @@ extension SearchViewController: DetailPlayerDataSource {
     }
 
     func songNameList(viewController: UIViewController) -> [String]? {
-        var songNameList = [String]()
+        var songNameList: [String] = [String]()
         guard let songs = songs else { return nil }
         for item in songs {
             if let name = item.songName {

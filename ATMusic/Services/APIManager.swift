@@ -53,7 +53,7 @@ enum Router: URLRequestConvertible {
     }
 
     var parameter: [String: AnyObject] {
-        var parameters = [String: AnyObject]()
+        var parameters: [String: AnyObject] = [String: AnyObject]()
         parameters["client_id"] = Strings.ClientID
         switch self {
         case .GetSong(let kind, let path, let limit, let offset):
@@ -75,10 +75,10 @@ enum Router: URLRequestConvertible {
     // MARK: URLRequestConvertible
 
     var URLRequest: NSMutableURLRequest {
-        let URL = NSURL(string: Strings.BaseURLString)!
+        let URL = NSURL(string: Strings.BaseURLString) ?? NSURL()
         let mutableURLRequest = NSMutableURLRequest(URL: URL.URLByAppendingPathComponent(path))
         mutableURLRequest.HTTPMethod = method.rawValue
-        let URLDownloadSong = NSURL(string: Strings.BaseDownloadString)!
+        let URLDownloadSong = NSURL(string: Strings.BaseDownloadString) ?? NSURL()
         let mutableURLRequestDownloadSong = NSMutableURLRequest(URL: URLDownloadSong.URLByAppendingPathComponent(path))
         mutableURLRequestDownloadSong.HTTPMethod = method.rawValue
         switch self {
@@ -101,7 +101,7 @@ class APIManager {
         dispatch_once(&Static.onceToken) {
             Static.instance = APIManager()
         }
-        return Static.instance!
+        return Static.instance ?? APIManager()
     }
 
     private var request: Alamofire.Request?
@@ -117,7 +117,7 @@ class APIManager {
                     guard let JSON = response.result.value else { finished(result: nil,
                         error: true, message: response.result.debugDescription) ; return }
                     let collection = JSON["collection"] as? NSArray
-                    var songs = [Song]()
+                    var songs: [Song] = [Song]()
                     if let collection = collection {
                         for item in collection {
                             let track = item["track"]
@@ -140,7 +140,7 @@ class APIManager {
                 guard let JSON = response.result.value else { finished(result: nil,
                     error: true, message: response.result.debugDescription) ; return }
                 let collection = JSON["collection"] as? NSArray
-                var songs = [Song]()
+                var songs: [Song] = [Song]()
                 if let collection = collection {
                     for item in collection {
                         guard let song = Mapper<Song>().map(item) else { break }

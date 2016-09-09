@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SongListControllerDelegate {
+protocol SongListControllerDelegate: NSObjectProtocol {
     func songListViewController(viewController: UIViewController, didSelectSongAtIndex index: Int)
 }
 
@@ -17,7 +17,7 @@ class SongListViewController: BaseVC {
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - public property
-    var delegate: SongListControllerDelegate?
+    weak var delegate: SongListControllerDelegate?
 
     // MARK: - private property
     private var songNameList: [String]?
@@ -76,6 +76,7 @@ class SongListViewController: BaseVC {
 
 }
 
+// MARK: - UITableViewDelegate, UITableViewDataSource
 extension SongListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return SongListCell.cellHeight()

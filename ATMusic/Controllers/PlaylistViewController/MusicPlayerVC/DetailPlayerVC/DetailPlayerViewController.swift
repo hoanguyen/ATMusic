@@ -13,7 +13,7 @@ import LNPopupController
 import MediaPlayer
 import PageMenu
 
-protocol DetailPlayerDelegate {
+protocol DetailPlayerDelegate: class {
     func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int)
 }
 
@@ -50,7 +50,7 @@ class DetailPlayerViewController: BaseVC {
     @IBOutlet private weak var contentView: UIView!
 
     // MARK: - public property
-    var delegate: DetailPlayerDelegate?
+    weak var delegate: DetailPlayerDelegate?
     var dataSource: DetailPlayerDataSource?
     var player: AVPlayer?
 
@@ -123,12 +123,14 @@ class DetailPlayerViewController: BaseVC {
             prevBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .PrevBlack), style: .Plain, target: self, action: .prevSong)
             nextBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .NextBlack), style: .Plain, target: self, action: .nextSong)
 
-            popupItem.leftBarButtonItems = [prevBarButtonItem!, playBarButtonItem!, nextBarButtonItem!]
-            popupItem.rightBarButtonItems = [moreBatButtonItem!]
+            popupItem.leftBarButtonItems = [prevBarButtonItem ?? UIBarButtonItem(),
+                playBarButtonItem ?? UIBarButtonItem(),
+                nextBarButtonItem ?? UIBarButtonItem()]
+            popupItem.rightBarButtonItems = [moreBatButtonItem ?? UIBarButtonItem()]
             popupBar?.leftBarButtonItems?.startIndex
         } else {
-            popupItem.leftBarButtonItems = [playBarButtonItem!]
-            popupItem.rightBarButtonItems = [moreBatButtonItem!]
+            popupItem.leftBarButtonItems = [playBarButtonItem ?? UIBarButtonItem()]
+            popupItem.rightBarButtonItems = [moreBatButtonItem ?? UIBarButtonItem()]
         }
     }
 
@@ -269,7 +271,7 @@ class DetailPlayerViewController: BaseVC {
     }
 }
 
-//MARK: - DetailPlayVC extension for private func
+// MARK: - DetailPlayVC extension for private func
 extension DetailPlayerViewController {
     private func setupPageMenu() {
         if let songNameList = dataSource?.songNameList(self) {
@@ -279,7 +281,7 @@ extension DetailPlayerViewController {
         }
         imageVC = ImageViewController(imageURLString: song?.urlImage)
         lyricVC = LyricViewController.vc()
-        let arrayVC = [songListVC!, imageVC!, lyricVC!]
+        let arrayVC: [UIViewController] = [songListVC ?? UIViewController(), imageVC ?? UIViewController(), lyricVC ?? UIViewController()]
         let parameters: [CAPSPageMenuOption] = [
                 .MenuItemSeparatorWidth(4.3),
                 .UseMenuLikeSegmentedControl(true),

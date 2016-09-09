@@ -24,8 +24,8 @@ class TimerViewController: BaseVC {
     @IBOutlet private weak var pauseView: UIView!
 
     // MARK: - private property
-    private var hours = [Int]()
-    private var minutes = [Int]()
+    private var hours: [Int] = [Int]()
+    private var minutes: [Int] = [Int]()
     private var currentHourRow = 0
     private var currentMinuteRow = 1
 
@@ -157,6 +157,7 @@ class TimerViewController: BaseVC {
     }
 }
 
+// MARK: - UIPickerViewDelegate, UIPickerViewDataSource
 extension TimerViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 4 // ex: "5" "hours" "1" "min" = 4 component

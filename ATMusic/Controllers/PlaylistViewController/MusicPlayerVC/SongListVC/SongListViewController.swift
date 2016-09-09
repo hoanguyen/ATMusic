@@ -9,7 +9,7 @@
 import UIKit
 
 class SongListViewController: BaseVC {
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var songNameList: [String]?
     private var playingIndex: Int = -1
@@ -39,6 +39,7 @@ class SongListViewController: BaseVC {
     }
 }
 
+// MARK: - UITableViewDelegate, UITableViewDataSource
 extension SongListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return SongListCell.cellHeight()

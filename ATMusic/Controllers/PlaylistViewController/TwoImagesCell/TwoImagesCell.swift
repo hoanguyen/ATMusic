@@ -33,7 +33,8 @@ class TwoImagesCell: BaseCell {
             imageView2.sd_setImageWithURL(imageUrl)
         }
     }
-    @IBAction func didTapPlayButton(sender: UIButton) {
+
+    @IBAction private func didTapPlayButton(sender: UIButton) {
         super.didTapPlayButton()
     }
 

@@ -11,7 +11,7 @@ import SDWebImage
 
 private let kRatioCornerRadius = 15 * Ratio.width
 
-protocol TrackTableViewCellDelegate {
+protocol TrackTableViewCellDelegate: NSObjectProtocol {
     func didTapMoreButton(tableViewCell: TrackTableViewCell, cellIndex: Int)
 }
 
@@ -33,7 +33,7 @@ class TrackTableViewCell: UITableViewCell {
     @IBOutlet private weak var mainView: UIView!
     @IBOutlet private weak var moreButton: UIButton!
     // MARK: - public property
-    var delegate: TrackTableViewCellDelegate?
+    weak var delegate: TrackTableViewCellDelegate?
     // MARK: - private property
     private var cellIndex = 0
     // MARK: - Override func

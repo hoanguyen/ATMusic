@@ -18,7 +18,7 @@ class CategoryViewController: BaseVC {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var cancelButton: UIButton!
 
-    var delegate: CategoryViewControllerDelegate?
+    weak var delegate: CategoryViewControllerDelegate?
     var indexPath = NSIndexPath()
 
     convenience init(selectRowAtIndexPath indexPath: NSIndexPath) {
@@ -53,6 +53,7 @@ class CategoryViewController: BaseVC {
     // MARK: - private func
 }
 
+// MARK: - UITableViewDelegate, UITableViewDataSource
 extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return kNumberSection

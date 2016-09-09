@@ -177,7 +177,7 @@ class ChartViewController: BaseVC {
     }
 }
 
-//MARK: - extension of UITableViewDelegate and UITableViewDataSource
+// MARK: - extension of UITableViewDelegate and UITableViewDataSource
 extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return TrackTableViewCell.cellHeight()
@@ -221,7 +221,7 @@ extension ChartViewController: TrackTableViewCellDelegate {
     }
 }
 
-//MARK: - DetailPlayerDelegate
+// MARK: - DetailPlayerDelegate
 extension ChartViewController: DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return songs?.count
@@ -232,7 +232,7 @@ extension ChartViewController: DetailPlayerDataSource {
     }
 
     func songNameList(viewController: UIViewController) -> [String]? {
-        var songNameList = [String]()
+        var songNameList: [String] = [String]()
         guard let songs = songs else { return nil }
         for item in songs {
             if let name = item.songName {
@@ -243,7 +243,7 @@ extension ChartViewController: DetailPlayerDataSource {
     }
 }
 
-//MARK: - CategoryVC Delegate
+// MARK: - CategoryVC Delegate
 extension ChartViewController: CategoryViewControllerDelegate {
     func categoryViewController(viewController: UIViewController, didSelectCategoryAtIndexPath indexPath: NSIndexPath) {
         currentIndexPathOfGenreType = indexPath

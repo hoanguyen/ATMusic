@@ -173,7 +173,7 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
     }
 }
 
-//MARK: - TextField Delegate
+// MARK: - TextField Delegate
 extension DetailPlaylistViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -182,7 +182,7 @@ extension DetailPlaylistViewController: UITextFieldDelegate {
     }
 }
 
-//MARK: - DetailPlayerDelegate
+// MARK: - DetailPlayerDelegate
 extension DetailPlaylistViewController: DetailPlayerDataSource {
 
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {

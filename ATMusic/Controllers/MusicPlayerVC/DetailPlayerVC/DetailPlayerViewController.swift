@@ -128,12 +128,14 @@ class DetailPlayerViewController: BaseVC {
             prevBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .PrevBlack), style: .Plain, target: self, action: .prevSong)
             nextBarButtonItem = UIBarButtonItem(image: UIImage(assetIdentifier: .NextBlack), style: .Plain, target: self, action: .nextSong)
 
-            popupItem.leftBarButtonItems = [prevBarButtonItem!, playBarButtonItem!, nextBarButtonItem!]
-            popupItem.rightBarButtonItems = [moreBatButtonItem!]
+            popupItem.leftBarButtonItems = [prevBarButtonItem ?? UIBarButtonItem(),
+                playBarButtonItem ?? UIBarButtonItem(),
+                nextBarButtonItem ?? UIBarButtonItem()]
+            popupItem.rightBarButtonItems = [moreBatButtonItem ?? UIBarButtonItem()]
             popupBar?.leftBarButtonItems?.startIndex
         } else {
-            popupItem.leftBarButtonItems = [playBarButtonItem!]
-            popupItem.rightBarButtonItems = [moreBatButtonItem!]
+            popupItem.leftBarButtonItems = [playBarButtonItem ?? UIBarButtonItem()]
+            popupItem.rightBarButtonItems = [moreBatButtonItem ?? UIBarButtonItem()]
         }
     }
 
@@ -291,7 +293,7 @@ class DetailPlayerViewController: BaseVC {
     }
 }
 
-//MARK: - DetailPlayVC extension for private func
+// MARK: - DetailPlayVC extension for private func
 extension DetailPlayerViewController {
     private func setupPageMenu() {
         if let songNameList = dataSource?.songNameList(self) {
@@ -303,7 +305,7 @@ extension DetailPlayerViewController {
         songListVC?.delegate = self
         imageVC = ImageViewController(imageURLString: song?.urlImage)
         lyricVC = LyricViewController.vc()
-        let arrayVC = [songListVC!, imageVC!, lyricVC!]
+        let arrayVC: [UIViewController] = [songListVC ?? UIViewController(), imageVC ?? UIViewController(), lyricVC ?? UIViewController()]
         let parameters: [CAPSPageMenuOption] = [
                 .MenuItemSeparatorWidth(4.3),
                 .UseMenuLikeSegmentedControl(true),
@@ -488,7 +490,7 @@ extension DetailPlayerViewController {
     }
 }
 
-//MARK: - SongList Delegate
+// MARK: - SongList Delegate
 extension DetailPlayerViewController: SongListControllerDelegate {
     func songListViewController(viewController: UIViewController, didSelectSongAtIndex index: Int) {
         songIndex = index

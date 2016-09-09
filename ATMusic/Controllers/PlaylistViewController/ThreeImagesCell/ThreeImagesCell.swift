@@ -39,7 +39,7 @@ class ThreeImagesCell: BaseCell {
         }
     }
 
-    @IBAction func didTapPlayButton(sender: UIButton) {
+    @IBAction private func didTapPlayButton(sender: UIButton) {
         super.didTapPlayButton()
     }
 }

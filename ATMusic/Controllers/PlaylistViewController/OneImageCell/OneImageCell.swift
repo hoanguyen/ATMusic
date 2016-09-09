@@ -26,7 +26,7 @@ class OneImageCell: BaseCell {
     func configCell(playlist playlist: Playlist?, index: Int) {
         super.configIndexForCell(index)
         playlistNameLabel.text = playlist?.name
-        if playlist?.songs.count == 0 {
+        if let isEmpty = playlist?.songs.isEmpty where isEmpty {
             imageView.image = UIImage(assetIdentifier: .HolderPlaylist)
             numberSongLabel.text = Strings.ZeroSong
         } else {
@@ -37,7 +37,7 @@ class OneImageCell: BaseCell {
         }
     }
 
-    @IBAction func didTapPlayButton(sender: UIButton) {
+    @IBAction private func didTapPlayButton(sender: UIButton) {
         super.didTapPlayButton()
     }
 
