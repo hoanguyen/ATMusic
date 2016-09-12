@@ -67,11 +67,11 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L3E-LA-V0N">
                             <rect key="frame" x="78" y="139" width="70" height="70"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m58-yp-l25">
-                                    <rect key="frame" x="7" y="20" width="56" height="30"/>
+                                <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m58-yp-l25">
+                                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <state key="normal" title="Pause">
-                                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     </state>
                                     <connections>
                                         <action selector="didTapPauseButton:" destination="-1" eventType="touchUpInside" id="fTa-9T-kVo"/>
@@ -81,9 +81,10 @@
                             <color key="backgroundColor" red="0.69907852559999994" green="0.69907852559999994" blue="0.69907852559999994" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstItem="m58-yp-l25" firstAttribute="centerY" secondItem="L3E-LA-V0N" secondAttribute="centerY" id="3Mp-iM-B5J"/>
+                                <constraint firstItem="m58-yp-l25" firstAttribute="height" secondItem="L3E-LA-V0N" secondAttribute="height" id="JZO-VP-Su0"/>
                                 <constraint firstItem="m58-yp-l25" firstAttribute="centerX" secondItem="L3E-LA-V0N" secondAttribute="centerX" id="YI7-Kf-3Qe"/>
                                 <constraint firstAttribute="width" secondItem="L3E-LA-V0N" secondAttribute="height" multiplier="1:1" id="bNa-aK-4il"/>
-                                <constraint firstItem="m58-yp-l25" firstAttribute="width" secondItem="L3E-LA-V0N" secondAttribute="width" multiplier="4/5" id="ch1-ib-7bg"/>
+                                <constraint firstItem="m58-yp-l25" firstAttribute="width" secondItem="L3E-LA-V0N" secondAttribute="width" id="ch1-ib-7bg"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pte-eC-UKK">
@@ -97,7 +98,7 @@
                             <rect key="frame" x="227" y="139" width="70" height="70"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CkR-Zk-lcV">
-                                    <rect key="frame" x="7" y="20" width="56" height="30"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
                                     <state key="normal" title="Start">
                                         <color key="titleColor" red="0.010906332007074318" green="0.68619791666666674" blue="0.043069040850672022" alpha="1" colorSpace="calibratedRGB"/>
                                     </state>
@@ -108,7 +109,8 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstItem="CkR-Zk-lcV" firstAttribute="width" secondItem="K2j-bx-EM8" secondAttribute="width" multiplier="4/5" id="VMP-0q-E60"/>
+                                <constraint firstItem="CkR-Zk-lcV" firstAttribute="height" secondItem="K2j-bx-EM8" secondAttribute="height" id="Qvf-Id-aWU"/>
+                                <constraint firstItem="CkR-Zk-lcV" firstAttribute="width" secondItem="K2j-bx-EM8" secondAttribute="width" id="VMP-0q-E60"/>
                                 <constraint firstItem="CkR-Zk-lcV" firstAttribute="centerY" secondItem="K2j-bx-EM8" secondAttribute="centerY" id="j1n-BX-bL6"/>
                                 <constraint firstItem="CkR-Zk-lcV" firstAttribute="centerX" secondItem="K2j-bx-EM8" secondAttribute="centerX" id="vhK-oG-uZZ"/>
                             </constraints>
@@ -148,7 +150,7 @@
                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TgH-Jd-q50">
                             <rect key="frame" x="-5" y="128" width="385" height="0.0"/>
                             <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="60"/>
-                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="07i-hW-r12">

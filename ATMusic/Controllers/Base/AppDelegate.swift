@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         timerVC?.reloadTitleForRestTimeLabel()
         if restCounter == 0 {
             detailPlayerVC?.pause()
-            timer.invalidate()
+            timerVC?.setupWhenTimerDidStop()
             kAppDelegate?.isCounting = false
         }
     }

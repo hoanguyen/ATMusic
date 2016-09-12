@@ -50,11 +50,6 @@ class TimerViewController: BaseVC {
         super.loadData()
         setupTime()
         setDefaultForPickerView()
-        if let isCounting = kAppDelegate?.isCounting where isCounting {
-            setupWhenTimerIsRunning()
-        } else {
-            setupWhenTimerDidStop()
-        }
     }
 
     override func configUI() {
@@ -63,6 +58,15 @@ class TimerViewController: BaseVC {
         startView.clipsToBounds = true
         pauseView.circle()
         pauseView.clipsToBounds = true
+        if let isCounting = kAppDelegate?.isCounting where isCounting {
+            if let isPause = kAppDelegate?.isPause where isPause {
+                setupWhenTimerPause()
+            } else {
+                setupWhenTimerIsRunning()
+            }
+        } else {
+            setupWhenTimerDidStop()
+        }
     }
 
     // MARK: - public func
@@ -72,6 +76,34 @@ class TimerViewController: BaseVC {
                 hours.append(i)
             }
             minutes.append(i)
+        }
+    }
+
+    func setupWhenTimerDidStop() {
+        invalidateTimer()
+        kAppDelegate?.isCounting = false
+        kAppDelegate?.isPause = false
+        kAppDelegate?.timer = nil
+        startButton.setTitle(Strings.Start, forState: .Normal)
+        startButton.setTitleColor(Color.Green175, forState: .Normal)
+        pauseButton.setTitle(Strings.Pause, forState: .Normal)
+        pauseButton.setTitleColor(Color.White69, forState: .Normal)
+        pauseView.backgroundColor = Color.White178
+        pauseButton.enabled = false
+        pickerTimer.hidden = false
+        restTimeLabel.hidden = true
+        restTimeLabel.text = ""
+    }
+
+    func reloadTitleForRestTimeLabel() {
+        if let restCounter = kAppDelegate?.restCounter {
+            let hour = restCounter / 3600
+            let minute = restCounter % 3600 / 60
+            let second = restCounter % 3600 % 60
+            let hourString = hour > 0 ? (hour >= 10 ? "\(hour) : " : "0\(hour) : ") : ""
+            let minuteString = minute >= 10 ? "\(minute) : " : "0\(minute) : "
+            let secondString = second >= 10 ? "\(second)" : "0\(second)"
+            restTimeLabel.text = hourString + minuteString + secondString
         }
     }
 
@@ -95,7 +127,6 @@ class TimerViewController: BaseVC {
             if isCounting {
                 setupWhenTimerDidStop()
                 kAppDelegate?.isCounting = false
-                invalidateTimer()
             } else {
                 setupWhenTimerIsRunning()
                 startCounter()
@@ -108,20 +139,19 @@ class TimerViewController: BaseVC {
     }
 
     // MARK: - private func
-    private func invalidateTimer() {
-        kAppDelegate?.timer?.invalidate()
+    private func setupWhenTimerPause() {
+        pauseButton.setTitle(Strings.Resume, forState: .Normal)
+        pauseView.backgroundColor = .whiteColor()
+        startButton.setTitle(Strings.Cancel, forState: .Normal)
+        startButton.setTitleColor(Color.Red225, forState: .Normal)
+        reloadTitleForRestTimeLabel()
+        pauseButton.enabled = true
+        pickerTimer.hidden = true
+        restTimeLabel.hidden = false
     }
 
-    private func setupWhenTimerDidStop() {
-        startButton.setTitle(Strings.Start, forState: .Normal)
-        startButton.setTitleColor(Color.Green175, forState: .Normal)
-        pauseButton.setTitle(Strings.Pause, forState: .Normal)
-        pauseButton.setTitleColor(Color.White69, forState: .Normal)
-        pauseView.backgroundColor = Color.White178
-        pauseButton.enabled = false
-        pickerTimer.hidden = false
-        restTimeLabel.hidden = true
-        restTimeLabel.text = ""
+    private func invalidateTimer() {
+        kAppDelegate?.timer?.invalidate()
     }
 
     private func setupWhenTimerIsRunning() {
@@ -137,18 +167,6 @@ class TimerViewController: BaseVC {
     private func startCounter() {
         kAppDelegate?.restCounter = currentHourRow * 60 * 60 + currentMinuteRow * 60
         kAppDelegate?.setupTimer()
-    }
-
-    func reloadTitleForRestTimeLabel() {
-        if let restCounter = kAppDelegate?.restCounter {
-            let hour = restCounter / 3600
-            let minute = restCounter % 3600 / 60
-            let second = restCounter % 3600 % 60
-            let hourString = hour > 0 ? (hour >= 10 ? "\(hour) : " : "0\(hour) : ") : ""
-            let minuteString = minute >= 10 ? "\(minute) : " : "0\(minute) : "
-            let secondString = second >= 10 ? "\(second)" : "0\(second)"
-            restTimeLabel.text = hourString + minuteString + secondString
-        }
     }
 
     private func setDefaultForPickerView() {
@@ -196,7 +214,7 @@ extension TimerViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 1:
             label.text = currentHourRow == 1 ? "hour" : "hours"
             label.textAlignment = .Left
-            label.font = HelveticaFont().Regular(13)
+            label.font = HelveticaFont().Regular(14)
             return label
         case 2:
             label.text = "\(minutes[row])"
@@ -206,7 +224,7 @@ extension TimerViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         default:
             label.text = "min"
             label.textAlignment = .Left
-            label.font = HelveticaFont().Regular(13)
+            label.font = HelveticaFont().Regular(14)
             return label
         }
     }
