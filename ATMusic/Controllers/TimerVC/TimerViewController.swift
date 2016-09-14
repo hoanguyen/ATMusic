@@ -11,8 +11,8 @@ import UIKit
 private let kMaxHour = 23
 private let kMaxMinute = 59
 private let kNormalRow: CGFloat = 25.0
-private let kWidthHourRow: CGFloat = 50.0
-private let kWidthMinuteRow: CGFloat = 80.0
+private let kWidthHourRow: CGFloat = 60.0
+private let kWidthMinuteRow: CGFloat = 70.0
 
 class TimerViewController: BaseVC {
     // MARK: - private Outlet
@@ -209,22 +209,22 @@ extension TimerViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 0:
             label.text = "\(hours[row])"
             label.textAlignment = .Right
-            label.font = HelveticaFont().Regular(19)
+            label.font = HelveticaFont().Regular(25)
             return label
         case 1:
             label.text = currentHourRow == 1 ? "hour" : "hours"
             label.textAlignment = .Left
-            label.font = HelveticaFont().Regular(14)
+            label.font = HelveticaFont().Regular(19)
             return label
         case 2:
             label.text = "\(minutes[row])"
             label.textAlignment = .Right
-            label.font = HelveticaFont().Regular(19)
+            label.font = HelveticaFont().Regular(25)
             return label
         default:
             label.text = "min"
             label.textAlignment = .Left
-            label.font = HelveticaFont().Regular(14)
+            label.font = HelveticaFont().Regular(19)
             return label
         }
     }

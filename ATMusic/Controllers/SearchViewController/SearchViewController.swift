@@ -77,6 +77,7 @@ class SearchViewController: BaseVC {
                 guard let result = result else { return }
                 self.songs?.appendContentsOf(result)
                 self.tableView.reloadData()
+                kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: Strings.Search, index: -1)
             }
             self.tableView.infiniteScrollingView.stopAnimating()
         }
@@ -169,6 +170,7 @@ extension SearchViewController: UISearchBarDelegate {
         if searchText == "" {
             songs?.removeAll()
             tableView.reloadData()
+            kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: Strings.Search, index: -1)
             dataLabel.hidden = false
             APIManager.sharedInstance.cancelRequest()
             return
@@ -183,6 +185,7 @@ extension SearchViewController: UISearchBarDelegate {
             } else {
                 self.songs = result
                 self.tableView.reloadData()
+                kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: Strings.Search, index: -1)
                 self.dataLabel.hidden = true
             }
         }

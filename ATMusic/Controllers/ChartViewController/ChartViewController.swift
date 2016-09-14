@@ -30,12 +30,14 @@ class ChartViewController: BaseVC {
     // MARK: - private property
     private var currentGenre: String = ""
     private var currentKind: String = ""
+    private var currentPlaylistName: String = ""
     private var currentIndexPathOfGenreType = NSIndexPath(forRow: 0, inSection: 0)
     private let limit = 20
     private var offset = 0
     private var songs: [Song]?
     private var rightNaviBarButton: UIBarButtonItem!
     private var afterConfigUI = false
+    private var firstTimeOpen = true
 
     // MARK: - Override func
     override func viewDidLoad() {
@@ -79,16 +81,21 @@ class ChartViewController: BaseVC {
         case .All:
             let genre = SoundCloudGenreAll(rawValue: currentIndexPathOfGenreType.row)
             currentGenre = genre?.path ?? ""
+            currentPlaylistName = genre?.itemName ?? ""
             navigationItem.title = genre?.itemName ?? ""
         case .Music:
             let genre = SoundCloudMusic(rawValue: currentIndexPathOfGenreType.row)
             currentGenre = genre?.path ?? ""
+            currentPlaylistName = genre?.itemName ?? ""
             navigationItem.title = genre?.itemName ?? ""
         case .Audio:
             let genre = SoundCloudAudio(rawValue: currentIndexPathOfGenreType.row)
             currentGenre = genre?.path ?? ""
+            currentPlaylistName = genre?.itemName ?? ""
             navigationItem.title = genre?.itemName ?? ""
         }
+        indicatorView.stopAnimating()
+        firstTimeOpen = true
     }
 
     @objc private func didTapToChangeKind(sender: UIButton) {
@@ -100,6 +107,8 @@ class ChartViewController: BaseVC {
             currentKind = SoundCloudKind(rawValue: 0)?.path ?? ""
             rightNaviBarButton = UIBarButtonItem(title: Strings.Top, style: .Plain, target: self, action: .changeToTrendingOrTop)
         }
+        indicatorView.stopAnimating()
+        firstTimeOpen = true
         rightNaviBarButton.enabled = false
         navigationItem.rightBarButtonItem = rightNaviBarButton
         loadSong(isRefresh: true)
@@ -136,7 +145,10 @@ class ChartViewController: BaseVC {
         if Helper.isConnectedToNetwork() {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             if isRefresh {
-                indicatorView.startAnimating()
+                if firstTimeOpen {
+                    indicatorView.startAnimating()
+                    firstTimeOpen = false
+                }
                 offset = 0
                 songs?.removeAll()
                 tableView.reloadData()
@@ -155,7 +167,7 @@ class ChartViewController: BaseVC {
                         guard let result = result else { return }
                         self.songs?.appendContentsOf(result)
                         self.tableView.reloadData()
-                        kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList()
+                        kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: self.currentPlaylistName, index: -1)
                     }
                     self.tableView.pullToRefreshView.stopAnimating()
                     self.tableView.infiniteScrollingView.stopAnimating()
@@ -197,6 +209,7 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if Helper.isConnectedToNetwork() {
             if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
+                kAppDelegate?.detailPlayerVC?.player?.cancelPendingPrerolls()
                 kAppDelegate?.detailPlayerVC?.player = nil
                 kAppDelegate?.detailPlayerVC?.dataSource = nil
                 kAppDelegate?.detailPlayerVC = nil

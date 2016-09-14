@@ -10,7 +10,6 @@ import UIKit
 
 class SongListCell: UITableViewCell {
     @IBOutlet private weak var songNameLabel: UILabel!
-    @IBOutlet private weak var playingButton: UIButton!
     @IBOutlet private weak var indexLabel: UILabel!
 
     private var index = 0
@@ -39,7 +38,6 @@ class SongListCell: UITableViewCell {
     }
 
     private func highlighForCell() {
-        playingButton.hidden = !playing // show or hide play button
         songNameLabel.textColor = playing ? .redColor() : .whiteColor()
         indexLabel.textColor = playing ? .redColor() : .whiteColor()
     }

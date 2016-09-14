@@ -25,9 +25,9 @@ class BaseTabBarController: UITabBarController {
     private func configTabBar() {
         // init Chart
         let charVC = ChartViewController.vc()
-        charVC.title = Strings.Trending
+        charVC.title = Strings.Home
         let chartNavigation = UINavigationController(rootViewController: charVC)
-        chartNavigation.tabBarItem = UITabBarItem(title: Strings.Chart, image: UIImage(assetIdentifier: .Chart), tag: 1)
+        chartNavigation.tabBarItem = UITabBarItem(title: Strings.Home, image: UIImage(assetIdentifier: .Chart), tag: 1)
         // init Search
         let searchVC = SearchViewController.vc()
         searchVC.title = Strings.Search

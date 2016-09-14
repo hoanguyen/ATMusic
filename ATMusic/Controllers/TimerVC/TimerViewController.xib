@@ -55,17 +55,17 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sng-oE-XiJ" userLabel="Bottom View">
-                    <rect key="frame" x="0.0" y="320" width="375" height="347"/>
+                    <rect key="frame" x="0.0" y="364" width="375" height="303"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3gl-ig-xBA">
-                            <rect key="frame" x="148" y="144" width="79" height="60"/>
+                            <rect key="frame" x="148" y="122" width="79" height="60"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="60" id="a8r-8N-4bO"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L3E-LA-V0N">
-                            <rect key="frame" x="78" y="139" width="70" height="70"/>
+                            <rect key="frame" x="78" y="117" width="70" height="70"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m58-yp-l25">
                                     <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
@@ -88,14 +88,14 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pte-eC-UKK">
-                            <rect key="frame" x="297" y="144" width="78" height="60"/>
+                            <rect key="frame" x="297" y="122" width="78" height="60"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="60" id="met-GO-B1O"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K2j-bx-EM8">
-                            <rect key="frame" x="227" y="139" width="70" height="70"/>
+                            <rect key="frame" x="227" y="117" width="70" height="70"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CkR-Zk-lcV">
                                     <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
@@ -116,7 +116,7 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gSn-5L-GfX">
-                            <rect key="frame" x="0.0" y="144" width="78" height="60"/>
+                            <rect key="frame" x="0.0" y="122" width="78" height="60"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="60" id="mB7-PQ-mGR"/>
@@ -145,19 +145,24 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bOR-nA-8yx" userLabel="Center View">
-                    <rect key="frame" x="0.0" y="64" width="375" height="256"/>
+                    <rect key="frame" x="0.0" y="64" width="375" height="300"/>
                     <subviews>
                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TgH-Jd-q50">
-                            <rect key="frame" x="-5" y="128" width="385" height="0.0"/>
+                            <rect key="frame" x="-5" y="150" width="385" height="0.0"/>
                             <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="60"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="07i-hW-r12">
-                            <rect key="frame" x="0.0" y="3" width="375" height="250"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="07i-hW-r12" secondAttribute="height" multiplier="3:2" id="KWS-e4-L2X"/>
                             </constraints>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="KWS-e4-L2X"/>
+                                </mask>
+                            </variation>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="Swp-f7-bmg"/>
                                 <outlet property="delegate" destination="-1" id="X0w-mG-Wi8"/>
@@ -170,8 +175,9 @@
                         <constraint firstItem="07i-hW-r12" firstAttribute="centerX" secondItem="bOR-nA-8yx" secondAttribute="centerX" id="4k4-hO-2zb"/>
                         <constraint firstItem="07i-hW-r12" firstAttribute="width" secondItem="bOR-nA-8yx" secondAttribute="width" id="5cT-Mj-GjK"/>
                         <constraint firstItem="TgH-Jd-q50" firstAttribute="centerX" secondItem="bOR-nA-8yx" secondAttribute="centerX" id="DOh-XP-FZs"/>
-                        <constraint firstAttribute="width" secondItem="bOR-nA-8yx" secondAttribute="height" multiplier="5:4" constant="54.5" id="XrM-1J-fvx"/>
+                        <constraint firstAttribute="width" secondItem="bOR-nA-8yx" secondAttribute="height" multiplier="5:4" id="XrM-1J-fvx"/>
                         <constraint firstItem="TgH-Jd-q50" firstAttribute="width" secondItem="bOR-nA-8yx" secondAttribute="width" constant="9" id="ftD-Ja-ckx"/>
+                        <constraint firstItem="07i-hW-r12" firstAttribute="height" secondItem="bOR-nA-8yx" secondAttribute="height" id="ofr-uL-Nj4"/>
                         <constraint firstItem="TgH-Jd-q50" firstAttribute="centerY" secondItem="bOR-nA-8yx" secondAttribute="centerY" id="pY4-8l-yFQ"/>
                     </constraints>
                 </view>

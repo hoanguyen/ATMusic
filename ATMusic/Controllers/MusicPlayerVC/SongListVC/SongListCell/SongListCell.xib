@@ -27,15 +27,9 @@
                         <color key="textColor" red="0.91538461530000004" green="0.91538461530000004" blue="0.91538461530000004" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ajh-qA-gX6">
-                        <rect key="frame" x="332" y="9" width="25" height="25"/>
-                        <state key="normal" image="PlayRed25"/>
-                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="ajh-qA-gX6" firstAttribute="leading" secondItem="u01-uW-jYq" secondAttribute="trailing" constant="20" id="3co-GB-yod"/>
                     <constraint firstItem="u01-uW-jYq" firstAttribute="leading" secondItem="Oka-o4-LKe" secondAttribute="trailing" constant="20" id="Loc-aL-GsG"/>
-                    <constraint firstItem="ajh-qA-gX6" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="TyQ-zI-XfG"/>
                     <constraint firstItem="u01-uW-jYq" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="X2N-Xx-5if"/>
                     <constraint firstItem="u01-uW-jYq" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="2/3" id="YnO-2K-ahv"/>
                     <constraint firstItem="Oka-o4-LKe" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="gfr-Ne-b9w"/>
@@ -45,13 +39,9 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <connections>
                 <outlet property="indexLabel" destination="Oka-o4-LKe" id="oFe-Zj-Fbe"/>
-                <outlet property="playingButton" destination="ajh-qA-gX6" id="ri0-lQ-XQn"/>
                 <outlet property="songNameLabel" destination="u01-uW-jYq" id="ZwW-Nj-OTb"/>
             </connections>
             <point key="canvasLocation" x="203.5" y="364"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="PlayRed25" width="25" height="25"/>
-    </resources>
 </document>

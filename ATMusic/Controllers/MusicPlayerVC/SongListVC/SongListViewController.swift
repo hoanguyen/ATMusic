@@ -15,13 +15,14 @@ protocol SongListControllerDelegate: NSObjectProtocol {
 class SongListViewController: BaseVC {
     // MARK: - private outlet
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var playlistNameLabel: UILabel!
 
     // MARK: - public property
     weak var delegate: SongListControllerDelegate?
+    var playingIndex = -1
 
     // MARK: - private property
     private var songNameList: [String]?
-    private var playingIndex = -1
     private var playlistName: String?
 
     // MARK: - override func
@@ -44,10 +45,11 @@ class SongListViewController: BaseVC {
     override func configUI() {
         super.configUI()
         tableView.registerNib(SongListCell)
-        tableView.registerNib(SongListHeader)
         tableView.separatorStyle = .None
         tableView.headerViewForSection(0)?.backgroundColor = .clearColor()
         tableView.headerViewForSection(0)?.textLabel?.textColor = Color.White233
+        playlistNameLabel.text = "Playlist: \(playlistName ?? "")"
+        playlistNameLabel.font = HelveticaFont().Regular(17)
     }
 
     override func loadData() {
@@ -55,16 +57,17 @@ class SongListViewController: BaseVC {
     }
 
     func highlightCellAtIndex(index: Int) {
-        let newIndextPath = NSIndexPath(forRow: index, inSection: 0)
-        let oldIndextPath = NSIndexPath(forRow: playingIndex, inSection: 0)
+        let oldIndex = playingIndex
+        playingIndex = index
+        let newIndextPath = NSIndexPath(forRow: playingIndex, inSection: 0)
+        let oldIndextPath = NSIndexPath(forRow: oldIndex, inSection: 0)
         tableView.beginUpdates()
         let oldCell = tableView.cellForRowAtIndexPath(oldIndextPath) as? SongListCell
         let newCell = tableView.cellForRowAtIndexPath(newIndextPath) as? SongListCell
-        oldCell?.reloadWithPlayingIndex(index)
-        newCell?.reloadWithPlayingIndex(index)
+        oldCell?.reloadWithPlayingIndex(playingIndex)
+        newCell?.reloadWithPlayingIndex(playingIndex)
         tableView.scrollToRowAtIndexPath(newIndextPath, atScrollPosition: .Middle, animated: true)
         tableView.endUpdates()
-        playingIndex = index
     }
 
     func reloadWhenChangeSongList(songNameList: [String]?) {
@@ -82,18 +85,8 @@ extension SongListViewController: UITableViewDelegate, UITableViewDataSource {
         return SongListCell.cellHeight()
     }
 
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return SongListHeader.headerHeight()
-    }
-
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return songNameList?.count ?? 0
-    }
-
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeue(SongListHeader)
-        header.configHeaderWithName(playlistName)
-        return header
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
