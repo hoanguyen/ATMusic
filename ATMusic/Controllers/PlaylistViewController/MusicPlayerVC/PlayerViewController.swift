@@ -158,9 +158,3 @@ class PlayerViewController: BaseVC {
         return CGRect(origin: CGPoint(x: 0, y: viewLocation), size: CGSize(width: kScreenSize.width, height: heightView))
     }
 }
-
-//extension PlayerViewController: DetailPlayerDelegate {
-//    func didTapPlayButton(viewController: UIViewController) {
-//        changePlayStatus()
-//    }
-//}

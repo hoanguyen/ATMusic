@@ -17,13 +17,14 @@ class BaseVC: ViewController {
         loadData()
         configUI()
     }
+
     func loadData() { }
-    func configUI() {
-    }
+
+    func configUI() { }
 
     // Show actionsheet to add song into playlist
     func addSongIntoPlaylist(song: Song?) {
-        guard let playlists = RealmManager.getAllPlayList() where playlists.count != 0 else {
+        guard let playlists = RealmManager.getAllPlayList() where !playlists.isEmpty else {
             Alert.sharedInstance.showActionSheet(self, title: Strings.AddPlaylist, message: Strings.AddPlaylistMessage,
                 options: nil) { (index, isCreate) in
                     if isCreate {
@@ -34,7 +35,8 @@ class BaseVC: ViewController {
             }
             return
         }
-        var options = [String]()
+
+        var options: [String] = [String]()
         for item in playlists {
             options.append(item.name)
         }

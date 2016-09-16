@@ -1,18 +1,88 @@
-# reporter: json
-use_nested_configs: true
+reporter: xcode
+opt_in_rules:
+  - force_unwrapping
+  - empty_count
+  # - private_outlet
+  - vertical_whitespace
 disabled_rules:
-  - todo # 開発中のみignore
-  - trailing_whitespace
-  - colon
-  - comma
+  - todo
 excluded:
   - Carthage
   - Pods
-line_length: 150
-function_body_length: 70
-file_length:
-  warning: 700
-  error: 900
+  - vendor
+private_outlet:
+  allow_private_set: true
+cyclomatic_complexity:
+  warning: 15
+line_length: 200
+file_length: 1000
+force_unwrapping: error
+function_parameter_count:
+  - 6
+  - 8
+function_body_length:
+  - 50
+  - 100
+type_body_length:
+  - 300
+  - 500
+type_name:
+  min_length:
+    warning: 2
+  max_length:
+    warning: 40
+    error: 60
 variable_name:
-  excluded: # excluded via string array
-    - id
+  min_length:
+    warning: 1
+  max_length:
+    warning: 40
+    error: 60
+custom_rules:
+  disable:
+    name: "Disable Rule In Code"
+    regex: "(swiftlint:disable)"
+    message: "Please do not disable rule in code. "
+    severity: error
+    match_kinds: comment
+  private_outlet:
+    name: "outlet"
+    regex: "(@IBOutlet var|@IBOutlet weak var|@IBOutlet private var|@IBOutlet weak private var|@IBOutlet weak private(set) var)"
+    message: "Please use `@IBOutlet private weak var` or `@IBOutlet private(set) weak var` instead of. "
+    severity: error
+  delegate:
+    name: "delegate"
+    regex: "(  var delegate)"
+    message: "Please use `weak` for `delegate`. "
+    severity: error
+  comments_space:
+    name: "Space After Comment"
+    regex: "(^ *//\w+)"
+    message: "There should be a space after //"
+    severity: warning
+    match_kinds: comment
+  multiple_empty_lines:
+    name: "Multiple Empty Lines"
+    regex: "((?:\s*\n){3,})"
+    message: "There are too many line breaks"
+    severity: warning
+  empty_line:
+    name: "Empty Line"
+    regex: "(\}\n[ ]{0,}( |class|static|dynamic|@objc|@IBAction|override|private|public|internal){0,}func)"
+    message: "Must have an empty line between functions. "
+    severity: warning
+  extension_mark:
+    name: "Extension Mark"
+    regex: "(\}\n\nextension)"
+    message: "Must have `// MARK:` before extension. "
+    severity: warning
+  switch_enum:
+    name: "Switch Enum"
+    regex: "(case [0-9a-zA-Z_\.]{1,}rawValue:)"
+    message: "Don't use enum.rawValue in switch-case. Please convert value to enum first. "
+    severity: error
+  compile_lookup:
+    name: "Compile Lookup"
+    regex: "((var|let) [0-9a-zA-Z_]{1,} = \[)"
+    message: "You need to give types to the array and dictionary. "
+    severity: error

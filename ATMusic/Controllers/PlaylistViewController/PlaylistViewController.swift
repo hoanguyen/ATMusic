@@ -222,7 +222,7 @@ class PlaylistViewController: BaseVC {
     }
 
     private func exchangeObjectAtIndex(index firstIndex: Int, withObjectAtIndex secondIndex: Int) {
-        if let songs = currentPlaylist?.songs where songs.count > 0 {
+        if let songs = currentPlaylist?.songs where !songs.isEmpty {
             RealmManager.changePosition(songs, atFirst: firstIndex, withSecond: secondIndex)
         }
         print("first: \(firstIndex)")
@@ -254,7 +254,9 @@ class PlaylistViewController: BaseVC {
     func customSnapShotFromView(inputView: UIView) -> UIImageView {
         // Make an image from the input view.
         UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0)
-        inputView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        if let graphicGetCurrentContext = UIGraphicsGetCurrentContext() {
+            inputView.layer.renderInContext(graphicGetCurrentContext)
+        }
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         let snapshot = UIImageView(image: image)
@@ -294,7 +296,7 @@ class PlaylistViewController: BaseVC {
 
 }
 
-//MARK: - extension UICollectionViewDelegate and UICollectionViewDataSource
+// MARK: - extension UICollectionViewDelegate and UICollectionViewDataSource
 extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     // MARK: - UICollectionViewDelegate
 
@@ -346,7 +348,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     }
 }
 
-//MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDelegateFlowLayout
 extension PlaylistViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
@@ -359,7 +361,7 @@ extension PlaylistViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-//MARK: - TableView Delegate and DataSource
+// MARK: - TableView Delegate and DataSource
 extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return currentPlaylist?.songs.count ?? 0
@@ -403,7 +405,7 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-//MARK: - DetailPlayerDelegate
+// MARK: - DetailPlayerDelegate
 extension PlaylistViewController: DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return currentPlaylist?.songs.count
@@ -414,7 +416,7 @@ extension PlaylistViewController: DetailPlayerDataSource {
     }
 
     func songNameList(viewController: UIViewController) -> [String]? {
-        var songNameList = [String]()
+        var songNameList: [String] = [String]()
         guard let songs = currentPlaylist?.songs else { return nil }
         for item in songs {
             if let name = item.songName {

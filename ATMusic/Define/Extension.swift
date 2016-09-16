@@ -48,7 +48,7 @@ class Helper {
                 let regex = try NSRegularExpression(pattern: Strings.paternMatchString, options: .CaseInsensitive)
                 let range = NSRange(location: 0, length: string.characters.count)
                 let matches = regex.matchesInString(string, options: [], range: range)
-                return matches.count > 0
+                return matches.isEmpty ? false : true
             } catch { }
         }
         return false
@@ -62,8 +62,10 @@ class Helper {
             SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
         }
         var flags = SCNetworkReachabilityFlags()
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) {
-            return false
+        if let defaultRouteReachability = defaultRouteReachability {
+            if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
+                return false
+            }
         }
         let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
         let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0

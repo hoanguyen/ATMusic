@@ -16,7 +16,7 @@ class EmptyCell: UICollectionViewCell {
         bottomLabel.font = HelveticaFont().Regular(17)
     }
 
-    @IBAction func didTapAddButton(sender: UIButton) {
-       kNotification.postNotificationName(Strings.NotiAddPlaylist, object: nil, userInfo: nil)
+    @IBAction private func didTapAddButton(sender: UIButton) {
+        kNotification.postNotificationName(Strings.NotiAddPlaylist, object: nil, userInfo: nil)
     }
 }

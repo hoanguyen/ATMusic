@@ -11,7 +11,7 @@ import SDWebImage
 
 class ImageViewController: UIViewController {
 
-    @IBOutlet weak var imageAvatar: UIImageView!
+    @IBOutlet private weak var imageAvatar: UIImageView!
 
     private var currentRotateValue: CGFloat = 0.0
     private var urlImage: String?
