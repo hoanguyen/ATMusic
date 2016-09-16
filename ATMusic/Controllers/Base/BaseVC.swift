@@ -59,6 +59,12 @@ class BaseVC: ViewController {
         }
     }
 
+    func createDetailPlaylist(song: Song?, playlistName: String?, indexPath: NSIndexPath, isChangePlaylist: Bool) {
+        kAppDelegate?.deleteDetailPlayer()
+        kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: song,
+            songIndex: indexPath.row, playlistName: playlistName, changePlaylist: isChangePlaylist)
+    }
+
     private func createNewPlaylist(finished: AddFinished) {
         let playlistNameObject = PlaylistName.firstItemFree()
         Alert.sharedInstance.inputTextAlert(self, title: Strings.Create,

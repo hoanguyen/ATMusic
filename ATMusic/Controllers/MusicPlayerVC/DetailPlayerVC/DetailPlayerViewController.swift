@@ -62,7 +62,6 @@ class DetailPlayerViewController: BaseVC {
     private var prevBarButtonItem: UIBarButtonItem?
     private var nextBarButtonItem: UIBarButtonItem?
     private var moreBatButtonItem: UIBarButtonItem?
-    private var isShuffle = false
     private var timeObserver: AnyObject?
     private var maxValue: Float = 0.0
     private var currentTime: Float = 0.0
@@ -70,6 +69,8 @@ class DetailPlayerViewController: BaseVC {
     private var songListVC: SongListViewController?
     private var imageVC: ImageViewController?
     private var lyricVC: LyricViewController?
+    private var shuffleIndex = 0
+    private var isChangePlaylist = false
 
     private var songTitle: String = "" {
         didSet {
@@ -89,11 +90,12 @@ class DetailPlayerViewController: BaseVC {
         }
     }
     // MARK: - init func
-    convenience init(song: Song?, songIndex: Int, playlistName: String?) {
+    convenience init(song: Song?, songIndex: Int, playlistName: String?, changePlaylist isChangePlaylist: Bool) {
         self.init(nibName: "DetailPlayerViewController", bundle: nil)
         self.song = song
         self.songIndex = songIndex
         self.playlistName = playlistName
+        self.isChangePlaylist = isChangePlaylist
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -144,10 +146,13 @@ class DetailPlayerViewController: BaseVC {
 
     override func loadData() {
         super.loadData()
-        dowloadSongWithID(song?.id) { (player) in
-            self.player = player
-            self.play()
-            self.setupDuration()
+        downloadSong()
+
+        guard let isShuffle = kAppDelegate?.isShuffle where isShuffle else { return }
+        if isChangePlaylist {
+            configShuffle()
+        } else {
+            shuffleIndex = kAppDelegate?.shuffleArray.indexOf(songIndex) ?? 0
         }
     }
 
@@ -226,9 +231,18 @@ class DetailPlayerViewController: BaseVC {
     }
 
     func nextSong() -> Bool {
-        if isShuffle {
-            randomSong()
-            return true
+        if let isShuffle = kAppDelegate?.isShuffle where isShuffle {
+            if songIndex == -1 {
+                shuffleIndex = songIndex
+            }
+            shuffleIndex = shuffleIndex + 1
+            if handleOutOfIndexShuffleArray() {
+                songIndex = kAppDelegate?.shuffleArray[shuffleIndex] ?? 0
+                reloadSong()
+                return true
+            } else {
+                return false
+            }
         } else {
             if let songCount = dataSource?.numberOfSongInPlaylist(self) where (songIndex + 1) < songCount {
                 songIndex = songIndex + 1
@@ -241,8 +255,14 @@ class DetailPlayerViewController: BaseVC {
     }
 
     func previousSong() {
-        if isShuffle {
-            randomSong()
+        if let isShuffle = kAppDelegate?.isShuffle where isShuffle {
+            shuffleIndex = shuffleIndex - 1
+            if handleOutOfIndexShuffleArray() {
+                songIndex = kAppDelegate?.shuffleArray[shuffleIndex] ?? 0
+                reloadSong()
+            } else {
+                return
+            }
         } else {
             if let songCount = dataSource?.numberOfSongInPlaylist(self) where (songIndex - 1) >= 0 {
                 if songIndex > songCount {
@@ -260,10 +280,29 @@ class DetailPlayerViewController: BaseVC {
                 songListVC?.playingIndex = -1
             }
             songListVC?.reloadWhenChangeSongList(dataSource?.songNameList(self))
+            if let isShuffle = kAppDelegate?.isShuffle, let shuffleArray = kAppDelegate?.shuffleArray where isShuffle {
+                if let number = dataSource?.numberOfSongInPlaylist(self) {
+                    if number > shuffleArray.count {
+                        let range = number - shuffleArray.count
+                        if range == 1 {
+                            kAppDelegate?.shuffleArray.append(shuffleArray.count)
+                        } else {
+                            var newArray: [Int] = [Int]()
+                            for i in shuffleArray.count..<number {
+                                newArray.append(i)
+                                newArray.shuffle()
+                            }
+                            kAppDelegate?.shuffleArray.appendContentsOf(newArray)
+                        }
+                    } else {
+                        kAppDelegate?.shuffleArray.removeRange(number..<shuffleArray.count)
+                    }
+                }
+            }
         }
     }
 
-// MARK: - private Actions
+    // MARK: - private Actions
     @IBAction func didTapTimerButton(sender: UIButton) {
         kAppDelegate?.timerVC = TimerViewController()
         if let timerVC = kAppDelegate?.timerVC {
@@ -288,7 +327,13 @@ class DetailPlayerViewController: BaseVC {
     }
 
     @IBAction private func changeShuffleMode(sender: UIButton) {
-        isShuffle = !isShuffle
+        let isShuffle = kAppDelegate?.isShuffle ?? true
+        kAppDelegate?.isShuffle = !isShuffle
+        if isShuffle {
+            kAppDelegate?.shuffleArray.removeAll()
+        } else {
+            configShuffle()
+        }
         setupShuffleButtonImage()
     }
 
@@ -315,7 +360,15 @@ class DetailPlayerViewController: BaseVC {
 
     @IBAction @objc private func previousSong(sender: UIButton) {
         sender.enabled = false
-        previousSong()
+        if Int(currentTime) >= 3 {
+            if var time = player?.currentTime() {
+                time.value = CMTimeValue(0)
+                player?.seekToTime(time)
+                play()
+            }
+        } else {
+            previousSong()
+        }
         Helper.delay(second: 1) {
             sender.enabled = true
         }
@@ -327,6 +380,28 @@ class DetailPlayerViewController: BaseVC {
 
 // MARK: - DetailPlayVC extension for private func
 extension DetailPlayerViewController {
+    private func downloadSong() {
+        dowloadSongWithID(song?.id) { (player) in
+            self.player = player
+            self.play()
+            self.setupDuration()
+        }
+    }
+
+    private func configShuffle() {
+        shuffleIndex = 0
+        let numberOfSong = dataSource?.numberOfSongInPlaylist(self) ?? 0
+        var shuffleArray: [Int] = [Int]()
+        for i in 0..<numberOfSong {
+            shuffleArray.append(i)
+        }
+        shuffleArray.shuffle()
+        if shuffleArray[0] != shuffleArray[shuffleArray.indexOf(songIndex) ?? 0] {
+            swap(&shuffleArray[0], &shuffleArray[shuffleArray.indexOf(songIndex) ?? 0])
+        }
+        kAppDelegate?.shuffleArray = shuffleArray
+    }
+
     private func setupPageMenu() {
         if let songNameList = dataSource?.songNameList(self) {
             songListVC = SongListViewController(songNameList: songNameList,
@@ -383,7 +458,7 @@ extension DetailPlayerViewController {
     }
 
     private func reLoadDataAndUI() {
-        loadData()
+        downloadSong()
         setupImage()
         setupLabel()
         setupArtWorkInfo()
@@ -424,9 +499,9 @@ extension DetailPlayerViewController {
     private func setupLabel() {
         songTitle = song?.songName ?? ""
         albumTitle = song?.singerName ?? ""
-        currentDurationLabel.font = HelveticaFont().Regular(11)
+        currentDurationLabel.font = HelveticaFont().Regular(13)
         singerNameLabel.font = HelveticaFont().Regular(11)
-        restDurationLabel.font = HelveticaFont().Regular(11)
+        restDurationLabel.font = HelveticaFont().Regular(13)
         songNameLabel.font = HelveticaFont().Regular(15)
     }
 
@@ -438,7 +513,7 @@ extension DetailPlayerViewController {
     }
 
     private func setupShuffleButtonImage() {
-        if isShuffle {
+        if let isShuffle = kAppDelegate?.isShuffle where isShuffle {
             shuffleButton.setBackgroundImage(UIImage(assetIdentifier: .ShuffleRed30), forState: .Normal)
         } else {
             shuffleButton.setBackgroundImage(UIImage(assetIdentifier: .ShuffleWhite30), forState: .Normal)
@@ -485,17 +560,18 @@ extension DetailPlayerViewController {
         }
     }
 
-    private func randomSong() {
-        if let count = dataSource?.numberOfSongInPlaylist(self) {
-            let rand = Int(arc4random_uniform(UInt32(count)))
-            if songIndex != rand {
-                songIndex = rand
-                reloadSong()
-                return
+    private func handleOutOfIndexShuffleArray() -> Bool {
+        if let shuffleArray = kAppDelegate?.shuffleArray {
+            if shuffleIndex >= shuffleArray.count {
+                shuffleIndex = shuffleArray.count - 1
+                return false
+            } else if shuffleIndex < 0 {
+                shuffleIndex = 0
+                return false
             }
-            randomSong()
+            return true
         }
-
+        return false
     }
 
     @objc private func playerDidFinishPlaying(sender: NSNotification) {
@@ -506,7 +582,6 @@ extension DetailPlayerViewController {
             switch repeating {
             case .None:
                 if !nextSong() {
-                    isPlaying = false
                     pause()
                 }
             case .One:
@@ -528,6 +603,9 @@ extension DetailPlayerViewController {
 extension DetailPlayerViewController: SongListControllerDelegate {
     func songListViewController(viewController: UIViewController, didSelectSongAtIndex index: Int) {
         songIndex = index
+        if let isShuffle = kAppDelegate?.isShuffle, shuffleArray = kAppDelegate?.shuffleArray where isShuffle {
+            shuffleIndex = shuffleArray[songIndex]
+        }
         player?.cancelPendingPrerolls()
         reloadSong()
     }

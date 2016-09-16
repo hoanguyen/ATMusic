@@ -31,6 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var isPause = false
     var timer: NSTimer?
     var restCounter = 0
+    var isShuffle = false
+    var shuffleArray: [Int] = [Int]()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
@@ -52,6 +54,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             timerVC?.setupWhenTimerDidStop()
             kAppDelegate?.isCounting = false
         }
+    }
+
+    func deleteDetailPlayer() {
+        detailPlayerVC?.player?.cancelPendingPrerolls()
+        detailPlayerVC?.player = nil
+        detailPlayerVC?.dataSource = nil
+        detailPlayerVC = nil
     }
 
     private func setupRemoteControl() {
