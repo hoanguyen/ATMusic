@@ -65,6 +65,9 @@ class ChartViewController: BaseVC {
         }
         addCategoryButton()
         addRightNaviButton()
+
+        navigationItem.rightBarButtonItem?.enabled = false
+        navigationItem.leftBarButtonItem?.enabled = false
     }
 
     override func loadData() {
@@ -72,6 +75,13 @@ class ChartViewController: BaseVC {
         currentKind = SoundCloudKind(rawValue: 0)?.path ?? ""
         songs = [Song]()
         loadSong(isRefresh: true)
+    }
+
+    override func createDetailPlaylist(song: Song?, playlistName: String?, indexPath: NSIndexPath, isChangePlaylist: Bool) {
+        super.createDetailPlaylist(song, playlistName: playlistName, indexPath: indexPath, isChangePlaylist: isChangePlaylist)
+        kAppDelegate?.detailPlayerVC?.dataSource = self
+        tabBarController?.presentPopupBarWithContentViewController(kAppDelegate?.detailPlayerVC ?? DetailPlayerViewController(),
+            animated: true, completion: nil)
     }
 
     // MARK: - private func
@@ -107,14 +117,9 @@ class ChartViewController: BaseVC {
             currentKind = SoundCloudKind(rawValue: 0)?.path ?? ""
             rightNaviBarButton = UIBarButtonItem(title: Strings.Top, style: .Plain, target: self, action: .changeToTrendingOrTop)
         }
-        indicatorView.stopAnimating()
         firstTimeOpen = true
-        rightNaviBarButton.enabled = false
         navigationItem.rightBarButtonItem = rightNaviBarButton
         loadSong(isRefresh: true)
-        Helper.delay(second: 1) {
-            self.rightNaviBarButton.enabled = true
-        }
     }
 
     private func addRightNaviButton() {
@@ -145,6 +150,9 @@ class ChartViewController: BaseVC {
         if Helper.isConnectedToNetwork() {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             if isRefresh {
+                tableView.userInteractionEnabled = false
+                navigationItem.rightBarButtonItem?.enabled = false
+                navigationItem.leftBarButtonItem?.enabled = false
                 if firstTimeOpen {
                     indicatorView.startAnimating()
                     firstTimeOpen = false
@@ -161,6 +169,9 @@ class ChartViewController: BaseVC {
                 atOffset: offset) { (result, error, message) in
                     self.indicatorView.stopAnimating()
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    self.tableView.userInteractionEnabled = true
+                    self.navigationItem.rightBarButtonItem?.enabled = true
+                    self.navigationItem.leftBarButtonItem?.enabled = true
                     if error {
                         print("ERROR: \(message)")
                     } else {
@@ -208,17 +219,18 @@ extension ChartViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if Helper.isConnectedToNetwork() {
-            if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
-                kAppDelegate?.detailPlayerVC?.player?.cancelPendingPrerolls()
-                kAppDelegate?.detailPlayerVC?.player = nil
-                kAppDelegate?.detailPlayerVC?.dataSource = nil
-                kAppDelegate?.detailPlayerVC = nil
-                kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row],
-                    songIndex: indexPath.row, playlistName: Strings.Trending)
-                if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                    detailPlayerVC.dataSource = self
-                    tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+            if kAppDelegate?.detailPlayerVC?.getPlaylistName() != currentPlaylistName {
+                createDetailPlaylist(songs?[indexPath.row],
+                    playlistName: currentPlaylistName,
+                    indexPath: indexPath, isChangePlaylist: true)
+            } else {
+                guard kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id else {
+                    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                    return
                 }
+                createDetailPlaylist(songs?[indexPath.row],
+                    playlistName: currentPlaylistName,
+                    indexPath: indexPath, isChangePlaylist: false)
             }
         } else {
             Alert.sharedInstance.showAlert(self, title: Strings.Error, message: Strings.DisconnectedNetwork)

@@ -58,6 +58,13 @@ class DetailPlaylistViewController: BaseVC {
         playlistNameTextField.delegate = self
     }
 
+    override func createDetailPlaylist(song: Song?, playlistName: String?, indexPath: NSIndexPath, isChangePlaylist: Bool) {
+        super.createDetailPlaylist(song, playlistName: playlistName, indexPath: indexPath, isChangePlaylist: isChangePlaylist)
+        kAppDelegate?.detailPlayerVC?.dataSource = self
+        tabBarController?.presentPopupBarWithContentViewController(kAppDelegate?.detailPlayerVC ?? DetailPlayerViewController(),
+            animated: true, completion: nil)
+    }
+
     // MARK: - private func
     @IBAction private func didTapEditButton(sender: UIButton) {
         isEnableForEdit()
@@ -65,6 +72,10 @@ class DetailPlaylistViewController: BaseVC {
 
     @IBAction private func didTapDeleteButton(sender: UIButton) {
         Alert.sharedInstance.showConfirmAlert(self, title: Strings.Warning, message: Strings.Delete) {
+            if self.playlist?.name == kAppDelegate?.detailPlayerVC?.getPlaylistName() {
+                Alert.sharedInstance.showAlert(self, title: Strings.Error, message: Strings.DeletePlaylistFailure)
+                return
+            }
             if Helper.checkingPlayList(self.playlist?.name) {
                 if let item = PlaylistName.getItemWithName(self.playlist?.name) {
                     item.setUsing(false)
@@ -141,34 +152,38 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
 
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .Normal, title: Strings.DeleteString) { (action, indexPath) in
-            tableView.beginUpdates()
-            self.playlist?.deleteSongAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            tableView.endUpdates()
-            self.setTextForNumberSongLabel()
-            self.setupImage()
-            if indexPath.row == kAppDelegate?.detailPlayerVC?.getSongIndex() && self.isCurrentPlaylistAtParentVC {
-                kAppDelegate?.detailPlayerVC?.changeIndex(indexPath.row - 1)
+            if indexPath.row == kAppDelegate?.detailPlayerVC?.getSongIndex() {
+                Alert.sharedInstance.showAlert(self, title: Strings.DeleteError, message: Strings.SongIsPlaying)
+            } else {
+                tableView.beginUpdates()
+                self.playlist?.deleteSongAtIndex(indexPath.row)
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                tableView.endUpdates()
+                self.setTextForNumberSongLabel()
+                self.setupImage()
+                kNotification.postNotificationName(Strings.NotiDeleteSong,
+                    object: nil, userInfo: [Strings.NotiCellIndex: indexPath,
+                        Strings.NotiCurrentPlaylistAtParentVC: self.isCurrentPlaylistAtParentVC])
             }
-            kNotification.postNotificationName(Strings.NotiDeleteSong,
-                object: nil, userInfo: [Strings.NotiCellIndex: indexPath,
-                    Strings.NotiCurrentPlaylistAtParentVC: self.isCurrentPlaylistAtParentVC])
+
         }
         deleteAction.backgroundColor = UIColor.redColor()
         return [deleteAction]
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if kAppDelegate?.detailPlayerVC?.currentSongID() != playlist?.songs[indexPath.row].id {
-            kAppDelegate?.detailPlayerVC?.player = nil
-            kAppDelegate?.detailPlayerVC?.dataSource = nil
-            kAppDelegate?.detailPlayerVC = nil
-            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: playlist?.songs[indexPath.row],
-                songIndex: indexPath.row, playlistName: playlist?.name)
-            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                detailPlayerVC.dataSource = self
-                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+        if kAppDelegate?.detailPlayerVC?.getPlaylistName() != playlist?.name {
+            createDetailPlaylist(playlist?.songs[indexPath.row],
+                playlistName: playlist?.name,
+                indexPath: indexPath, isChangePlaylist: true)
+        } else {
+            guard kAppDelegate?.detailPlayerVC?.currentSongID() != playlist?.songs[indexPath.row].id else {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                return
             }
+            createDetailPlaylist(playlist?.songs[indexPath.row],
+                playlistName: playlist?.name,
+                indexPath: indexPath, isChangePlaylist: false)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }

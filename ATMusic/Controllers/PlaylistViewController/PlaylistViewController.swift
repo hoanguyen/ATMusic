@@ -94,6 +94,13 @@ class PlaylistViewController: BaseVC {
         collectionView.backgroundColor = .clearColor()
     }
 
+    override func createDetailPlaylist(song: Song?, playlistName: String?, indexPath: NSIndexPath, isChangePlaylist: Bool) {
+        super.createDetailPlaylist(song, playlistName: playlistName, indexPath: indexPath, isChangePlaylist: isChangePlaylist)
+        kAppDelegate?.detailPlayerVC?.dataSource = self
+        tabBarController?.presentPopupBarWithContentViewController(kAppDelegate?.detailPlayerVC ?? DetailPlayerViewController(),
+            animated: true, completion: nil)
+    }
+
     // MARK: - private func
     private func marginForTableView() {
         if let _ = kAppDelegate?.detailPlayerVC {
@@ -149,7 +156,13 @@ class PlaylistViewController: BaseVC {
     @objc private func deleteSong(sender: NSNotification) {
         if let indexPath = sender.userInfo?[Strings.NotiCellIndex] as? NSIndexPath,
             isCurrentPlaylist = sender.userInfo?[Strings.NotiCurrentPlaylistAtParentVC] as? Bool {
-                reloadTableViewWhenDeleteSong(indexPath, isCurrentPlaylist: isCurrentPlaylist)
+                reconfigShuffleArray(indexPath)
+                collectionView.reloadData()
+                if isCurrentPlaylist {
+                    tableView.beginUpdates()
+                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                    tableView.endUpdates()
+                }
         }
     }
 
@@ -263,6 +276,16 @@ class PlaylistViewController: BaseVC {
         secondCell?.changeIndex(firstIndex)
         kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: currentPlaylist?.name ?? "", index: -1)
         kAppDelegate?.detailPlayerVC?.highlightSongCell()
+        let results = getShuffleArray()
+        if results.isHaveArray {
+            var shuffleArray = results.shuffleArray
+            let firstValue = shuffleArray.indexOf(firstIndex) ?? 0
+            let secondValue = shuffleArray.indexOf(secondIndex) ?? 0
+            if firstValue != secondValue {
+                swap(&shuffleArray[firstValue], &shuffleArray[secondValue])
+            }
+            kAppDelegate?.shuffleArray = shuffleArray
+        }
     }
 
     func handleOverSizeOfTableView(position: CGFloat) -> CGFloat {
@@ -343,6 +366,33 @@ class PlaylistViewController: BaseVC {
                     scrollToDown()
                 }
             }
+        }
+    }
+
+    private func getShuffleArray() -> (shuffleArray: [Int], isHaveArray: Bool) {
+        if let isShuffle = kAppDelegate?.isShuffle where isShuffle {
+            if let shuffleArray = kAppDelegate?.shuffleArray {
+                return (shuffleArray, true)
+            }
+        }
+        return ([Int](), false)
+    }
+
+    private func reconfigShuffleArray(indexPath: NSIndexPath) {
+        let results = self.getShuffleArray()
+        if results.isHaveArray {
+            var shuffleArray = results.shuffleArray
+            let index = shuffleArray.indexOf(indexPath.row) ?? 0
+            let numberWillBeDelete = shuffleArray[index]
+            shuffleArray.removeAtIndex(index)
+            if numberWillBeDelete != shuffleArray.count {
+                for i in 0..<shuffleArray.count {
+                    if shuffleArray[i] > numberWillBeDelete {
+                        shuffleArray[i] = shuffleArray[i] - 1
+                    }
+                }
+            }
+            kAppDelegate?.shuffleArray = shuffleArray
         }
     }
 }
@@ -430,29 +480,33 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .Normal, title: Strings.DeleteString) { (action, indexPath) in
-            self.currentPlaylist?.deleteSongAtIndex(indexPath.row)
             if indexPath.row == kAppDelegate?.detailPlayerVC?.getSongIndex() {
-                kAppDelegate?.detailPlayerVC?.changeIndex(indexPath.row - 1)
+                Alert.sharedInstance.showAlert(self, title: Strings.DeleteError, message: Strings.SongIsPlaying)
+            } else {
+                self.currentPlaylist?.deleteSongAtIndex(indexPath.row)
+                self.reconfigShuffleArray(indexPath)
+                self.reloadTableViewWhenDeleteSong(indexPath, isCurrentPlaylist: true)
             }
-            self.reloadTableViewWhenDeleteSong(indexPath, isCurrentPlaylist: true)
         }
         deleteAction.backgroundColor = .redColor()
         return [deleteAction]
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if kAppDelegate?.detailPlayerVC?.currentSongID() != currentPlaylist?.songs[indexPath.row].id {
-            kAppDelegate?.detailPlayerVC?.player = nil
-            kAppDelegate?.detailPlayerVC?.dataSource = nil
-            kAppDelegate?.detailPlayerVC = nil
-            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: currentPlaylist?.songs[indexPath.row],
-                songIndex: indexPath.row, playlistName: currentPlaylist?.name)
-            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                detailPlayerVC.dataSource = self
-                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
-                marginForTableView()
+        if kAppDelegate?.detailPlayerVC?.getPlaylistName() != currentPlaylist?.name {
+            createDetailPlaylist(currentPlaylist?.songs[indexPath.row],
+                playlistName: currentPlaylist?.name,
+                indexPath: indexPath, isChangePlaylist: true)
+        } else {
+            guard kAppDelegate?.detailPlayerVC?.currentSongID() != currentPlaylist?.songs[indexPath.row].id else {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                return
             }
+            createDetailPlaylist(currentPlaylist?.songs[indexPath.row],
+                playlistName: currentPlaylist?.name,
+                indexPath: indexPath, isChangePlaylist: false)
         }
+        marginForTableView()
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 }

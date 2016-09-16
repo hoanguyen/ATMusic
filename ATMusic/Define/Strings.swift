@@ -35,7 +35,10 @@ class Strings {
     static let Failure = "Failure"
     static let AddNew = "New Playlist"
     static let DeletePlaylistSuccess = "Delete playlist successful!"
+    static let DeletePlaylistFailure = "Sorry, this playlist is playing!"
     static let DisconnectedNetwork = "No Internet, Please, check your network!"
+    static let SongIsPlaying = "The song is playing!"
+    static let DeleteError = "Can not delete"
 
     // MARK: - default duration
     static let DefaultDuration = "0"

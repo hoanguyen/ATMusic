@@ -61,6 +61,13 @@ class SearchViewController: BaseVC {
         songs = [Song]()
     }
 
+    override func createDetailPlaylist(song: Song?, playlistName: String?, indexPath: NSIndexPath, isChangePlaylist: Bool) {
+        super.createDetailPlaylist(song, playlistName: playlistName, indexPath: indexPath, isChangePlaylist: isChangePlaylist)
+        kAppDelegate?.detailPlayerVC?.dataSource = self
+        tabBarController?.presentPopupBarWithContentViewController(kAppDelegate?.detailPlayerVC ?? DetailPlayerViewController(),
+            animated: true, completion: nil)
+    }
+
     // MARK: - private func
     private func loadSong() {
         if let isEmpty = songs?.isEmpty where isEmpty {
@@ -118,16 +125,18 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
-            kAppDelegate?.detailPlayerVC?.player = nil
-            kAppDelegate?.detailPlayerVC?.dataSource = nil
-            kAppDelegate?.detailPlayerVC = nil
-            kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row],
-                songIndex: indexPath.row, playlistName: Strings.Search)
-            if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                detailPlayerVC.dataSource = self
-                tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+        if kAppDelegate?.detailPlayerVC?.getPlaylistName() != Strings.Search {
+            createDetailPlaylist(songs?[indexPath.row],
+                playlistName: Strings.Search,
+                indexPath: indexPath, isChangePlaylist: true)
+        } else {
+            guard kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id else {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                return
             }
+            createDetailPlaylist(songs?[indexPath.row],
+                playlistName: Strings.Search,
+                indexPath: indexPath, isChangePlaylist: false)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
