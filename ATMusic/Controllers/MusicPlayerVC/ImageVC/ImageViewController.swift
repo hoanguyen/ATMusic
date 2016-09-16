@@ -21,21 +21,26 @@ class ImageViewController: UIViewController {
         setupImage()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        startRotate()
-        imageAvatar.circle()
-        imageAvatar.clipsToBounds = true
-    }
-
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        startRotate()
+        if let isPlaying = kAppDelegate?.detailPlayerVC?.getIsPlaying() where isPlaying {
+            startRotate()
+        } else {
+            stopRotate()
+        }
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        stopRotate()
+        if let isPlaying = kAppDelegate?.detailPlayerVC?.getIsPlaying() where isPlaying {
+            stopRotate()
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        imageAvatar.circle()
+        imageAvatar.clipsToBounds = true
     }
 
     override func didReceiveMemoryWarning() {

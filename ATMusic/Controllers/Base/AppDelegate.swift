@@ -86,6 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(application: UIApplication) {
+        detailPlayerVC?.stopAnimationForImageVC()
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
@@ -95,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
+        detailPlayerVC?.startAnimationForImageVC()
     }
 
     func applicationWillTerminate(application: UIApplication) {

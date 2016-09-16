@@ -105,13 +105,16 @@ class APIManager {
     }
 
     private var request: Alamofire.Request?
+    private var homeRequest: Alamofire.Request?
+    private var searchRequest: Alamofire.Request?
 
     func getSong(withKind kind: String,
         andGenre genre: String,
         limit: Int,
         atOffset offset: Int,
         completionHandler finished: APIFinished) {
-            Alamofire.request(Router.GetSong(kind: kind, genre: genre, limit: limit, offset: offset)).responseJSON { (response) in
+            homeRequest?.cancel()
+            homeRequest = Alamofire.request(Router.GetSong(kind: kind, genre: genre, limit: limit, offset: offset)).responseJSON { (response) in
                 switch response.result {
                 case .Success:
                     guard let JSON = response.result.value else { finished(result: nil,
@@ -133,8 +136,8 @@ class APIManager {
     }
 
     func searchSong(withKey key: String, limit: Int, atOffet offset: Int, completionHandler finished: APIFinished) {
-        request?.cancel()
-        request = Alamofire.request(Router.Search(key: key, limit: limit, offset: offset)).responseJSON { (response) in
+        searchRequest?.cancel()
+        searchRequest = Alamofire.request(Router.Search(key: key, limit: limit, offset: offset)).responseJSON { (response) in
             switch response.result {
             case .Success:
                 guard let JSON = response.result.value else { finished(result: nil,

@@ -3,10 +3,12 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SongListViewController" customModule="ATMusic" customModuleProvider="target">
             <connections>
+                <outlet property="playlistNameLabel" destination="t7V-rC-ggE" id="PdW-0G-gaZ"/>
                 <outlet property="tableView" destination="Kvt-VW-ZxX" id="SGE-jy-p7y"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -16,8 +18,25 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="412"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fTx-Rx-jIQ">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="30"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t7V-rC-ggE">
+                            <rect key="frame" x="-1" y="4" width="376" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="t7V-rC-ggE" firstAttribute="width" secondItem="fTx-Rx-jIQ" secondAttribute="width" id="LwQ-Nx-vSt"/>
+                        <constraint firstItem="t7V-rC-ggE" firstAttribute="centerY" secondItem="fTx-Rx-jIQ" secondAttribute="centerY" id="Nf5-lv-sFX"/>
+                        <constraint firstItem="t7V-rC-ggE" firstAttribute="centerX" secondItem="fTx-Rx-jIQ" secondAttribute="centerX" id="XYh-3R-dsh"/>
+                    </constraints>
+                </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Kvt-VW-ZxX">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="412"/>
+                    <rect key="frame" x="0.0" y="30" width="375" height="382"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <connections>
@@ -28,13 +47,23 @@
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="fTx-Rx-jIQ" secondAttribute="trailing" id="4tg-bj-W6D"/>
                 <constraint firstItem="Kvt-VW-ZxX" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="INr-eC-AWv"/>
+                <constraint firstItem="fTx-Rx-jIQ" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="30/412" id="OKP-wq-pPz"/>
+                <constraint firstItem="fTx-Rx-jIQ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Pgh-rh-qyg"/>
+                <constraint firstItem="Kvt-VW-ZxX" firstAttribute="top" secondItem="fTx-Rx-jIQ" secondAttribute="bottom" id="YKS-AH-vkH"/>
                 <constraint firstAttribute="trailing" secondItem="Kvt-VW-ZxX" secondAttribute="trailing" id="aL2-ii-Kgl"/>
                 <constraint firstItem="Kvt-VW-ZxX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="g1Q-rZ-dsw"/>
                 <constraint firstAttribute="bottom" secondItem="Kvt-VW-ZxX" secondAttribute="bottom" id="jJP-3d-QWn"/>
+                <constraint firstItem="fTx-Rx-jIQ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="qem-g1-FpB"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="540.5" y="480"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="INr-eC-AWv"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="513.5" y="481"/>
         </view>
     </objects>
 </document>

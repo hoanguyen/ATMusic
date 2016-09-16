@@ -116,7 +116,7 @@
                                                     <rect key="contentStretch" x="0.0" y="0.0" width="0.10000000000000001" height="0.10000000000000001"/>
                                                     <color key="minimumTrackTintColor" red="0.88235294119999996" green="0.16078431369999999" blue="0.21960784310000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
-                                                        <action selector="didTapToChangeSlider:" destination="-1" eventType="valueChanged" id="U8H-5G-Z7D"/>
+                                                        <action selector="didTapToChangeSlider:" destination="-1" eventType="touchUpInside" id="L9R-El-nnI"/>
                                                     </connections>
                                                 </slider>
                                             </subviews>

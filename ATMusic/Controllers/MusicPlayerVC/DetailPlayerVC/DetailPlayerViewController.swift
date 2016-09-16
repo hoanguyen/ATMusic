@@ -12,6 +12,7 @@ import AVFoundation
 import LNPopupController
 import MediaPlayer
 import PageMenu
+import SwiftUtils
 
 private let kTimerButtonSize = CGSize(width: 30, height: 30)
 
@@ -107,7 +108,11 @@ class DetailPlayerViewController: BaseVC {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        imageVC?.startRotate()
+        if isPlaying {
+            imageVC?.startRotate()
+        } else {
+            imageVC?.stopRotate()
+        }
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -131,11 +136,9 @@ class DetailPlayerViewController: BaseVC {
             popupItem.leftBarButtonItems = [prevBarButtonItem ?? UIBarButtonItem(),
                 playBarButtonItem ?? UIBarButtonItem(),
                 nextBarButtonItem ?? UIBarButtonItem()]
-            popupItem.rightBarButtonItems = [moreBatButtonItem ?? UIBarButtonItem()]
             popupBar?.leftBarButtonItems?.startIndex
         } else {
             popupItem.leftBarButtonItems = [playBarButtonItem ?? UIBarButtonItem()]
-            popupItem.rightBarButtonItems = [moreBatButtonItem ?? UIBarButtonItem()]
         }
     }
 
@@ -166,7 +169,31 @@ class DetailPlayerViewController: BaseVC {
         return .LightContent
     }
 
-    // MARK: - public func
+// MARK: - public func
+    func getIsPlaying() -> Bool {
+        return isPlaying
+    }
+
+    func highlightSongCell() {
+        songListVC?.highlightCellAtIndex(songIndex)
+    }
+
+    func getPlaylistName() -> String? {
+        return playlistName
+    }
+
+    func stopAnimationForImageVC() {
+        if isPlaying {
+            imageVC?.stopRotate()
+        }
+    }
+
+    func startAnimationForImageVC() {
+        if isPlaying {
+            imageVC?.startRotate()
+        }
+    }
+
     func getSongIndex() -> Int {
         return songIndex
     }
@@ -227,11 +254,16 @@ class DetailPlayerViewController: BaseVC {
         }
     }
 
-    func reloadWhenChangeSongList() {
-        songListVC?.reloadWhenChangeSongList(dataSource?.songNameList(self))
+    func reloadWhenChangeSongList(playlistName name: String, index: Int) {
+        if playlistName == name {
+            if songListVC?.playingIndex == index {
+                songListVC?.playingIndex = -1
+            }
+            songListVC?.reloadWhenChangeSongList(dataSource?.songNameList(self))
+        }
     }
 
-    // MARK: - private Actions
+// MARK: - private Actions
     @IBAction func didTapTimerButton(sender: UIButton) {
         kAppDelegate?.timerVC = TimerViewController()
         if let timerVC = kAppDelegate?.timerVC {
@@ -304,13 +336,14 @@ extension DetailPlayerViewController {
         }
         songListVC?.delegate = self
         imageVC = ImageViewController(imageURLString: song?.urlImage)
-        lyricVC = LyricViewController.vc()
-        let arrayVC: [UIViewController] = [songListVC ?? UIViewController(), imageVC ?? UIViewController(), lyricVC ?? UIViewController()]
+        let arrayVC: [UIViewController] = [imageVC ?? UIViewController(), songListVC ?? UIViewController()]
         let parameters: [CAPSPageMenuOption] = [
                 .MenuItemSeparatorWidth(4.3),
                 .UseMenuLikeSegmentedControl(true),
                 .MenuItemSeparatorPercentageHeight(0.1),
-                .HideTopMenuBar(true)
+                .HideTopMenuBar(true),
+                .MenuItemWidth(kScreenSize.width / 2),
+                .MenuMargin(0)
         ]
         pageMenu = CAPSPageMenu(viewControllers: arrayVC,
             frame: contentView.bounds,
@@ -318,7 +351,6 @@ extension DetailPlayerViewController {
         if let view = pageMenu?.view {
             contentView.addSubview(view)
         }
-        pageMenu?.moveToPage(1) // focus on ImageVC
         pageMenu?.view.backgroundColor = UIColor.clearColor()
         songListVC?.view.backgroundColor = UIColor.clearColor()
         imageVC?.view.backgroundColor = UIColor.clearColor()
@@ -380,7 +412,8 @@ extension DetailPlayerViewController {
     }
 
     private func setupDuration() {
-        if let duration = player?.currentItem?.asset.duration, second = convertToSecond(duration) {
+        if let duration = song?.duration {
+            let second = duration / 1000
             restDurationLabel.text = second.convertToMinute()
             durationSlider.maximumValue = Float(second)
             maxValue = Float(second)
@@ -438,6 +471,7 @@ extension DetailPlayerViewController {
     private func reloadSong() {
         if let timeObserver = timeObserver {
             player?.removeTimeObserver(timeObserver)
+            self.timeObserver = nil
         }
         pause()
         durationSlider.value = 0

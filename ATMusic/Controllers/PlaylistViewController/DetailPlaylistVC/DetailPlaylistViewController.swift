@@ -151,7 +151,8 @@ extension DetailPlaylistViewController: UITableViewDelegate, UITableViewDataSour
                 kAppDelegate?.detailPlayerVC?.changeIndex(indexPath.row - 1)
             }
             kNotification.postNotificationName(Strings.NotiDeleteSong,
-                object: nil, userInfo: [Strings.NotiCellIndex: indexPath])
+                object: nil, userInfo: [Strings.NotiCellIndex: indexPath,
+                    Strings.NotiCurrentPlaylistAtParentVC: self.isCurrentPlaylistAtParentVC])
         }
         deleteAction.backgroundColor = UIColor.redColor()
         return [deleteAction]

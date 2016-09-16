@@ -60,6 +60,7 @@ class Strings {
     static let ImageSizeForThumbnail = "t500x500"
     static let LargeString = "large"
 
+    static let Home = "Home"
     static let Chart = "Chart"
     static let Playlist = "Playlist"
     static let Trending = "Trending"

@@ -53,6 +53,11 @@ class PlaylistViewController: BaseVC {
         super.viewDidLoad()
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        marginForTableView()
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -85,14 +90,23 @@ class PlaylistViewController: BaseVC {
         tabBarController?.tabBar.translucent = false
         // show add button
         reloadWhenTapToChangePlaylist()
-        currentPlaylistName.font = HelveticaFont().Regular(15)
+        currentPlaylistName.font = HelveticaFont().Regular(19)
         collectionView.backgroundColor = .clearColor()
     }
 
     // MARK: - private func
+    private func marginForTableView() {
+        if let _ = kAppDelegate?.detailPlayerVC {
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 40, right: 0)
+        }
+    }
+
     @objc private func reloadCollectionView(sender: NSNotification) {
         collectionView.reloadData()
-        currentPlaylist = playlists?.first
+        if let playlistName = sender.userInfo?[Strings.Playlist] as? String,
+            name = kAppDelegate?.detailPlayerVC?.getPlaylistName() where playlistName == name {
+                kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: playlistName, index: -1)
+        }
         reloadWhenTapToChangePlaylist()
     }
 
@@ -200,6 +214,7 @@ class PlaylistViewController: BaseVC {
                 // ... and update source so it is in sync with UI changes.
                 sourceIndexPath = indexPath
             }
+            scrollTableView()
         default:
             guard let sourceIndexPathTmp = sourceIndexPath else { return }
             guard let cell = tableView.cellForRowAtIndexPath(sourceIndexPathTmp) else { return }
@@ -221,12 +236,20 @@ class PlaylistViewController: BaseVC {
         }
     }
 
+    private func scrollTableView() {
+        guard let snapShot = snapShot else { return }
+        let contentY = tableView.contentOffset.y + tableView.frame.height
+        if snapShot.frame.origin.y < tableView.contentOffset.y {
+            scrollToUp()
+        } else if snapShot.frame.origin.y + snapShot.frame.height > contentY && tableView.contentOffset.y + tableView.frame.height < tableView.contentSize.height {
+            scrollToDown()
+        }
+    }
+
     private func exchangeObjectAtIndex(index firstIndex: Int, withObjectAtIndex secondIndex: Int) {
         if let songs = currentPlaylist?.songs where !songs.isEmpty {
             RealmManager.changePosition(songs, atFirst: firstIndex, withSecond: secondIndex)
         }
-        print("first: \(firstIndex)")
-        print("second: \(secondIndex)")
         let firstIndexPath = NSIndexPath(forRow: firstIndex, inSection: 0)
         let secondIndexPath = NSIndexPath(forRow: secondIndex, inSection: 0)
         let firstCell = tableView.cellForRowAtIndexPath(firstIndexPath) as? TrackTableViewCell
@@ -238,7 +261,8 @@ class PlaylistViewController: BaseVC {
         }
         firstCell?.changeIndex(secondIndex)
         secondCell?.changeIndex(firstIndex)
-        tableView.scrollToRowAtIndexPath(firstIndexPath, atScrollPosition: .Middle, animated: true)
+        kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: currentPlaylist?.name ?? "", index: -1)
+        kAppDelegate?.detailPlayerVC?.highlightSongCell()
     }
 
     func handleOverSizeOfTableView(position: CGFloat) -> CGFloat {
@@ -286,7 +310,8 @@ class PlaylistViewController: BaseVC {
     }
 
     private func reloadTableViewWhenDeleteSong(indexPath: NSIndexPath, isCurrentPlaylist: Bool) {
-        self.collectionView.reloadData()
+        kAppDelegate?.detailPlayerVC?.reloadWhenChangeSongList(playlistName: currentPlaylist?.name ?? "", index: indexPath.row)
+        collectionView.reloadData()
         if isCurrentPlaylist {
             tableView.beginUpdates()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
@@ -294,6 +319,32 @@ class PlaylistViewController: BaseVC {
         }
     }
 
+    private func scrollToUp() {
+        if tableView.contentOffset.y != 0 {
+            let y = tableView.contentOffset.y - 5
+            tableView.contentOffset.y = y > 0 ? y : 0
+            if let cellSnapshot = snapShot {
+                if cellSnapshot.frame.origin.y < tableView.contentOffset.y {
+                    scrollToUp()
+                }
+            }
+        }
+    }
+
+    private func scrollToDown() {
+        let y = tableView.contentOffset.y + 5
+        if y + tableView.frame.height < tableView.contentSize.height {
+            tableView.contentOffset.y = y
+            if let cellSnapshot = snapShot {
+                let contentY = tableView.contentOffset.y + tableView.frame.height
+                if cellSnapshot.frame.origin.y < tableView.contentOffset.y {
+                    scrollToUp()
+                } else if cellSnapshot.frame.origin.y + cellSnapshot.frame.height > contentY && tableView.contentOffset.y + tableView.frame.height < tableView.contentSize.height {
+                    scrollToDown()
+                }
+            }
+        }
+    }
 }
 
 // MARK: - extension UICollectionViewDelegate and UICollectionViewDataSource
@@ -399,6 +450,7 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
             if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
                 detailPlayerVC.dataSource = self
                 tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
+                marginForTableView()
             }
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
