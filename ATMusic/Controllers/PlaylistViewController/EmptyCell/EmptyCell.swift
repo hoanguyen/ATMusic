@@ -9,10 +9,11 @@
 import UIKit
 
 class EmptyCell: UICollectionViewCell {
+    @IBOutlet private weak var bottomLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        bottomLabel.font = HelveticaFont().Regular(17)
     }
 
     @IBAction func didTapAddButton(sender: UIButton) {

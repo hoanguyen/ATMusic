@@ -93,4 +93,8 @@ class RealmManager {
     class func getItemWithName(name: String) -> PlaylistName? {
         return realm?.objects(PlaylistName).filter("name = %@", name).first
     }
+
+    class func getPlaylistWithName(name: String) -> Playlist? {
+        return realm?.objects(Playlist).filter("name = %@", name).first
+    }
 }

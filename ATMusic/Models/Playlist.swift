@@ -37,4 +37,8 @@ class Playlist: Object {
         RealmManager.updateNameForPlaylist(self, withText: text)
         return true
     }
+
+    class func checkExist(playlistName name: String) -> Bool {
+        return RealmManager.getPlaylistWithName(name) == nil ? false : true
+    }
 }

@@ -19,7 +19,9 @@ class Strings {
     static let Error = "Error"
     static let Confirm = "Confirm"
     static let Cancel = "Cancel"
+    static let CanNotAddPlaylist = "Can not add new Playlist"
     static let PlaylistExist = "Sorry! Exist a playlist has this name."
+    static let EmptyPlaylistName = "Sorry! Playlist could not empty."
     static let Yes = "Yes"
     static let CreateQuestion = "Do you want to create a new playlist?"
     static let Delete = "Do you want to delete it?"
@@ -46,6 +48,7 @@ class Strings {
     static let NotiDeleteSong = "deleteSong"
     static let NotiChangePlaylistName = "changeName"
     static let NotiReloadWhenAddNew = "reloadWhenAddNew"
+    static let NotiCurrentPlaylistAtParentVC = "isCurrentPlaylistAtParentVC"
 
     // MARK: - static func
     static func getMusicStreamURL(id: Int?) -> NSURL? {
@@ -57,6 +60,8 @@ class Strings {
     static let ImageSizeForThumbnail = "t500x500"
     static let LargeString = "large"
 
+    static let Chart = "Chart"
+    static let Playlist = "Playlist"
     static let Trending = "Trending"
     static let Search = "Search"
     static let Top = "Top"

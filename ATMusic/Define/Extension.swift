@@ -18,6 +18,21 @@ struct Number {
     static let kDurationToRotate = 20.0
 }
 
+class Image {
+    class func playingAnimationImages() -> [UIImage] {
+        return [
+            UIImage(assetIdentifier: .Playing1),
+            UIImage(assetIdentifier: .Playing2),
+            UIImage(assetIdentifier: .Playing3),
+            UIImage(assetIdentifier: .Playing4),
+            UIImage(assetIdentifier: .Playing5),
+            UIImage(assetIdentifier: .Playing6),
+            UIImage(assetIdentifier: .Playing7),
+            UIImage(assetIdentifier: .Playing8),
+            UIImage(assetIdentifier: .Playing9)]
+    }
+}
+
 class Helper {
     class func delay(second second: Int, completion: () -> Void) {
         let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))

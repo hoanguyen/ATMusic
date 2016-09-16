@@ -16,7 +16,8 @@ extension UIImage {
             RepeatAllRed30, RepeatOffWhite30, RepeatOneRed30,
             PlayBlack, PauseBlack, NextBlack, PrevBlack, ListBlack,
             Timer, DownArrowRed30, CheckMarkRed30, Audio, Music,
-            TopRed22, TrendingRed22
+            TopRed22, TrendingRed22,
+            Playing1, Playing2, Playing3, Playing4, Playing5, Playing6, Playing7, Playing8, Playing9
     }
 
     convenience init!(assetIdentifier: AssetIdentifier) {

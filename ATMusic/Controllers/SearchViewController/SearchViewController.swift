@@ -12,8 +12,9 @@ import SVPullToRefresh
 class SearchViewController: BaseVC {
     // MARK: - private outlet
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var searchBar: UISearchBar!
-    @IBOutlet weak var paddingTopConstraint: NSLayoutConstraint!
+//    @IBOutlet private weak var searchBar: UISearchBar!
+    @IBOutlet private weak var paddingTopConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var dataLabel: UILabel!
 
     // MARK: - private property
     private let limit = 20
@@ -21,6 +22,8 @@ class SearchViewController: BaseVC {
     private var songs: [Song]?
     private var searchText = ""
     private var blurView: UIView?
+//    private var searchBar = UISearchBar()
+    lazy var searchBar = UISearchBar()
     // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +34,17 @@ class SearchViewController: BaseVC {
     }
 
     override func configUI() {
+        dataLabel.font = HelveticaFont().Regular(20)
         searchBar.returnKeyType = .Done
         searchBar.autocorrectionType = .No
+        searchBar.delegate = self
+        searchBar.placeholder = Strings.Search
+        searchBar.tintColor = Color.Red225
+        navigationItem.titleView = searchBar
+        navigationController?.navigationBar.backgroundColor = Color.White178
         tableView.separatorStyle = .None
         super.configUI()
-        tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 49, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 49, right: 0)
         tableView.registerNib(TrackTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
@@ -107,13 +116,11 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if kAppDelegate?.detailPlayerVC?.currentSongID() != songs?[indexPath.row].id {
             kAppDelegate?.detailPlayerVC?.player = nil
-            kAppDelegate?.detailPlayerVC?.delegate = nil
             kAppDelegate?.detailPlayerVC?.dataSource = nil
             kAppDelegate?.detailPlayerVC = nil
             kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: songs?[indexPath.row],
                 songIndex: indexPath.row, playlistName: Strings.Search)
             if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                detailPlayerVC.delegate = self
                 detailPlayerVC.dataSource = self
                 tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
             }
@@ -159,6 +166,9 @@ extension SearchViewController: UISearchBarDelegate {
         if searchText == "" {
             songs?.removeAll()
             tableView.reloadData()
+            dataLabel.hidden = false
+            APIManager.sharedInstance.cancelRequest()
+            return
         }
         if searchText.characters.last == " " {
             return
@@ -170,6 +180,7 @@ extension SearchViewController: UISearchBarDelegate {
             } else {
                 self.songs = result
                 self.tableView.reloadData()
+                self.dataLabel.hidden = true
             }
         }
     }
@@ -183,11 +194,7 @@ extension SearchViewController: TrackTableViewCellDelegate {
 }
 
 //MARK: - DetailPlayerDelegate
-extension SearchViewController: DetailPlayerDelegate, DetailPlayerDataSource {
-    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
-        print(index)
-    }
-
+extension SearchViewController: DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return songs?.count
     }

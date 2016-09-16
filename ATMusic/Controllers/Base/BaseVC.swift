@@ -61,18 +61,27 @@ class BaseVC: ViewController {
         let playlistNameObject = PlaylistName.firstItemFree()
         Alert.sharedInstance.inputTextAlert(self, title: Strings.Create,
             message: Strings.CreateQuestion,
-            placeholder: Strings.PlaylistNamePlaceHolder + "\(playlistNameObject.id)") { (text, isUse) in
-                playlistNameObject.setUsing(isUse)
-                if !isUse && Helper.checkingPlayList(text) {
-                    if let item = PlaylistName.getItemWithName(text) {
-                        item.setUsing(true)
+            placeholder: playlistNameObject.name) { (text, isUse) in
+                let text = text.trimmedCJK()
+                if text == "" {
+                    Alert.sharedInstance.showAlert(self, title: Strings.Warning, message: Strings.EmptyPlaylistName)
+                } else {
+                    if Playlist.checkExist(playlistName: text) {
+                        Alert.sharedInstance.showAlert(self, title: Strings.CanNotAddPlaylist, message: Strings.PlaylistExist)
                     } else {
-                        RealmManager.add(PlaylistName(isUse: true))
+                        playlistNameObject.setUsing(isUse)
+                        if !isUse && Helper.checkingPlayList(text) {
+                            if let item = PlaylistName.getItemWithName(text) {
+                                item.setUsing(true)
+                            } else {
+                                RealmManager.add(PlaylistName(isUse: true))
+                            }
+                        }
+                        RealmManager.add(Playlist(name: text))
+                        NSNotificationCenter.defaultCenter().postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
+                        finished()
                     }
                 }
-                RealmManager.add(Playlist(name: text))
-                kNotification.postNotificationName(Strings.NotiReloadWhenAddNew, object: nil, userInfo: nil)
-                finished()
         }
     }
 

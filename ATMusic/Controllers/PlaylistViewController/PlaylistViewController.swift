@@ -47,6 +47,7 @@ class PlaylistViewController: BaseVC {
     private var currentPlaylist: Playlist?
     private var snapShot: UIView?
     private var sourceIndexPath: NSIndexPath?
+    private var cellSelected: TrackTableViewCell?
     // MARK: - override func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,35 +99,51 @@ class PlaylistViewController: BaseVC {
     @objc private func addNewPlaylist(sender: UIButton) {
         let playlistNameObject = PlaylistName.firstItemFree()
         Alert.sharedInstance.inputTextAlert(self, title: Strings.Create,
-            message: Strings.CreateQuestion, placeholder: Strings.PlaylistNamePlaceHolder + " \(playlistNameObject.id)") { (text, isUse) in
-                playlistNameObject.setUsing(isUse)
-                if !isUse && Helper.checkingPlayList(text) {
-                    if let item = PlaylistName.getItemWithName(text) {
-                        item.setUsing(true)
+            message: Strings.CreateQuestion, placeholder: playlistNameObject.name) { (text, isUse) in
+                let text = text.trimmedCJK()
+                if text == "" {
+                    Alert.sharedInstance.showAlert(self, title: Strings.Warning, message: Strings.EmptyPlaylistName)
+                } else {
+                    if Playlist.checkExist(playlistName: text) {
+                        Alert.sharedInstance.showAlert(self, title: Strings.CanNotAddPlaylist, message: Strings.PlaylistExist)
                     } else {
-                        RealmManager.add(PlaylistName(isUse: true))
+                        playlistNameObject.setUsing(isUse)
+                        if !isUse && Helper.checkingPlayList(text) {
+                            if let item = PlaylistName.getItemWithName(text) {
+                                item.setUsing(true)
+                            } else {
+                                RealmManager.add(PlaylistName(isUse: true))
+                            }
+                        }
+                        RealmManager.add(Playlist(name: text))
+                        self.collectionView.reloadData()
                     }
                 }
-                RealmManager.add(Playlist(name: text))
-                self.collectionView.reloadData()
         }
     }
 
     @objc private func detailPlaylist(sender: NSNotification) {
         if let index = sender.userInfo?[Strings.NotiCellIndex] as? Int {
-            let detailPlaylistVC = DetailPlaylistViewController(playlist: playlists?[index], index: index)
+            let playlist = playlists?[index]
+            let detailPlaylistVC = DetailPlaylistViewController(playlist: playlist,
+                index: index,
+                isCurrentPlaylistAtParentVC: playlist?.name == currentPlaylist?.name ? true : false)
             navigationController?.pushViewController(detailPlaylistVC, animated: true)
         }
     }
 
     @objc private func deleteSong(sender: NSNotification) {
-        if let indexPath = sender.userInfo?[Strings.NotiCellIndex] as? NSIndexPath {
-            reloadTableViewWhenDeleteSong(indexPath)
+        if let indexPath = sender.userInfo?[Strings.NotiCellIndex] as? NSIndexPath,
+            isCurrentPlaylist = sender.userInfo?[Strings.NotiCurrentPlaylistAtParentVC] as? Bool {
+                reloadTableViewWhenDeleteSong(indexPath, isCurrentPlaylist: isCurrentPlaylist)
         }
     }
 
     @objc private func changeName(sender: NSNotification) {
-        reloadWhenTapToChangePlaylist()
+        collectionView.reloadData()
+        if let isCurrentPlaylist = sender.userInfo?[Strings.NotiCurrentPlaylistAtParentVC] as? Bool where isCurrentPlaylist {
+            reloadWhenTapToChangePlaylist()
+        }
     }
 
     @objc private func deletePlaylist(sender: NSNotification) {
@@ -208,12 +225,20 @@ class PlaylistViewController: BaseVC {
         if let songs = currentPlaylist?.songs where songs.count > 0 {
             RealmManager.changePosition(songs, atFirst: firstIndex, withSecond: secondIndex)
         }
+        print("first: \(firstIndex)")
+        print("second: \(secondIndex)")
         let firstIndexPath = NSIndexPath(forRow: firstIndex, inSection: 0)
         let secondIndexPath = NSIndexPath(forRow: secondIndex, inSection: 0)
         let firstCell = tableView.cellForRowAtIndexPath(firstIndexPath) as? TrackTableViewCell
         let secondCell = tableView.cellForRowAtIndexPath(secondIndexPath) as? TrackTableViewCell
-        firstCell?.changeIndex(firstIndex)
-        secondCell?.changeIndex(secondIndex)
+        if firstIndex == kAppDelegate?.detailPlayerVC?.getSongIndex() {
+            kAppDelegate?.detailPlayerVC?.changeIndex(secondIndex)
+        } else if secondIndex == kAppDelegate?.detailPlayerVC?.getSongIndex() {
+            kAppDelegate?.detailPlayerVC?.changeIndex(firstIndex)
+        }
+        firstCell?.changeIndex(secondIndex)
+        secondCell?.changeIndex(firstIndex)
+        tableView.scrollToRowAtIndexPath(firstIndexPath, atScrollPosition: .Middle, animated: true)
     }
 
     func handleOverSizeOfTableView(position: CGFloat) -> CGFloat {
@@ -258,11 +283,13 @@ class PlaylistViewController: BaseVC {
         tableView.reloadData()
     }
 
-    private func reloadTableViewWhenDeleteSong(indexPath: NSIndexPath) {
-        tableView.beginUpdates()
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        collectionView.reloadData()
-        tableView.endUpdates()
+    private func reloadTableViewWhenDeleteSong(indexPath: NSIndexPath, isCurrentPlaylist: Bool) {
+        self.collectionView.reloadData()
+        if isCurrentPlaylist {
+            tableView.beginUpdates()
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            tableView.endUpdates()
+        }
     }
 
 }
@@ -351,7 +378,10 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .Normal, title: Strings.DeleteString) { (action, indexPath) in
             self.currentPlaylist?.deleteSongAtIndex(indexPath.row)
-            self.reloadTableViewWhenDeleteSong(indexPath)
+            if indexPath.row == kAppDelegate?.detailPlayerVC?.getSongIndex() {
+                kAppDelegate?.detailPlayerVC?.changeIndex(indexPath.row - 1)
+            }
+            self.reloadTableViewWhenDeleteSong(indexPath, isCurrentPlaylist: true)
         }
         deleteAction.backgroundColor = .redColor()
         return [deleteAction]
@@ -360,13 +390,11 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if kAppDelegate?.detailPlayerVC?.currentSongID() != currentPlaylist?.songs[indexPath.row].id {
             kAppDelegate?.detailPlayerVC?.player = nil
-            kAppDelegate?.detailPlayerVC?.delegate = nil
             kAppDelegate?.detailPlayerVC?.dataSource = nil
             kAppDelegate?.detailPlayerVC = nil
             kAppDelegate?.detailPlayerVC = DetailPlayerViewController(song: currentPlaylist?.songs[indexPath.row],
                 songIndex: indexPath.row, playlistName: currentPlaylist?.name)
             if let detailPlayerVC = kAppDelegate?.detailPlayerVC {
-                detailPlayerVC.delegate = self
                 detailPlayerVC.dataSource = self
                 tabBarController?.presentPopupBarWithContentViewController(detailPlayerVC, animated: true, completion: nil)
             }
@@ -376,11 +404,7 @@ extension PlaylistViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 //MARK: - DetailPlayerDelegate
-extension PlaylistViewController: DetailPlayerDelegate, DetailPlayerDataSource {
-    func detailPlayer(viewController: UIViewController, changeToSongAtIndex index: Int) {
-        print(index)
-    }
-
+extension PlaylistViewController: DetailPlayerDataSource {
     func numberOfSongInPlaylist(viewController: UIViewController) -> Int? {
         return currentPlaylist?.songs.count
     }

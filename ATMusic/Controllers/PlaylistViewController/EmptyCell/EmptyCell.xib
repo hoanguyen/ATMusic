@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -13,8 +14,24 @@
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                 <rect key="frame" x="0.0" y="0.0" width="120" height="160"/>
                 <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kjC-Ov-mJH">
+                        <rect key="frame" x="0.0" y="80" width="120" height="80"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New Playlist" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JzR-Tv-RhU">
+                                <rect key="frame" x="14" y="30" width="93" height="20"/>
+                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="JzR-Tv-RhU" firstAttribute="centerY" secondItem="kjC-Ov-mJH" secondAttribute="centerY" id="aGD-vT-cF3"/>
+                            <constraint firstItem="JzR-Tv-RhU" firstAttribute="centerX" secondItem="kjC-Ov-mJH" secondAttribute="centerX" id="qeO-IY-QBX"/>
+                        </constraints>
+                    </view>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NxR-Rs-3ym">
-                        <rect key="frame" x="45" y="65" width="30" height="30"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="160"/>
                         <state key="normal" image="Plus-circle"/>
                         <connections>
                             <action selector="didTapAddButton:" destination="gTV-IL-0wX" eventType="touchUpInside" id="WoD-zg-eyv"/>
@@ -25,11 +42,20 @@
             </view>
             <color key="backgroundColor" red="0.69907852564102568" green="0.69907852564102568" blue="0.69907852564102568" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="kjC-Ov-mJH" secondAttribute="trailing" id="39N-n8-HU9"/>
                 <constraint firstItem="NxR-Rs-3ym" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="EwO-da-B5n"/>
+                <constraint firstItem="NxR-Rs-3ym" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" id="PFl-9n-JbF"/>
+                <constraint firstItem="NxR-Rs-3ym" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" id="n54-Ww-rXp"/>
+                <constraint firstItem="kjC-Ov-mJH" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="pkS-ya-qIz"/>
                 <constraint firstItem="NxR-Rs-3ym" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="u70-fZ-kXg"/>
+                <constraint firstItem="kjC-Ov-mJH" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" multiplier="1/2" id="ur5-jx-iiF"/>
+                <constraint firstAttribute="bottom" secondItem="kjC-Ov-mJH" secondAttribute="bottom" id="wLi-3p-sEX"/>
             </constraints>
             <size key="customSize" width="50" height="127"/>
-            <point key="canvasLocation" x="587" y="301.5"/>
+            <connections>
+                <outlet property="bottomLabel" destination="JzR-Tv-RhU" id="cTT-wY-Q2B"/>
+            </connections>
+            <point key="canvasLocation" x="587" y="301"/>
         </collectionViewCell>
     </objects>
     <resources>
