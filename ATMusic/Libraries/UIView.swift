@@ -9,9 +9,10 @@
 import Foundation
 import UIKit
 
+private let kRotationAnimationKey = "com.myapplication.rotationanimationkey"
+
 extension UIView {
     func rotateView(startValue fromValue: CGFloat, duration: Double = 1.0) {
-        let kRotationAnimationKey = "com.myapplication.rotationanimationkey" // Any key
         if self.layer.animationForKey(kRotationAnimationKey) == nil {
             let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
             rotationAnimation.fromValue = fromValue
@@ -23,7 +24,6 @@ extension UIView {
     }
 
     func stopRotateView() -> CGFloat? {
-        let kRotationAnimationKey = "com.myapplication.rotationanimationkey"
         var currentAngleFloat: CGFloat?
         if let currentLayer = self.layer.presentationLayer() as? CALayer {
             if let currentAngle = currentLayer.valueForKeyPath("transform.rotation.z") as? CGFloat {
