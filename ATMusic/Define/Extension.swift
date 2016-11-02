@@ -12,6 +12,7 @@ import SystemConfiguration
 
 struct Ratio {
     static let width: CGFloat = kScreenSize.width / DeviceType.Phone6.size.width
+    static let kScreenBounds = UIScreen.mainScreen().bounds
 }
 
 struct Number {

@@ -161,7 +161,7 @@ class DetailPlayerViewController: BaseVC {
             super.configUI()
             setupImage()
             // create blur view
-            let blurView = View.createPlayerBlurView(frame: view.bounds)
+            let blurView = View.createPlayerBlurView(frame: Ratio.kScreenBounds)
             view.addSubview(blurView)
             view.bringSubviewToFront(mainView)
             view.tintColor = UIColor.whiteColor()
@@ -229,7 +229,7 @@ class DetailPlayerViewController: BaseVC {
         playButton.setBackgroundImage(UIImage(assetIdentifier: .PauseWhite60), forState: .Normal)
         imageVC?.startRotate()
     }
-
+    
     func nextSong() -> Bool {
         if let isShuffle = kAppDelegate?.isShuffle where isShuffle {
             if songIndex == -1 {
